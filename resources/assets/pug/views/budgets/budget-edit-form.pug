@@ -1,0 +1,44 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li
+					a(href="/budgets") Budgets
+				li(ng-if="Budget.template")
+					a(href="/budgets/templates") Budget Templates
+				li.active Edit Budget
+					span(ng-if="Budget.template") &nbsp;Template
+
+			.page-header
+				h1.center(ng-bind-html="title")
+			.col-md-1.col-lg-3
+			.col-sm-12.col-md-10.col-lg-6
+				form(name="budgetForm", method="post", ng-submit="budgetForm.$valid && submit()", novalidate)
+					.form-group.col-xs-12.required(ng-class="{ 'has-error': (budgetForm.name.$touched && budgetForm.name.$invalid) || (budgetForm.$submitted && budgetForm.name.$invalid) }")
+						label.control-label(for="name") Name For Your Budget
+						input#name.form-control(placeholder="Name", type="text", name="name", ng-model="Budget.name", required)
+					.form-group.col-xs-12.col-sm-6
+						label.control-label(for="start") Start Date
+						.input-group.date
+							input#start.form-control(placeholder="mm/dd/yyyy", type="text", maxlength="10", uib-datepicker-popup="MM/dd/yyyy", is-open="isOpenStart", ng-model="Budget.start")
+							span.input-group-btn
+								button.btn.btn-default(type="button", ng-click="isOpenStart = true")
+									i.glyphicon.glyphicon-calendar
+					.form-group.col-xs-12.col-sm-6
+						label.control-label(for="end") End Date
+						.input-group.date
+							input#end.form-control(placeholder="mm/dd/yyyy", type="text", maxlength="10", uib-datepicker-popup="MM/dd/yyyy", is-open="isOpenEnd", ng-model="Budget.end")
+							span.input-group-btn
+								button.btn.btn-default(type="button", ng-click="isOpenEnd = true")
+									i.glyphicon.glyphicon-calendar
+					.form-group.col-xs-12.required(ng-class="{ 'has-error': (budgetForm.income.$touched && budgetForm.income.$invalid) || (budgetForm.$submitted && budgetForm.income.$invalid) }")
+						label.control-label(for="income") Income
+						.input-group
+							span.input-group-addon $
+							input#income.form-control(placeholder="Ex: 123.45", type="number", min="0", step="any", name="income" ng-model="Budget.income", required)
+					.form-group.col-xs-12.btn-toolbar
+						button.btn.btn-primary(type="submit") Submit
+						a.btn.btn-default(ng-href="/budgets") Cancel
+			.col-md-1.col-lg-3

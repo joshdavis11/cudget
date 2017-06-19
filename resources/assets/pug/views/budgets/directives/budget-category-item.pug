@@ -1,0 +1,22 @@
+.clearfix(ng-mouseenter="BudgetCategoryRow.editOptions = true", ng-mouseleave="BudgetCategoryRow.editOptions = false")
+	.category-item-text.pull-left
+		a.category-item.category-item-name.pull-left(ng-click="BudgetCategoryRow.showTable = !BudgetCategoryRow.showTable", uib-popover="{{ BudgetCategoryRow.name }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") {{ BudgetCategoryRow.name }}
+		.category-item.category-item-label.pull-left.label.label-primary(ng-if="BudgetCategoryRow.name != 'Uncategorized'", uib-popover="${{ BudgetCategoryRow.estimated|number:2 }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") Est: ${{ BudgetCategoryRow.estimated|number:2 }}
+		.category-item.category-item-label.pull-left.label(ng-if="BudgetCategoryRow.name != 'Uncategorized'", ng-class="BudgetCategoryRow.spent > BudgetCategoryRow.estimated ? 'label-danger' : 'label-success'", uib-popover="${{ BudgetCategoryRow.spent|number:2 }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") Act: ${{ BudgetCategoryRow.spent|number:2 }}
+	.category-item-icons.pull-left(ng-if="BudgetCategoryRow.name != 'Uncategorized'", ng-show="BudgetCategoryRow.editOptions")
+		span.pointer.glyphicon.glyphicon-pencil(ng-click="editCategoryItem(BudgetCategoryRow)")
+		span.pointer.glyphicon.glyphicon-trash(ng-click="deleteCategoryItem(BudgetCategoryRow)")
+.category-item-expenses.pull-left(ng-if="!Budget.template", ng-show="BudgetCategoryRow.showTable")
+	table.table.table-bordered.table-condensed.table-hover.table-striped(style="table-layout: fixed;")
+		thead
+			tr
+				th.category-item-expense-column.category-item-expense-date Date
+				th.category-item-expense-column.category-item-expense-description Description
+				th.category-item-expense-column.category-item-expense-category Category
+				th.category-item-expense-column.category-item-expense-amount Amount
+				th.category-item-expense-column.category-item-expense-icons
+		tbody.js-sortable-expenses(ui-sortable="categoryRowExpenseSorting", ng-model="BudgetCategoryRow.budgetCategoryRowExpenses")
+			tr.js-category-item-expense(ng-repeat="BudgetCategoryRowExpense in BudgetCategoryRow.budgetCategoryRowExpenses", ng-mouseenter="BudgetCategoryRowExpense.editOptions = true", ng-mouseleave="BudgetCategoryRowExpense.editOptions = false", budget-category-item-expense)
+			tr.border-dashed(ng-show="showEmptyPlaceholder")
+				td(colspan="5") Drag Here and Drop Here
+	a(ng-click="addCategoryItemExpense()") + Add An Expense

@@ -1,0 +1,8 @@
+td.category-item-expense-column(uib-popover="{{ BudgetCategoryRowExpense.expense.datetime|standardDate }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") {{ BudgetCategoryRowExpense.expense.datetime|standardDate }}
+td.category-item-expense-column(uib-popover="{{ BudgetCategoryRowExpense.expense.description }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") {{ BudgetCategoryRowExpense.expense.description }}
+td.category-item-expense-column(uib-popover="{{ BudgetCategoryRowExpense.expense.expenseCategory.name }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") {{ BudgetCategoryRowExpense.expense.expenseCategory.name }}
+td.category-item-expense-column(uib-popover="${{ BudgetCategoryRowExpense.expense.amount|number:2 }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") ${{ BudgetCategoryRowExpense.expense.amount|number:2 }}
+td
+	div(ng-show="BudgetCategoryRowExpense.editOptions")
+		span.pointer.glyphicon.glyphicon-pencil(ng-click="editCategoryItemExpense()")
+		span.pointer.glyphicon.glyphicon-trash(ng-click="deleteCategoryItemExpense()")

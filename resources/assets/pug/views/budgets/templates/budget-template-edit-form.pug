@@ -1,0 +1,29 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li
+					a(href="/budgets") Budgets
+				li
+					a(href="/budgets/templates") Budget Templates
+				li.active Edit Budget Template
+
+			.page-header
+				h1.center(ng-bind-html="title")
+			.col-md-1.col-lg-3
+			.col-sm-12.col-md-10.col-lg-6
+				form(name="budgetTemplateForm", method="post", ng-submit="budgetTemplateForm.$valid && submit()", novalidate)
+					.form-group.col-xs-12.required(ng-class="{ 'has-error': (budgetTemplateForm.name.$touched && budgetTemplateForm.name.$invalid) || (budgetTemplateForm.$submitted && budgetTemplateForm.name.$invalid) }")
+						label.control-label(for="name") Name For Your Template
+						input#name.form-control(placeholder="Name", type="text", name="name", ng-model="BudgetTemplate.name", required)
+					.form-group.col-xs-12.required(ng-class="{ 'has-error': (budgetTemplateForm.income.$touched && budgetTemplateForm.income.$invalid) || (budgetTemplateForm.$submitted && budgetTemplateForm.income.$invalid) }")
+						label.control-label(for="income") Income
+						.input-group
+							span.input-group-addon $
+							input#income.form-control(placeholder="Ex: 123.45", type="number", min="0", step="any", name="income" ng-model="BudgetTemplate.income", required)
+					.form-group.col-xs-12.btn-toolbar
+						button.btn.btn-primary(type="submit") Submit
+						a.btn.btn-default(href="/budgets/templates") Cancel
+			.col-md-1.col-lg-3

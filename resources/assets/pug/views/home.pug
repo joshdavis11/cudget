@@ -1,0 +1,56 @@
+div.container
+	div.row
+		div.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li.active Home
+			div.page-header
+				h1.center Home
+
+			div.col-xs-12.col-sm-6.col-md-4.col-lg-3(ng-if="perms.admin || perms.budgets.view.access || perms.budget_templates.view.access")
+				div.panel.panel-primary
+					div.panel-heading
+						h3.panel-title Budgets
+					div.panel-body
+						ul.nav.nav-pills.nav-stacked
+							li(ng-if="perms.admin || perms.budgets.view.access")
+								a(href="/budgets") Budgets
+							li(ng-if="perms.admin || perms.budget_templates.view.access")
+								a(href="/budgets/templates") Budget Templates
+							li(ng-if="perms.admin || perms.import.view.access")
+								a(href="/import") Import
+
+			div.col-xs-12.col-sm-6.col-md-4.col-lg-3(ng-if="perms.admin || perms.expenses.view.access || perms.expense_categories.view.access")
+				div.panel.panel-primary
+					div.panel-heading
+						h3.panel-title Expenses
+					div.panel-body
+						ul.nav.nav-pills.nav-stacked
+							li(ng-if="perms.admin || perms.expenses.view.access")
+								a(href="/expenses") Expenses
+							li(ng-if="perms.admin || perms.expense_categories.view.access")
+								a(href="/expenses/categories") Expense Categories
+
+			div.col-xs-12.col-sm-6.col-md-4.col-lg-3(ng-if="perms.admin || perms.income.view.access || perms.income_categories.view.access")
+				div.panel.panel-primary
+					div.panel-heading
+						h3.panel-title Income
+					div.panel-body
+						ul.nav.nav-pills.nav-stacked
+							li(ng-if="perms.admin || perms.income.view.access")
+								a(href="/income") Income
+							li(ng-if="perms.admin || perms.income_categories.view.access")
+								a(href="/income/categories") Income Categories
+
+			div.col-xs-12.col-sm-6.col-md-4.col-lg-3(ng-if="perms.admin || perms.settings.view.access || perms.user_management.view.access || perms.color_scheme.view.access")
+				div.panel.panel-primary
+					div.panel-heading
+						h3.panel-title Settings
+
+					div.panel-body
+						ul.nav.nav-pills.nav-stacked
+							li(ng-if="perms.admin || perms.settings.view.access")
+								a(href="/settings") Settings Home
+							li(ng-if="perms.admin || perms.user_management.view.access")
+								a(href="/settings/users") User Management
+							li(ng-if="perms.admin || perms.color_scheme.view.access")
+								a(href="/settings/colors") Color Scheme

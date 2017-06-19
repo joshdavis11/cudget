@@ -1,0 +1,9 @@
+form(name="incomeForm", ng-submit="incomeForm.$valid && submit()", novalidate)
+	.modal-header
+		button.close(type="button", ng-click="close()", aria-hidden="true") ×
+		h3 Edit Income
+	.modal-body
+		include ../includes/income-form
+	.modal-footer
+		button.btn.btn-primary(type="submit") Save
+		button.btn.btn-default(type="button", ng-click="cancel()", aria-hidden="true") Cancel

@@ -1,0 +1,17 @@
+form(name="categoryRowForm", ng-submit="categoryRowForm.$valid && submit()", novalidate)
+	.modal-header
+		button.close(type="button", ng-click="close()", aria-hidden="true") ×
+		h3 {{ title }}
+			span(ng-if="edit") &nbsp;"{{ BudgetCategoryRow.name }}"
+	.modal-body
+		.form-group.required(ng-class="{ 'has-error': (categoryRowForm.name.$touched && categoryRowForm.name.$invalid) || (categoryRowForm.$submitted && categoryRowForm.name.$invalid) }")
+			label.control-label(for="categoryItemName") Name
+			input#categoryItemName.form-control(placeholder="Ex: Mortgage", type="text", name="name", ng-model="BudgetCategoryRow.name", required)
+		.form-group.required(ng-class="{ 'has-error': (categoryRowForm.estimated.$touched && categoryRowForm.estimated.$invalid) || (categoryRowForm.$submitted && categoryRowForm.estimated.$invalid) }")
+			label.control-label(for="categoryEstimated") Estimated
+			.input-group
+				span.input-group-addon $
+				input#categoryEstimated.form-control(placeholder="Ex: 123.45", type="number", name="estimated", min="0", step="any", ng-model="BudgetCategoryRow.estimated", required)
+	.modal-footer
+		button.btn.btn-primary(type="submit") Save
+		button.btn.btn-default(type="button", ng-click="cancel()", aria-hidden="true") Cancel

@@ -1,0 +1,16 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li
+					a(href="/expenses") Expenses
+				li.active Create Expense
+			.page-header
+				h1.center Create Expense
+			.col-md-1.col-lg-3
+			.col-sm-12.col-md-10.col-lg-6
+				form(name="expenseForm", ng-submit="expenseForm.$valid && submit()", novalidate)
+					include includes/expense-form
+			.col-md-1.col-lg-3

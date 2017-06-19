@@ -1,0 +1,57 @@
+div.navbar.navbar-default.navbar-fixed-top(role="navigation" ng-controller="HeaderController")
+	div.container
+		div.navbar-header
+			button.navbar-toggle(type="button" ng-click="isNavCollapsed = !isNavCollapsed")
+				span.sr-only Toggle Navigation
+				span.icon-bar
+				span.icon-bar
+				span.icon-bar
+			a.navbar-brand(href="/") Cudget
+		div.collapse.navbar-collapse.navbar-responsive-collapse(uib-collapse="isNavCollapsed")
+			ul.nav.navbar-nav
+				li(ng-class="{ active: isActiveBaseUri('/') }")
+					a(href="/") Home
+
+				li.dropdown(ng-class="{ active: isActiveBaseUri('/budgets') }", uib-dropdown, ng-if="perms.admin || perms.budgets.view.access || perms.budget_templates.view.access || perms.import.view.access")
+					a(uib-dropdown-toggle) Budgets
+						b.caret
+					ul.dropdown-menu
+						li(ng-class="{ active: isActiveUri('/budgets') }", ng-if="perms.admin || perms.budgets.view.access")
+							a(href="/budgets") Budgets
+						li(ng-class="{ active: isActiveUri('/budgets/templates') }", ng-if="perms.admin || perms.budget_templates.view.access")
+							a(href="/budgets/templates") Budget Templates
+
+				li.dropdown(ng-class="{ active: isActiveBaseUri('/expenses') }", uib-dropdown, ng-if="perms.admin || perms.expenses.view.access || perms.expense_categories.view.access")
+					a(uib-dropdown-toggle) Expenses
+						b.caret
+					ul.dropdown-menu
+						li(ng-class="{ active: isActiveUri('/expenses') }", ng-if="perms.admin || perms.expenses.view.access")
+							a(href="/expenses") Expenses
+						li(ng-class="{ active: isActiveUri('/expenses/categories') }", ng-if="perms.admin || perms.expense_categories.view.access")
+							a(href="/expenses/categories") Expense Categories
+
+				li.dropdown(ng-class="{ active: isActiveBaseUri('/income') }", uib-dropdown, ng-if="perms.admin || perms.income.view.access || perms.income_categories.view.access")
+					a(uib-dropdown-toggle) Income
+						b.caret
+					ul.dropdown-menu
+						li(ng-class="{ active: isActiveUri('/income') }", ng-if="perms.admin || perms.income.view.access")
+							a(href="/income") Income
+						li(ng-class="{ active: isActiveUri('/income/categories') }", ng-if="perms.admin || perms.income_categories.view.access")
+							a(href="/income/categories") Income Categories
+				li(ng-class="{ active: isActiveBaseUri('/import') }", ng-if="perms.admin || perms.import.view.access")
+					a(href="/import") Import
+
+			ul.nav.navbar-nav.navbar-right(style="margin-right:0px;")
+				li(ng-class="{ active: isActiveBaseUri('/settings') }", uib-dropdown, ng-if="perms.admin || perms.settings.view.access || perms.user_management.view.access || perms.color_scheme.view.access")
+					a(uib-dropdown-toggle) Settings
+						b.caret
+					ul.dropdown-menu
+						li(ng-class="{ active: isActiveUri('/settings') }", ng-if="perms.admin || perms.settings.view.access")
+							a(href="/settings") Settings Home
+						li(ng-class="{ active: isActiveUri('/settings/users') }", ng-if="perms.admin || perms.user_management.view.access")
+							a(href="/settings/users") User Management
+						li(ng-class="{ active: isActiveUri('/settings/colors') }", ng-if="perms.admin || perms.color_scheme.view.access")
+							a(href="/settings/colors") Color Scheme
+				li
+					a(href="/logout" target="_self") Logout
+div.nav-spacer

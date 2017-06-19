@@ -1,0 +1,78 @@
+.sortable-category {
+	cursor: move;
+}
+tr.ui-sortable-helper {
+    display: table;
+}
+.category-item {
+	margin: 0 1%;
+}
+.category-item-name {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 40%;
+}
+.category-item-label {
+	width: 27%;
+	
+}
+.category-item-icons {
+	width: 36px;
+}
+.category-item-text {
+	width: calc(100% - 36px);
+}
+
+.list-group-item {
+	cursor: pointer;
+}
+.category-item-expenses {
+	margin-top: 10px;
+	width: 100%;
+}
+.category-item-expense-column,
+.income-column {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.category-item-expense-date,
+.income-date {
+	max-width: 25%;
+	min-width: 25%;
+	width: 25%;
+}
+.category-item-expense-description,
+.income-description {
+	max-width: 29%;
+	min-width: 29%;
+	width: 29%;
+}
+.category-item-expense-category,
+.income-category {
+	max-width: 23%;
+	min-width: 23%;
+	width: 23%;
+}
+.category-item-expense-amount,
+.income-amount {
+	max-width: 23%;
+	min-width: 23%;
+	width: 23%;
+}
+.category-item-expense-icons,
+.income-icons {
+	max-width: 48px;
+	min-width: 48px;
+	width: 48px;
+}
+.add-new-income {
+	padding: 0 20px 20px 20px;
+}
+.add-new-income-link {
+	padding-bottom: 5px;
+}
+.sortable-expenses-placeholder {
+	height: 31px !important;
+}

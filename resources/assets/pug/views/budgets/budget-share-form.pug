@@ -1,0 +1,26 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li
+					a(href="/budgets") Budgets
+				li(ng-if="Budget.template")
+					a(href="/budgets/templates") Budget Templates
+				li.active Share Budget
+					span(ng-if="Budget.template") Template
+			.page-header
+				h1.center Share
+					span.italic &#34;{{ Budget.name }}&#34;
+			.col-md-1.col-lg-3
+			.col-sm-12.col-md-10.col-lg-6
+				form(method="post", name="budgetShareForm" ng-submit="budgetShareForm.$valid && submit()", novalidate)
+					.form-group.required(ng-class="{ 'has-error': (budgetShareForm.userId.$touched && budgetShareForm.userId.$invalid) || (budgetShareForm.$submitted && budgetShareForm.userId.$invalid) }")
+						label.control-label(for="userId") Who Do You Want To Share It With?
+						select.form-control(id="userId", name="userId", ng-model="SharedBudget.userId" ng-options="User.id as User.name for User in Users", required)
+							option(value="") -- Select --
+					.btn-toolbar
+						button.btn.btn-primary(type="submit") Share
+						a.btn.btn-default(ng-href="{{ cancel }}") Cancel
+			.col-md-1.col-lg-3

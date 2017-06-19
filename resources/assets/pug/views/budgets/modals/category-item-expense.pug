@@ -1,0 +1,26 @@
+form(name="categoryRowExpenseForm", ng-submit="categoryRowExpenseForm.$valid && submit()", novalidate)
+	.modal-header
+		button.close(type="button", ng-click="close()", aria-hidden="true") ×
+		h3 {{ title }}
+	.modal-body
+		.form-group.clearfix
+			.col-xs-12.col-sm-6.required(ng-class="{ 'has-error': (categoryRowExpenseForm.datetime.$touched && categoryRowExpenseForm.datetime.$invalid) || (categoryRowExpenseForm.$submitted && categoryRowExpenseForm.datetime.$invalid) }")
+				label.control-label(for="expenseDate") Date of Expense
+				#expenseDatePicker.input-group.date
+					input#expenseDate.form-control(placeholder="mm/dd/yyyy", type="text", name="datetime", maxlength="10", uib-datepicker-popup="MM/dd/yyyy", is-open="isOpenExpenseDate", ng-model="BudgetCategoryRowExpense.expense.datetime", required)
+					span.input-group-btn
+						button.btn.btn-default(type="button", ng-click="isOpenExpenseDate = true")
+							i.glyphicon.glyphicon-calendar
+			.col-xs-12.col-sm-6.required(ng-class="{ 'has-error': (categoryRowExpenseForm.amount.$touched && categoryRowExpenseForm.amount.$invalid) || (categoryRowExpenseForm.$submitted && categoryRowExpenseForm.amount.$invalid) }")
+				label.control-label(for="expenseAmount") Amount
+				.input-group
+					span.input-group-addon $
+					input#expenseAmount.form-control(placeholder="Ex: 123.45", type="number", name="amount", step="any", ng-model="BudgetCategoryRowExpense.expense.amount", required)
+		.form-group.required(ng-class="{ 'has-error': (categoryRowExpenseForm.description.$touched && categoryRowExpenseForm.description.$invalid) || (categoryRowExpenseForm.$submitted && categoryRowExpenseForm.description.$invalid) }")
+			label.control-label(for="expenseDescription") Description
+			input#expenseDescription.form-control(placeholder="Limit of 255 Characters", type="text", name="description", maxlength="255", ng-model="BudgetCategoryRowExpense.expense.description", required)
+		.form-group.required(ng-class="{ 'has-error': (categoryRowExpenseForm.expenseCategory.$touched && categoryRowExpenseForm.expenseCategory.$invalid) || (categoryRowExpenseForm.$submitted && categoryRowExpenseForm.expenseCategory.$invalid) }")
+			expense-category-chooser(ng-model="BudgetCategoryRowExpense.expense.expenseCategoryId", icc-name="expenseCategory", icc-required="true")
+	.modal-footer
+		button.btn.btn-primary(type="submit") Save
+		button.btn.btn-default(type="button", ng-click="cancel()", aria-hidden="true") Cancel

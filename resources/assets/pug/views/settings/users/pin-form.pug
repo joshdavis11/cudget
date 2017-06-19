@@ -1,0 +1,29 @@
+.container
+	.row
+		.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li
+					a(href="/settings") Settings
+				li
+					a(href="/settings/users") Users
+				li.active Change Pin
+			.page-header
+				h1.center Change Pin For&nbsp;
+					span.italic {{ User.name }}
+			.col-md-1.col-lg-3
+			.col-sm-12.col-md-10.col-lg-6
+				form(name="pinForm", ng-submit="pinForm.$valid && submit()", novalidate)
+					.form-group.required(ng-class="{ 'has-error': (pinForm.pin.$touched || pinForm.$submitted) && pinForm.pin.$invalid }")
+						label.control-label(for="pin") Pin
+						input#pin.form-control(placeholder="Your Pin", type="{{ pinType }}", name="pin", ng-model="User.pin", required)
+						a(ng-click="showHidePin()") {{ showHidePinText }}
+					.form-group.required(ng-class="{ 'has-error': (pinForm.repeatPin.$touched || pinForm.$submitted) && pinForm.repeatPin.$invalid }")
+						label.control-label(for="repeatPin") Repeat Pin
+						input#repeatPin.form-control(match="User.pin", placeholder="Repeat Pin", type="{{ repeatPinType }}", name="repeatPin", ng-model="User.repeatPin", required)
+						a(ng-click="showHideRepeatPin()") {{ showHideRepeatPinText }}
+					.form-group.btn-toolbar
+						button.btn.btn-primary(type="submit") Submit
+						a.btn.btn-default(href="/settings/users") Cancel
+			.col-md-1.col-lg-3

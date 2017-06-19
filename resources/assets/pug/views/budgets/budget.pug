@@ -1,0 +1,65 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li
+					a(href="/budgets") Budgets
+				li(ng-if="Budget.template")
+					a(href="/budgets/templates") Budget Templates
+				li.active View Budget&nbsp;
+					span(ng-if="Budget.template") Template
+			.page-header
+				h1.center
+					span(ng-if="Budget.template") Template:&nbsp;
+					span {{ Budget.name }}
+
+			.panel.panel-primary
+				.panel-heading.clearfix
+					h3.panel-title.pull-left Estimated Income:&nbsp;
+						span.js-estimated-income.label.label-info ${{ Budget.income|number:2 }}
+					h3.panel-title.pull-right Actual Income:&nbsp;
+						span.js-total-income.label(ng-class="Budget.incomeClass") ${{ Budget.actualIncome|number:2 }}
+				.panel-body.clearfix
+					.add-new-income.clearfix(ng-if="!Budget.template")
+						.add-new-income-link
+							a(ng-click="addIncome(Budget.id);") + Add Income
+						.js-income-div(ng-if="Budget.budgetIncome")
+							table.table.table-bordered.table-condensed.table-hover.table-striped(style="table-layout: fixed;")
+								thead
+									tr
+										th.income-column.income-date Date
+										th.income-column.income-description Description
+										th.income-column.income-category Category
+										th.income-column.income-amount Amount
+										th.income-column.income-icons
+								tbody
+									tr(ng-repeat="BudgetIncome in Budget.budgetIncome", ng-mouseenter="BudgetIncome.editOptions = true", ng-mouseleave="BudgetIncome.editOptions = false")
+										td.income-column(uib-popover="{{ BudgetIncome.income.datetime|standardDate }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") {{ BudgetIncome.income.datetime|standardDate }}
+										td.income-column(uib-popover="{{ BudgetIncome.income.description }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") {{ BudgetIncome.income.description }}
+										td.income-column(uib-popover="{{ BudgetIncome.income.incomeCategory.name }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") {{ BudgetIncome.income.incomeCategory.name }}
+										td.income-column(uib-popover="${{ BudgetIncome.income.amount|number:2 }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") ${{ BudgetIncome.income.amount|number:2 }}
+										td
+											div(ng-show="BudgetIncome.editOptions")
+												span.pointer.glyphicon.glyphicon-pencil(ng-click="editIncome(BudgetIncome)")
+												span.pointer.glyphicon.glyphicon-trash(ng-click="deleteIncome(BudgetIncome)")
+
+					//Budget Categories
+					div(ng-if="Budget.budgetCategories")
+						ul#budgetCategories.list-unstyled.clearfix(ui-sortable="categorySorting", ng-model="Budget.budgetCategories")
+							li.col-xs-12.col-sm-12.col-md-12.col-lg-6(ng-repeat="BudgetCategory in Budget.budgetCategories", budget-category)
+							li.col-xs-12.col-sm-12.col-md-12.col-lg-6
+								.well.text-center
+									a(ng-click="addCategory()") + Add New Category
+
+					//No Budget Categories
+					.center(ng-if="!Budget.budgetCategories") No categories have been added yet.&nbsp;
+						a(href="/budgets/categories/create?bid={{ Budget.id }}") + Add One
+				.panel-footer.clearfix
+					.pull-left.text-left.width-33 Total Estimated:&nbsp;
+						strong.text-info ${{ Budget.totalEstimated|number:2 }}
+					.pull-left.text-center.width-33 Total Spent:&nbsp;
+						strong.js-total-spent(ng-class="Budget.totalSpentClass") ${{ Budget.totalSpent|number:2 }}
+					.pull-left.text-right.width-33 Net:&nbsp;
+						strong.js-net(ng-class="Budget.netClass") ${{ Budget.net|number:2 }}

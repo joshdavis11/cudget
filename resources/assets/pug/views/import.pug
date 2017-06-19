@@ -1,0 +1,38 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li.active Import
+			.page-header
+				h1.center Import Income and Expenses
+			.col-md-1.col-lg-3
+			.col-sm-12.col-md-10.col-lg-6
+				form(name="importForm", ng-submit="importForm.$valid && submit()", novalidate)
+					.form-group.required(ng-class="{ 'has-error': (importForm.importType.$touched && importForm.importType.$invalid) || (importForm.$submitted && importForm.importType.$invalid) }")
+						label.control-label Import Type
+						select#autoImport.form-control(name="importType", ng-model="Import.importType", ng-options="ImportType.id as ImportType.name for ImportType in ImportTypes", required)
+							option(value="") -- Select --
+					.row(ng-show="Import.importType === 'other'")
+						.col-xs-12
+							h4 Column Number
+						.form-group.required.col-xs-12.col-sm-4.col-md-4.col-lg-4(ng-class="{ 'has-error': (importForm.description.$touched && importForm.description.$invalid) || (importForm.$submitted && importForm.description.$invalid) }")
+							label.control-label(for="description") Description
+							input#description.form-control(placeholder="Ex: 1", type="number", name="description", min="1", ng-model="Import.description", ng-required="Import.importType === 'other'")
+						.form-group.required.col-xs-12.col-sm-4.col-md-4.col-lg-4(ng-class="{ 'has-error': (importForm.date.$touched && importForm.date.$invalid) || (importForm.$submitted && importForm.date.$invalid) }")
+							label.control-label(for="date") Date
+							input#date.form-control(placeholder="Ex: 2", type="number", name="date", min="1", ng-model="Import.date", ng-required="Import.importType === 'other'")
+						.form-group.required.col-xs-12.col-sm-4.col-md-4.col-lg-4(ng-class="{ 'has-error': (importForm.amount.$touched && importForm.amount.$invalid) || (importForm.$submitted && importForm.amount.$invalid) }")
+							label.control-label(for="amount") Amount
+							input#amount.form-control(placeholder="Ex: 3", type="number", name="amount", min="1", ng-model="Import.amount", ng-required="Import.importType === 'other'")
+
+					hr
+
+					.form-group.required(ng-class="{ 'has-error': (importForm.file.$touched && importForm.file.$invalid) || (importForm.$submitted && importForm.file.$invalid) }")
+						label.control-label(for="file") CSV File
+						input#file.form-control(type="file", name="file", ng-model="Import.file", ngf-select="", ngf-drop="", accept="text/csv", required)
+					.form-group.btn-toolbar
+						button.btn.btn-primary(type="submit", ng-disabled="submitDisabled") Import
+						a.btn.btn-default(href="/") Cancel
+			.col-md-1.col-lg-3

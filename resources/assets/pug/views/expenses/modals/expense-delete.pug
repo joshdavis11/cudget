@@ -1,0 +1,9 @@
+form(name="expenseDeleteForm")
+	.modal-header
+		button.close(type="button", ng-click="close()", aria-hidden="true") ×
+		h3 Delete Expense
+	.modal-body
+		span Are you sure you want to delete "{{ description }}"?
+	.modal-footer
+		button.btn.btn-primary(type="button", ng-click="delete()") Delete
+		button.btn.btn-default(type="button", ng-click="cancel()", aria-hidden="true") Cancel

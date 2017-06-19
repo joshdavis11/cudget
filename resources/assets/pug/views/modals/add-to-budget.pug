@@ -1,0 +1,20 @@
+form(name="addToBudgetForm", ng-submit="addToBudgetForm.$valid && submit()", novalidate)
+	.modal-header
+		button.close(type="button", ng-click="close()", aria-hidden="true") ×
+		h3 {{ title }}
+	.modal-body
+		.form-group.required(ng-class="{ 'has-error': (addToBudgetForm.budget.$touched && addToBudgetForm.budget.$invalid) || (addToBudgetForm.$submitted && addToBudgetForm.budget.$invalid) }")
+			label.control-label(for="budget") Budget
+			select#budget.form-control(name="budget", ng-options="Budget.id as Budget.name for Budget in Budgets", ng-model="form.budgetId", ng-change="budgetChosen()", required)
+				option(value="", selected="selected") -- Select --
+		.form-group.required(ng-if="expense", ng-show="showBudgetCategories", ng-class="{ 'has-error': (addToBudgetForm.budgetCategory.$touched && addToBudgetForm.budgetCategory.$invalid) || (addToBudgetForm.$submitted && addToBudgetForm.budgetCategory.$invalid) }")
+			label.control-label(for="budgetCategory") Budget Category
+			select#budgetCategory.form-control(name="budgetCategory", ng-options="BudgetCategory.id as BudgetCategory.name for BudgetCategory in BudgetCategories", ng-model="form.budgetCategoryId", ng-change="budgetCategoryChosen()", required)
+				option(value="", selected="selected") -- Select --
+		.form-group.required(ng-if="expense", ng-show="showBudgetCategoryRows", ng-class="{ 'has-error': (addToBudgetForm.budgetCategoryRow.$touched && addToBudgetForm.budgetCategoryRow.$invalid) || (addToBudgetForm.$submitted && addToBudgetForm.budgetCategoryRow.$invalid) }")
+			label.control-label(for="budgetCategoryRow") Budget Category Row
+			select#budgetCategoryRow.form-control(name="budgetCategoryRow", ng-options="BudgetCategoryRow.id as BudgetCategoryRow.name for BudgetCategoryRow in BudgetCategoryRows", ng-model="form.budgetCategoryRowId", ng-change="budgetCategoryRowChosen()", required)
+				option(value="", selected="selected") -- Select --
+	.modal-footer
+		button.btn.btn-primary(type="submit") Add To Budget
+		button.btn.btn-default(type="button", ng-click="cancel()", aria-hidden="true") Cancel

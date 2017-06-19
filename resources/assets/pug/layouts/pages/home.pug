@@ -1,0 +1,14 @@
+doctype html
+html(ng-app="Cudget", lang="en", ng-cloak, ng-controller="MasterController")
+	block head
+		head(ng-controller="HeadController")
+			include includes/default/head.pug
+	body
+		block header
+			include includes/default/header.pug
+		block content
+			div.container#loader(ng-show="loading")
+			div(ng-show="!loading", ng-view)
+		block footer
+			footer(ng-controller="FooterController")
+				include includes/default/footer.pug

@@ -1,0 +1,54 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li
+					a(href="/budgets") Budgets
+				li.active {{ breadcrumb }}
+			.page-header
+				h1.center {{ title }}
+			.col-md-1.col-lg-3
+			.col-sm-12.col-md-10.col-lg-6
+				form(name="budgetForm", ng-submit="budgetForm.$valid && submit()", novalidate)
+					.form-group.col-xs-12.required(ng-class="{ 'has-error': (budgetForm.name.$touched && budgetForm.name.$invalid) || (budgetForm.$submitted && budgetForm.name.$invalid) }")
+						label.control-label(for="name") Name For Your Budget
+						input#name.form-control(placeholder="Name", type="text", name="name", ng-model="Budget.name", required)
+					.form-group.col-xs-12.col-sm-6
+						label.control-label(for="start") Start Date
+						.input-group.date
+							input#start.form-control(placeholder="mm/dd/yyyy", type="text", maxlength="10", uib-datepicker-popup="MM/dd/yyyy", is-open="isOpenStart", ng-model="Budget.start")
+							span.input-group-btn
+								button.btn.btn-default(type="button", ng-click="isOpenStart = true")
+									i.glyphicon.glyphicon-calendar
+					.form-group.col-xs-12.col-sm-6
+						label.control-label(for="end") End Date
+						.input-group.date
+							input#end.form-control(placeholder="mm/dd/yyyy", type="text", maxlength="10", uib-datepicker-popup="MM/dd/yyyy", is-open="isOpenEnd", ng-model="Budget.end")
+							span.input-group-btn
+								button.btn.btn-default(type="button", ng-click="isOpenEnd = true")
+									i.glyphicon.glyphicon-calendar
+					.form-group.col-xs-12.required(ng-class="{ 'has-error': (budgetForm.newOrExisting.$touched && budgetForm.newOrExisting.$invalid) || (budgetForm.$submitted && budgetForm.newOrExisting.$invalid) }")
+						label.control-label Create A New Budget Or From An Existing Template?
+						.radio
+							label
+								input(type="radio", name="newOrExisting", value="new", ng-model="Budget.newOrExisting" required)
+								span New
+						.radio
+							label
+								input(type="radio", name="newOrExisting", value="existing", ng-model="Budget.newOrExisting", required)
+								span Existing
+					.form-group.col-xs-12.required(ng-show="Budget.newOrExisting == 'new'", ng-class="{ 'has-error': (budgetForm.income.$touched && budgetForm.income.$invalid) || (budgetForm.$submitted && budgetForm.income.$invalid) }")
+						label.control-label(for="income") Income
+						.input-group
+							span.input-group-addon $
+							input#income.form-control(placeholder="Ex: 123.45", type="number", name="income", ng-model="Budget.income", min="0", step="any", ng-required="Budget.newOrExisting == 'new'")
+					.form-group.col-xs-12.required(ng-show="Budget.newOrExisting == 'existing'", ng-class="{'has-error': (budgetForm.budgetId.$touched && budgetForm.budgetId.$invalid) || (budgetForm.$submitted && budgetForm.budgetId.$invalid) }")
+						label.control-label(for="name") Which Budget Template?
+						select.form-control(name="budgetId", ng-model="Budget.budgetId", ng-options="Budget.id as Budget.name for Budget in BudgetTemplates", ng-required="Budget.newOrExisting == 'existing'")
+							option(value="") -- Select --
+					.form-group.col-xs-12.btn-toolbar
+						button.btn.btn-primary(type="submit") Submit
+						a.btn.btn-default(ng-href="{{ cancel }}") Cancel
+			.col-md-1.col-lg-3

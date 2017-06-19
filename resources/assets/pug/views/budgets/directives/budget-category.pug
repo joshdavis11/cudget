@@ -1,0 +1,17 @@
+.panel(ng-class="BudgetCategory.panelClass")
+	.panel-heading.sortable-category.clearfix(ng-mouseenter="BudgetCategory.editOptions = true", ng-mouseleave="BudgetCategory.editOptions = false")
+		h3.panel-title.pull-left {{ BudgetCategory.name }}
+		.pull-right(ng-if="BudgetCategory.name != 'Uncategorized'", ng-show="BudgetCategory.editOptions")
+			span.pointer.glyphicon.glyphicon-pencil(style="margin-right: 5px;", ng-click="editCategory(BudgetCategory);")
+			span.pointer.glyphicon.glyphicon-trash(ng-click="deleteCategory(BudgetCategory)")
+	.panel-body
+		ul.list-group.list-unstyled.js-sortable-rows(style="min-height: 42px;", ui-sortable="categoryRowSorting", ng-model="BudgetCategory.budgetCategoryRows")
+			li.list-group-item.clearfix(ng-repeat="BudgetCategoryRow in BudgetCategory.budgetCategoryRows", budget-category-item)
+		a(ng-click="addCategoryItem()", ng-if="BudgetCategory.name != 'Uncategorized'") + Add An Item
+	.panel-footer.clearfix
+		.pull-left.text-left.width-33(ng-if="BudgetCategory.name != 'Uncategorized'") Estimated:&nbsp;
+			strong.text-primary ${{ BudgetCategory.estimated|number:2 }}
+		.pull-left.text-center(ng-class="BudgetCategory.name != 'Uncategorized' ? 'width-33' : ''") Spent:&nbsp;
+			strong(ng-class="BudgetCategory.spent > BudgetCategory.estimated ? 'text-danger' : 'text-success'") ${{ BudgetCategory.spent|number:2 }}
+		.pull-left.text-right.width-33(ng-if="BudgetCategory.name != 'Uncategorized'") Remaining:&nbsp;
+			strong(ng-class="BudgetCategory.remaining >= 0.00 ? 'text-success' : 'text-danger'") ${{ BudgetCategory.remaining|number:2 }}

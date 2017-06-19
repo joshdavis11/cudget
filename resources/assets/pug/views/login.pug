@@ -1,0 +1,20 @@
+div.container
+	div.row.center
+		div.col-xs-0.col-sm-2.col-md-3.col-lg-3
+		div#loginContainer.col-xs-12.col-sm-8.col-md-6.col-lg-6
+			div.panel.panel-primary
+				div.panel-heading
+					h2.panel-title Please Log In
+				div.panel-body
+					form(action="/login", method="post")
+						input(type="hidden" name="_token" value="{{ csrf }}")
+						div.form-group
+							input#username.form-control(type="text", placeholder="Username or Email", name="username", required, autofocus)
+						div.form-group
+							input#password.form-control(type="password", placeholder="Password", name="password", required)
+						div.checkbox
+							label
+								input#rememberMe(type="checkbox", name="remember", value="1")
+								| Remember Me
+						input.btn.btn-primary(type="submit", value="Login")
+		div.col-xs-0.col-sm-2.col-md-3.col-lg-3

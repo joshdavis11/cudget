@@ -1,0 +1,12 @@
+form(name="categoryForm", ng-submit="categoryForm.$valid && submit()", novalidate)
+	.modal-header
+		button.close(type="button", ng-click="close()", aria-hidden="true") ×
+		h3 {{ title }}
+			span(ng-if="edit") &nbsp;"{{ BudgetCategory.name }}"
+	.modal-body
+		.form-group.required(ng-class="{ 'has-error': (categoryForm.name.$touched && categoryForm.name.$invalid) || (categoryForm.$submitted && categoryForm.name.$invalid) }")
+			label.control-label(for="categoryName") Name For Your Budget Category
+			input.form-control#categoryName(placeholder="Ex: Bills", type="text", name="name", ng-model="BudgetCategory.name", required)
+	.modal-footer
+		button.btn.btn-primary(type="submit") Save
+		button.btn.btn-default(type="button", ng-click="cancel()", aria-hidden="true") Cancel

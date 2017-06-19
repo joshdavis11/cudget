@@ -1,0 +1,43 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li
+					a(href="/budgets/") Budgets
+				li.active Budget Templates
+			.page-header
+				h1.center Budget Templates
+
+			div(ng-if="BudgetTemplates")
+				a(href="/budgets/templates/create") + Create A Template
+				table.table.table-bordered.table-striped.table-hover.table-cog
+					thead
+						tr
+							th Name
+							th Created By
+							th Created
+							th Last Accessed
+							th(data-sorter="false", style="width:16px;")
+					tbody
+						tr.budget.pointer(id="{{ BudgetTemplate.id }}", ng-click="viewBudgetTemplate(BudgetTemplate.id)", ng-repeat="BudgetTemplate in BudgetTemplates.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)")
+							td {{ BudgetTemplate.name }}
+							td {{ BudgetTemplate.createdByUser }}
+							td {{ BudgetTemplate.created|mediumDatetime }}
+							td {{ BudgetTemplate.lastAccess|mediumDatetime }}
+							td(ng-click="stopViewBudgetTemplate()", uib-dropdown)
+								span.glyphicon.glyphicon-cog(uib-dropdown-toggle)
+								ul.pull-right(uib-dropdown-menu)
+									li
+										a(ng-href="/budgets/templates/{{ BudgetTemplate.id }}/edit") Edit
+									li
+										a(ng-href="/budgets/templates/{{ BudgetTemplate.id }}/share") Share
+									li
+										a(ng-href="/budgets/create/{{ BudgetTemplate.id }}") Create New Budget
+									li
+										a.cursor-pointer(ng-click="deleteBudgetTemplate(BudgetTemplate.id)") Delete
+				uib-pagination(total-items="BudgetTemplates.length", ng-model="currentPage", items-per-page="itemsPerPage", ng-change="uibPageChange(currentPage)")
+
+			div.center(ng-if="!BudgetTemplates") No budget templates added yet.&nbsp;
+				a(href="/budgets/templates/create") + Add One

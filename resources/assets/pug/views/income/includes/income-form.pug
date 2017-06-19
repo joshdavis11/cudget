@@ -1,0 +1,21 @@
+.form-group.clearfix
+	.col-xs-12.col-sm-6.required(ng-class="{ 'has-error': (incomeForm.datetime.$touched && incomeForm.datetime.$invalid) || (incomeForm.$submitted && incomeForm.datetime.$invalid) }")
+		label.control-label(for="incomeDate") Date of Income
+		#incomeDatePicker.input-group.date
+			input#incomeDate.form-control(placeholder="mm/dd/yyyy", type="text", name="datetime", maxlength="10", uib-datepicker-popup="MM/dd/yyyy", is-open="isOpenIncomeDate", ng-model="Income.datetime", required)
+			span.input-group-btn
+				button.btn.btn-default(type="button", ng-click="isOpenIncomeDate = true")
+					i.glyphicon.glyphicon-calendar
+	.col-xs-12.col-sm-6.required(ng-class="{ 'has-error': (incomeForm.amount.$touched && incomeForm.amount.$invalid) || (incomeForm.$submitted && incomeForm.amount.$invalid) }")
+		label.control-label(for="incomeAmount") Amount
+		.input-group
+			span.input-group-addon $
+			input#incomeAmount.form-control(placeholder="Ex: 123.45", type="number", name="amount", step="any", ng-model="Income.amount", required)
+.form-group.required(ng-class="{ 'has-error': (incomeForm.description.$touched && incomeForm.description.$invalid) || (incomeForm.$submitted && incomeForm.description.$invalid) }")
+	label.control-label(for="incomeDescription") Description
+	input#incomeDescription.form-control(placeholder="Limit of 255 Characters", type="text", name="description", maxlength="255", ng-model="Income.description", required)
+.form-group.required(ng-class="{ 'has-error': (incomeForm.incomeCategory.$touched && incomeForm.incomeCategory.$invalid) || (incomeForm.$submitted && incomeForm.incomeCategory.$invalid) }")
+	income-category-chooser(ng-model="Income.incomeCategoryId", icc-name="incomeCategory", icc-required="true")
+.form-group.btn-toolbar(ng-if="showFooterButtons")
+	button.btn.btn-primary(type="submit") Submit
+	a.btn.btn-default(href="/income") Cancel

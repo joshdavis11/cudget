@@ -1,0 +1,14 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li
+					a(href="/settings/") Settings
+				li.active Color Scheme
+			.page-header
+				h1.center Color Scheme
+			.col-lg-4.col-sm-6(ng-repeat="color in colors")
+				a.bootswatch.thumbnail.thumbnail-hover(ng-class="{'active': color.active}", ng-model="color", ng-click="setActiveColor(color)")
+					img.img-responsive(alt="{{ color.name }}", ng-src="/images/{{ color.name }}/thumbnail.png")

@@ -1,0 +1,44 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li
+					a(href="/settings/") Settings
+				li.active Users
+			.page-header
+				h1.center User Management
+			div
+				a(href="/settings/users/create") + Create A New User
+			table.table.table-bordered.table-striped.table-hover
+				thead
+					tr
+						th Name
+						th Phone Number
+						th Username
+						th Email
+						th Admin
+						th(style="width: 16px;")
+				tbody
+					tr(ng-repeat="User in Users")
+						td {{ User.firstName }} {{ User.lastName }}
+						td {{ User.phone }}
+						td {{ User.username }}
+						td {{ User.email }}
+						td
+							span(ng-show="User.admin") Yes
+							span(ng-show="!User.admin") No
+						td.cog(uib-dropdown)
+							span.glyphicon.glyphicon-cog(uib-dropdown-toggle)
+							ul.pull-right(uib-dropdown-menu)
+								li
+									a(ng-href="/settings/users/{{ User.id }}/edit") Edit
+								li
+									a(ng-click="deleteUser(User)") Delete
+								li
+									a(ng-href="/settings/users/{{ User.id }}/password") Change Password
+								li
+									a(ng-href="/settings/users/{{ User.id }}/pin") Change Pin
+								li
+									a(ng-href="/settings/users/{{ User.id }}/permissions") Update Permissions

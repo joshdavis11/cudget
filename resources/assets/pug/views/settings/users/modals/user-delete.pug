@@ -1,0 +1,8 @@
+form(name="userDeleteForm")
+	.modal-header
+		button.close(type="button", ng-click="close()", aria-hidden="true") ×
+		h3 Delete User
+	.modal-body Are you sure you want to delete the user "{{ name }}"?
+	.modal-footer
+		button.btn.btn-primary(type="button", ng-click="delete()") Delete
+		button.btn.btn-default(type="button", ng-click="cancel()", aria-hidden="true") Cancel

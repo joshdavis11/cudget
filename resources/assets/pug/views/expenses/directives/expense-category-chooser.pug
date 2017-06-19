@@ -1,0 +1,8 @@
+label.control-label(for="expenseCategoryId") Expense Category
+select#expenseCategoryId.form-control(ng-model="ngModel", ng-attr-name="{{ name }}" ng-options="ExpenseCategory.id as ExpenseCategory.name for ExpenseCategory in ExpenseCategories", ng-show="ngModel !== 'new'", ng-required="{{ required }}")
+	option(value="") -- Select --
+.input-group(ng-show="ngModel === 'new'", ng-class="{ 'has-error': hasError }")
+	input.form-control(type="text", placeholder="New Expense Category", ng-model="newCategory")
+	span.input-group-btn
+		button.btn.btn-primary(type="button", ng-click="save()") Save
+		button.btn.btn-default(type="button", ng-click="ngModel = ''") Cancel

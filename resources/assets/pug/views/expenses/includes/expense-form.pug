@@ -1,0 +1,21 @@
+.form-group.clearfix
+	.col-xs-12.col-sm-6.required(ng-class="{ 'has-error': (expenseForm.datetime.$touched && expenseForm.datetime.$invalid) || (expenseForm.$submitted && expenseForm.datetime.$invalid) }")
+		label.control-label(for="expenseDate") Date of Expense
+		#expenseDatePicker.input-group.date
+			input#expenseDate.form-control(placeholder="mm/dd/yyyy", type="text", name="datetime", maxlength="10", uib-datepicker-popup="MM/dd/yyyy", is-open="isOpenExpenseDate", ng-model="Expense.datetime", required)
+			span.input-group-btn
+				button.btn.btn-default(type="button", ng-click="isOpenExpenseDate = true")
+					i.glyphicon.glyphicon-calendar
+	.col-xs-12.col-sm-6.required(ng-class="{ 'has-error': (expenseForm.amount.$touched && expenseForm.amount.$invalid) || (expenseForm.$submitted && expenseForm.amount.$invalid) }")
+		label.control-label(for="expenseAmount") Amount
+		.input-group
+			span.input-group-addon $
+			input#expenseAmount.form-control(placeholder="Ex: 123.45", type="number", name="amount", step="any", ng-model="Expense.amount", required)
+.form-group.required(ng-class="{ 'has-error': (expenseForm.description.$touched && expenseForm.description.$invalid) || (expenseForm.$submitted && expenseForm.description.$invalid) }")
+	label.control-label(for="expenseDescription") Description
+	input#expenseDescription.form-control(placeholder="Limit of 255 Characters", type="text", name="description", maxlength="255", ng-model="Expense.description", required)
+.form-group.required(ng-class="{ 'has-error': (expenseForm.expenseCategory.$touched && expenseForm.expenseCategory.$invalid) || (expenseForm.$submitted && expenseForm.expenseCategory.$invalid) }")
+	expense-category-chooser(ng-model="Expense.expenseCategoryId", icc-name="expenseCategory", icc-required="true")
+.form-group.btn-toolbar(ng-if="showFooterButtons")
+	button.btn.btn-primary(type="submit") Submit
+	a.btn.btn-default(href="/expenses") Cancel

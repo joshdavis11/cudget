@@ -1,0 +1,54 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li.active Expenses
+			.page-header
+				h1.center Expenses
+			form.form-horizontal(method="get", style="margin:20px 0; text-align:center;")
+				label(for="budgetFilter") Show:
+				select#budgetFilter(name="filter", ng-change="filter()", ng-model="filterVal")
+					option(value="") All Expenses
+					option(value="without") Expenses Without Budgets
+					option(value="with") Expenses With Budgets
+
+			div(ng-if="Expenses && Expenses.length > 0")
+				div
+					.pull-left.width-33.text-left
+						a(href="/expenses/create") + Create An Expense
+					.pull-left.width-33.text-center Expenses:&nbsp;
+						strong {{ Expenses.length }}
+					.pull-left.width-33.text-right
+						a(href="/import") + Import Income/Expenses
+
+				table.table.table-bordered.table-striped.table-hover.table-cog
+					thead
+						tr
+							th Date
+							th Description
+							th Category
+							th Amount
+							th.cog
+					tbody
+						tr(ng-repeat="Expense in Expenses.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)")
+							td {{ Expense.datetime|standardDate }}
+							td {{ Expense.description }}
+							td {{ Expense.expenseCategory.name }}
+							td ${{ Expense.amount|number:2 }}
+							td(uib-dropdown)
+								span.glyphicon.glyphicon-cog(uib-dropdown-toggle)
+								ul.pull-right(uib-dropdown-menu)
+									li
+										a(ng-click="editExpense(Expense)") Edit
+									li
+										a.cursor-pointer(ng-click="deleteExpense(Expense)") Delete
+									li(ng-show="!Expense.budgetCategoryRowExpense.id")
+										a(ng-click="addToBudget(Expense)") Add To Budget
+				uib-pagination(total-items="Expenses.length", ng-model="currentPage", items-per-page="itemsPerPage", ng-change="uibPageChange(currentPage)")
+
+			div.center(ng-if="!Expenses") No expenses created yet.&nbsp;
+				a(href="/expenses/create") + Create One
+				span &nbsp;or&nbsp;
+				a(href="/import") + Import Some

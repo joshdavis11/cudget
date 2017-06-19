@@ -1,0 +1,256 @@
+/* Overrides */
+a,
+.pointer {
+	cursor: pointer;
+}
+
+.form-group [class*="col-"]:first-of-type {
+	padding-left: 0;
+}
+
+.form-group [class*="col-"]:last-of-type {
+	padding-right: 0;
+}
+
+/************************
+ * Nav and footer spacers
+ ************************/
+.nav-spacer {
+	height: 60px;
+}
+
+.footer-spacer {
+	margin-top: 60px;
+}
+
+/* make sidebar nav vertical */
+@media (min-width: 768px) {
+	.sidebar-nav .navbar {
+		.navbar-collapse {
+			padding: 0;
+			max-height: none;
+		}
+
+		ul {
+			float: none;
+			display: block;
+		}
+
+		li {
+			float: none;
+			display: block;
+
+			a {
+				padding-top: 12px;
+				padding-bottom: 12px;
+			}
+		}
+	}
+}
+
+/****************
+ * Panel Titles
+ ****************/
+h1.panel-title,
+.h1 .panel-title {
+	font-size: 36px;
+}
+
+h2.panel-title,
+.h2 .panel-title {
+	font-size: 30px;
+}
+
+h3.panel-title,
+.h3 .panel-title {
+	font-size: 24px;
+}
+
+h4.panel-title,
+.h4 .panel-title {
+	font-size: 18px;
+}
+
+h5.panel-title,
+.h5 .panel-title {
+	font-size: 14px;
+}
+
+h6.panel-title,
+.h6 .panel-title {
+	font-size: 12px;
+}
+
+/****************
+ * Sticky footer
+ ****************/
+html {
+	position: relative;
+	min-height: 100%;
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 50px;
+}
+
+#session-message {
+	position: fixed;
+	top: 0px;
+	margin: 0 auto;
+	left: 0;
+	right: 0;
+	text-align: center;
+	z-index: 100000;
+	opacity: 0.95;
+	display: none;
+}
+
+.center {
+	text-align: center;
+}
+
+.clear {
+	clear: both;
+}
+
+.dropdown-toggle {
+	cursor: pointer;
+}
+
+.italic {
+	font-style: italic;
+}
+
+.thumbnail-hover {
+	cursor: pointer;
+}
+
+.required label.control-label:before {
+	content: "* ";
+	color: #ff0000;
+}
+
+/* Tablesorter */
+.tablesorter-default .header,
+.tablesorter-default .tablesorter-header {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAJAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAkAAAIXjI+AywnaYnhUMoqt3gZXPmVg94yJVQAAOw==);
+	background-position: center right;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	/*white-space: normal;
+	padding: 4px 20px 4px 4px;*/
+}
+
+.tablesorter-default thead .headerSortUp,
+.tablesorter-default thead .tablesorter-headerSortUp,
+.tablesorter-default thead .tablesorter-headerAsc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjI8Bya2wnINUMopZAQA7);
+	/*border-bottom: #000 2px solid;*/
+}
+
+.tablesorter-default thead .headerSortDown,
+.tablesorter-default thead .tablesorter-headerSortDown,
+.tablesorter-default thead .tablesorter-headerDesc {
+	background-image: url(data:image/gif;base64,R0lGODlhFQAEAIAAACMtMP///yH5BAEAAAEALAAAAAAVAAQAAAINjB+gC+jP2ptn0WskLQA7);
+	/*border-bottom: #000 2px solid;*/
+}
+
+.tablesorter-default thead .sorter-false {
+	background-image: none;
+	cursor: default;
+	/*padding: 4px;*/
+}
+
+/*************
+ * Table Cog *
+ *************/
+.table.table-cog {
+	> thead > tr > th:last-child {
+		width: 16px;
+	}
+
+	> tbody > tr > td:last-child {
+		padding: 0;
+		vertical-align: middle;
+
+		span.glyphicon.glyphicon-cog {
+			padding: 8px;
+		}
+	}
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+.panorama {
+	position: absolute;
+	top: 0px;
+	display: inline-block;
+	height: 300px;
+	width: 100%;
+	background-image: url(/template/default/images/panorama.jpg);
+	background-size: 100%;
+	background-repeat: no-repeat;
+}
+
+/************************
+ * Carousel Image Resize
+ ************************/
+.carousel-img-size {
+	width: auto;
+	height: 325px;
+	max-height: 325px;
+}
+
+.carousel-img-center {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	margin: auto;
+}
+
+.carousel-static {
+	position: relative;
+	height: 325px;
+	min-height: 325px;
+}
+
+/* Login Container Margin */
+@media(min-width: 768px) {
+	#loginContainer {
+		margin-top: 100px;
+	}
+}
+
+.width-33 {
+	width: 33.333%;
+}
+
+.border-dashed {
+	border-style: dashed;
+}
+
+/*************
+ * Animation *
+ *************/
+.fade-animation .ng-enter.ng-enter-active,
+.fade-animation .ng-leave {
+    opacity: 1;
+    -webkit-transition: opacity 300ms linear;
+    -moz-transition: opacity 300ms linear;
+    transition: opacity 300ms linear;
+}
+
+.fade-animation .ng-leave.ng-leave-active,
+.fade-animation .ng-enter {
+    opacity: 0;
+    -webkit-transition: opacity 300ms linear;
+    -moz-transition: opacity 300ms linear;
+    transition: opacity 300ms linear;
+}

@@ -1,0 +1,54 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			ul.breadcrumb
+				li
+					a(href="/") Home
+				li.active Income
+			.page-header
+				h1.center Income
+			form.form-horizontal(method="get", style="margin:20px 0; text-align:center;")
+				label(for="budgetFilter") Show:
+				select#budgetFilter(name="filter", ng-change="filter()", ng-model="filterVal")
+					option(value="") All Income
+					option(value="without") Income Without Budgets
+					option(value="with") Income With Budgets
+
+			div(ng-if="Incomes")
+				div
+					.pull-left.width-33.text-left
+						a(href="/income/create") + Create Income
+					.pull-left.width-33.text-center Income:&nbsp;
+						strong {{ Incomes.length }}
+					.pull-left.width-33.text-right
+						a(href="/import") + Import Income/Expenses
+
+				table.table.table-bordered.table-striped.table-hover.table-cog
+					thead
+						tr
+							th Date
+							th Description
+							th Category
+							th Amount
+							th(data-sorter="false", style="width:16px;")
+					tbody
+						tr(ng-repeat="Income in Incomes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)")
+							td {{ Income.datetime|standardDate }}
+							td {{ Income.description }}
+							td {{ Income.incomeCategory.name }}
+							td ${{ Income.amount|number:2 }}
+							td(uib-dropdown)
+								span.glyphicon.glyphicon-cog(uib-dropdown-toggle)
+								ul.pull-right(uib-dropdown-menu)
+									li
+										a(ng-click="editIncome(Income)") Edit
+									li
+										a.cursor-pointer(ng-click="deleteIncome(Income)") Delete
+									li(ng-show="!Income.budgetIncome.id")
+										a(ng-click="addToBudget(Income)") Add To Budget
+				uib-pagination(total-items="Incomes.length", ng-model="currentPage", items-per-page="itemsPerPage", ng-change="uibPageChange(currentPage)")
+
+			div.center(ng-if="!Incomes") No income created yet.&nbsp;
+				a(href="/income/create") + Create One
+				span &nbsp;or&nbsp;
+				a(href="/import") + Import Some

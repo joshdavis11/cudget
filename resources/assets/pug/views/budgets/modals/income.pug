@@ -1,0 +1,27 @@
+form#budgetIncomeForm(name="incomeForm", ng-submit="incomeForm.$valid && submit()", novalidate)
+	.modal-header
+		button.close(type="button", ng-click="close()", aria-hidden="true") ×
+		h3 {{ title }}
+			span(ng-if="edit") &nbsp;"{{ BudgetIncome.income.description }}"
+	.modal-body
+		.form-group.clearfix
+			.col-xs-12.col-sm-6.required(ng-class="{ 'has-error': (incomeForm.date.$touched && incomeForm.date.$invalid) || (incomeForm.$submitted && incomeForm.date.$invalid) }")
+				label.control-label(for="incomeDate") Date of Income
+				.input-group.date
+					input#incomeDate.form-control(placeholder="mm/dd/yyyy", name="date", type="text", maxlength="10", uib-datepicker-popup="MM/dd/yyyy", is-open="isOpenIncomeDate", ng-model="BudgetIncome.income.datetime", required)
+					span.input-group-btn
+						button.btn.btn-default(type="button", ng-click="isOpenIncomeDate = true", ng-class="{ 'btn-danger': (incomeForm.date.$touched && incomeForm.date.$invalid) || (incomeForm.$submitted && incomeForm.date.$invalid) }")
+							i.glyphicon.glyphicon-calendar
+			.col-xs-12.col-sm-6.required(ng-class="{ 'has-error': (incomeForm.amount.$touched && incomeForm.amount.$invalid) || (incomeForm.$submitted && incomeForm.amount.$invalid) }")
+				label.control-label(for="incomeAmount") Amount
+				.input-group
+					span.input-group-addon $
+					input#incomeAmount.form-control(placeholder="Ex: 123.45", type="number", name="amount", step="any", ng-model="BudgetIncome.income.amount", required)
+		.form-group.required(ng-class="{ 'has-error': (incomeForm.description.$touched && incomeForm.description.$invalid) || (incomeForm.$submitted && incomeForm.description.$invalid) }")
+			label.control-label(for="incomeDescription") Description
+			input#incomeDescription.form-control(placeholder="Limit of 255 Characters", type="text", name="description", maxlength="255", ng-model="BudgetIncome.income.description", required)
+		.form-group.required(ng-class="{ 'has-error': (incomeForm.incomeCategory.$touched && incomeForm.incomeCategory.$invalid) || (incomeForm.$submitted && incomeForm.incomeCategory.$invalid) }")
+			income-category-chooser(ng-model="BudgetIncome.income.incomeCategoryId", icc-name="incomeCategory", icc-required="true")
+	.modal-footer
+		button.btn.btn-primary(type="submit") Save
+		button.btn.btn-default(type="button", ng-click="cancel()", aria-hidden="true") Cancel
