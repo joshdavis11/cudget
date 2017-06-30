@@ -1,0 +1,13 @@
+doctype html
+html(ng-app="Cudget" lang="en", ng-cloak)
+	block head
+		head(ng-controller="HeadController")
+			include includes/prelogin/head.pug
+	body
+		block header
+			include includes/prelogin/header.pug
+		block content
+			div(ng-view)
+		block footer
+			footer(ng-controller="FooterController")
+				include includes/prelogin/footer.pug

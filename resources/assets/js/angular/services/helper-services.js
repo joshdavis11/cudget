@@ -1,12 +1,15 @@
 angular.module('HelperServices', [])
 .service('PermissionService', ['$http', '$location',
 	function($http, $location) {
-		var that = this;
-		var authUserPromise = $http.get('/api/v1/auth/user').then(function(response) {
+		let that = this;
+		let authUserPromise = $http.get('/api/v1/auth/user').then(function(response) {
 			return response.data;
 		});
-		var permsPromise = $http.get('/api/v1/perms').then(function(response) {
+		let permsPromise = $http.get('/api/v1/perms').then(function(response) {
 			return that.formatPermissions(response.data);
+		});
+		let authenticatedPromise = $http.get('/api/v1/authenticated').then(function(response) {
+			return response.data;
 		});
 
 		this.getAuthUser = function() {
@@ -17,8 +20,34 @@ angular.module('HelperServices', [])
 			return permsPromise;
 		};
 
+		this.isAuthenticated = function() {
+			return authenticatedPromise.then(function(authenticated) {
+				return authenticated;
+			});
+		};
+
+		this.redirectIfNotAuthenticated = function() {
+			return this.isAuthenticated().then(function(authenticated) {
+				if(!authenticated) {
+					$location.path('/login');
+				}
+
+				return authenticated;
+			});
+		};
+
+		this.redirectIfAuthenticated = function() {
+			return this.isAuthenticated().then(function(authenticated) {
+				if(authenticated) {
+					$location.path('/home');
+				}
+
+				return authenticated;
+			});
+		};
+
 		this.formatPermissions = function(Perms) {
-			var Permissions = {};
+			let Permissions = {};
 			angular.forEach(Perms, function(Permission) {
 				if (!Permissions[Permission.section]) {
 					Permissions[Permission.section] = {};
@@ -139,10 +168,10 @@ angular.module('HelperServices', [])
 ])
 .service('LoadingService', [
 	function() {
-		var numberOfRequests = 0;
-		var finishedRequests = 0;
-		var previousNumberOfRequests = 0;
-		var previousFinishedRequests = 0;
+		let numberOfRequests = 0;
+		let finishedRequests = 0;
+		let previousNumberOfRequests = 0;
+		let previousFinishedRequests = 0;
 
 		function start(numRequests) {
 			if (numRequests > 0) {

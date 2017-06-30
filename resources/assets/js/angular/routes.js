@@ -4,6 +4,10 @@ angular.module('CudgetRoutes', [])
 		$locationProvider.html5Mode(true);
 		$routeProvider
 		.when('/', {
+			template: require('../../pug/views/prelogin.pug'),
+			controller: 'PreLoginController'
+		})
+		.when('/home', {
 			template: require('../../pug/views/home.pug'),
 			controller: 'HomeController'
 		})
@@ -13,7 +17,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('budget_templates', 'add')
+						return PermissionService.checkPermission('budget_templates', 'add');
 					}
 				],
 				Budgets: ['BudgetService',
