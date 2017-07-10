@@ -89,11 +89,75 @@ angular.module('BaseControllers', [])
 		$scope.csrf = window.csrf;
 	}
 ])
-.controller('404Controller', ['TitleService', 'PermissionService', '$scope',
-	function(TitleService, PermissionService, $scope) {
+.controller('SignUpController', ['TitleService', '$scope', '$http', '$window',
+	function(TitleService, $scope, $http, $window) {
+		let showPasswordVar = false;
+		let showRepeatPasswordVar = false;
+
+		TitleService.setTitle('Sign Up');
+		$scope.User = {};
+		$scope.creatingUser = true;
+		$scope.submitDisabled = false;
+
+		function hidePassword() {
+			showPasswordVar = false;
+			$scope.passwordType = 'password';
+			$scope.showHidePasswordText = 'Show Password';
+		}
+		function showPassword() {
+			showPasswordVar = true;
+			$scope.passwordType = 'text';
+			$scope.showHidePasswordText = 'Hide Password';
+		}
+		hidePassword();
+
+		function hideRepeatPassword() {
+			showRepeatPasswordVar = false;
+			$scope.repeatPasswordType = 'password';
+			$scope.showHideRepeatPasswordText = 'Show Password';
+		}
+		function showRepeatPassword() {
+			showRepeatPasswordVar = true;
+			$scope.repeatPasswordType = 'text';
+			$scope.showHideRepeatPasswordText = 'Hide Password';
+		}
+		hideRepeatPassword();
+
+		$scope.showHidePassword = function() {
+			if (showPasswordVar) {
+				hidePassword();
+			} else {
+				showPassword();
+			}
+		};
+
+		$scope.showHideRepeatPassword = function() {
+			if (showRepeatPasswordVar) {
+				hideRepeatPassword();
+			} else {
+				showRepeatPassword();
+			}
+		};
+
+		$scope.submit = function() {
+			$http.post('/api/v1/signup', $scope.User).then(function() {
+				$scope.submitDisabled = true;
+				$http.post('/login', $scope.User).then(function() {
+					$window.location.href = '/home';
+				}, function() {
+					$scope.submitDisabled = false;
+				});
+			}, function() {
+				$scope.submitDisabled = false;
+			});
+		};
+	}
+])
+.controller('404Controller', ['TitleService', 'AuthenticationService', '$scope',
+	function(TitleService, AuthenticationService, $scope) {
 		TitleService.setTitle('404 Page Not Found');
 		$scope.url = '/';
-		PermissionService.isAuthenticated().then(function(authenticated) {
+		AuthenticationService.isAuthenticated().then(function(authenticated) {
 			$scope.url = authenticated ? '/home' : '/';
 		});
 	}

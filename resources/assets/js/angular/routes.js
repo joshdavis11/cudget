@@ -7,6 +7,10 @@ angular.module('CudgetRoutes', [])
 			template: require('../../pug/views/prelogin.pug'),
 			controller: 'PreLoginController'
 		})
+		.when('/signup', {
+			template: require('../../pug/views/signup.pug'),
+			controller: 'SignUpController'
+		})
 		.when('/home', {
 			template: require('../../pug/views/home.pug'),
 			controller: 'HomeController'
@@ -315,22 +319,6 @@ angular.module('CudgetRoutes', [])
 		.when('/settings/users/:id/password', {
 			template: require('../../pug/views/settings/users/password-form.pug'),
 			controller: 'UserPasswordController',
-			resolve: {
-				checkPermission: ['PermissionService',
-					function(PermissionService) {
-						return PermissionService.checkPermission('user_management', 'update')
-					}
-				],
-				User: ['UsersService', '$route',
-					function(UsersService, $route) {
-						return UsersService.getUser($route.current.params.id);
-					}
-				]
-			}
-		})
-		.when('/settings/users/:id/pin', {
-			template: require('../../pug/views/settings/users/pin-form.pug'),
-			controller: 'UserPinController',
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {

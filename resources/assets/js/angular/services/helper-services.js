@@ -1,28 +1,13 @@
 angular.module('HelperServices', [])
-.service('PermissionService', ['$http', '$location',
+.service('AuthenticationService', ['$http', '$location',
 	function($http, $location) {
-		let that = this;
-		let authUserPromise = $http.get('/api/v1/auth/user').then(function(response) {
-			return response.data;
-		});
-		let permsPromise = $http.get('/api/v1/perms').then(function(response) {
-			return that.formatPermissions(response.data);
-		});
 		let authenticatedPromise = $http.get('/api/v1/authenticated').then(function(response) {
 			return response.data;
 		});
 
-		this.getAuthUser = function() {
-			return authUserPromise;
-		};
-
-		this.getPerms = function() {
-			return permsPromise;
-		};
-
 		this.isAuthenticated = function() {
-			return authenticatedPromise.then(function(authenticated) {
-				return authenticated;
+			return authenticatedPromise.then(function(response) {
+				return response.authenticated;
 			});
 		};
 
@@ -44,6 +29,25 @@ angular.module('HelperServices', [])
 
 				return authenticated;
 			});
+		};
+	}
+])
+.service('PermissionService', ['$http', '$location',
+	function($http, $location) {
+		let that = this;
+		let authUserPromise = $http.get('/api/v1/auth/user').then(function(response) {
+			return response.data;
+		});
+		let permsPromise = $http.get('/api/v1/perms').then(function(response) {
+			return that.formatPermissions(response.data);
+		});
+
+		this.getAuthUser = function() {
+			return authUserPromise;
+		};
+
+		this.getPerms = function() {
+			return permsPromise;
 		};
 
 		this.formatPermissions = function(Perms) {

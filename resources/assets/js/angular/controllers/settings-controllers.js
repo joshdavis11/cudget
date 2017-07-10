@@ -53,10 +53,8 @@ angular.module('SettingsControllers', [])
 ])
 .controller('UserCreateController', ['$scope', 'TitleService', 'UsersService', '$location',
 	function($scope, TitleService, UsersService, $location) {
-		var showPasswordVar = false;
-		var showRepeatPasswordVar = false;
-		var showPinVar = false;
-		var showRepeatPinVar = false;
+		let showPasswordVar = false;
+		let showRepeatPasswordVar = false;
 
 		$scope.breadcrumb = 'Create New User';
 		$scope.title = 'Create A New User';
@@ -88,30 +86,6 @@ angular.module('SettingsControllers', [])
 		}
 		hideRepeatPassword();
 
-		function hidePin() {
-			showPinVar = false;
-			$scope.pinType = 'password';
-			$scope.showHidePinText = 'Show Pin';
-		}
-		function showPin() {
-			showPinVar = true;
-			$scope.pinType = 'text';
-			$scope.showHidePinText = 'Hide Pin';
-		}
-		hidePin();
-
-		function hideRepeatPin() {
-			showRepeatPinVar = false;
-			$scope.repeatPinType = 'password';
-			$scope.showHideRepeatPinText = 'Show Pin';
-		}
-		function showRepeatPin() {
-			showRepeatPinVar = true;
-			$scope.repeatPinType = 'text';
-			$scope.showHideRepeatPinText = 'Hide Pin';
-		}
-		hideRepeatPin();
-
 		$scope.showHidePassword = function() {
 			if (showPasswordVar) {
 				hidePassword();
@@ -125,22 +99,6 @@ angular.module('SettingsControllers', [])
 				hideRepeatPassword();
 			} else {
 				showRepeatPassword();
-			}
-		};
-
-		$scope.showHidePin = function() {
-			if (showPinVar) {
-				hidePin();
-			} else {
-				showPin();
-			}
-		};
-
-		$scope.showHideRepeatPin = function() {
-			if (showRepeatPinVar) {
-				hideRepeatPin();
-			} else {
-				showRepeatPin();
 			}
 		};
 
@@ -220,66 +178,6 @@ angular.module('SettingsControllers', [])
 
 		$scope.submit = function() {
 			UsersService.changePassword($scope.User, { ignoreLoadingBar: true }).then(function() {
-				$location.path('/settings/users');
-			}, function() {
-
-			});
-		};
-	}
-])
-.controller('UserPinController', ['User', '$scope', 'TitleService', 'UsersService', '$location',
-	function(User, $scope, TitleService, UsersService, $location) {
-		var showPinVar = false;
-		var showRepeatPinVar = false;
-
-		$scope.breadcrumb = $scope.title = 'Change Pin';
-		TitleService.setTitle($scope.title);
-		$scope.creatingUser = false;
-
-		$scope.User = User;
-
-		function hidePin() {
-			showPinVar = false;
-			$scope.pinType = 'password';
-			$scope.showHidePinText = 'Show Pin';
-		}
-		function showPin() {
-			showPinVar = true;
-			$scope.pinType = 'text';
-			$scope.showHidePinText = 'Hide Pin';
-		}
-		hidePin();
-
-		function hideRepeatPin() {
-			showRepeatPinVar = false;
-			$scope.repeatPinType = 'password';
-			$scope.showHideRepeatPinText = 'Show Pin';
-		}
-		function showRepeatPin() {
-			showRepeatPinVar = true;
-			$scope.repeatPinType = 'text';
-			$scope.showHideRepeatPinText = 'Hide Pin';
-		}
-		hideRepeatPin();
-
-		$scope.showHidePin = function() {
-			if (showPinVar) {
-				hidePin();
-			} else {
-				showPin();
-			}
-		};
-
-		$scope.showHideRepeatPin = function() {
-			if (showRepeatPinVar) {
-				hideRepeatPin();
-			} else {
-				showRepeatPin();
-			}
-		};
-
-		$scope.submit = function() {
-			UsersService.changePin($scope.User, { ignoreLoadingBar: true }).then(function() {
 				$location.path('/settings/users');
 			}, function() {
 

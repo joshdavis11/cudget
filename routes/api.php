@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\PreLoginController;
 use App\Http\Controllers\V1;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Router;
@@ -79,11 +80,20 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 		//User routes
 		$router->group(['prefix' => 'users'], function(Router $router) {
 			$router->put('{id}/password', V1\UsersController::class . '@password');
-			$router->put('{id}/pin', V1\UsersController::class . '@pin');
 			$router->resource('{userId}/permissions', V1\UserPermissionsController::class);
 		});
 		$router->resource('users', V1\UsersController::class);
 	});
+});
+
+// /api/v1
+$router->group(['prefix' => 'v1'], function(Router $router) {
+
+	//Authentication
+	$router->get('authenticated', PreLoginController::class . '@isAuthenticated');
+
+	//Sign Up
+	$router->post('signup', PreLoginController::class . '@signup');
 });
 
 //404

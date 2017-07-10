@@ -12,19 +12,21 @@
 */
 
 use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\PreLoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\ViewController;
 use Illuminate\Routing\Router;
 
-$router->get('login', LoginController::class . '@showLoginForm')->name('login');
-$router->post('login', LoginController::class . '@login');
+$router->get('/', PreLoginController::class . '@preLogin');
+$router->get('login', PreLoginController::class . '@preLogin')->name('login');
+$router->get('signup', PreLoginController::class . '@preLogin')->name('signup');
+$router->post('login', PreLoginController::class . '@postLogin');
 $router->get('password/reset', ForgotPasswordController::class . '@showLinkRequestForm')->name('password.request');
 $router->post('password/email', ForgotPasswordController::class . '@sendResetLinkEmail')->name('password.email');
 $router->get('password/reset/{token}', ResetPasswordController::class . '@showResetForm')->name('password.reset');
 $router->post('password/reset', ResetPasswordController::class . '@reset');
 
 $router->group(['middleware' => 'auth'], function(Router $router) {
-	$router->post('logout', LoginController::class . '@logout')->name('logout');
+	$router->get('logout', PreLoginController::class . '@logout')->name('logout');
 	$router->any('{catchall}', ViewController::class . '@angular')->where('catchall', '^(?!.*[.].*$).*$');
 });

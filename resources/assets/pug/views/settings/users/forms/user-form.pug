@@ -1,0 +1,42 @@
+.col-md-1.col-lg-3
+.col-sm-12.col-md-10.col-lg-6
+    form(name="userForm", ng-submit="userForm.$valid && submit()", novalidate)
+        .form-group.required.col-xs-12.col-sm-6(ng-class="{ 'has-error': (userForm.firstName.$touched || userForm.$submitted) && userForm.firstName.$invalid }")
+            label.control-label(for="firstName") First Name
+            input#firstName.form-control(placeholder="Ex: Tom", type="text", name="firstName", ng-model="User.firstName", required)
+        .form-group.required.col-xs-12.col-sm-6(ng-class="{ 'has-error': (userForm.lastName.$touched || userForm.$submitted) && userForm.lastName.$invalid }")
+            label.control-label(for="lastName") Last Name
+            input#lastName.form-control(placeholder="Ex: Jones", type="text", name="lastName", ng-model="User.lastName", required)
+        .form-group.required.col-xs-12(ng-class="{ 'has-error': (userForm.email.$touched || userForm.$submitted) && userForm.email.$invalid }")
+            label.control-label(for="email") Email
+            input#email.form-control(placeholder="email@example.com", type="email", name="email", ng-model="User.email", required)
+        .form-group.required.col-xs-12(ng-if="creatingUser", ng-class="{ 'has-error': (userForm.repeatEmail.$touched || userForm.$submitted) && userForm.repeatEmail.$invalid }")
+            label.control-label(for="repeatEmail") Repeat Email
+            input#repeatEmail.form-control(match="User.email", placeholder="email@example.com", type="email", name="repeatEmail", ng-model="User.repeatEmail", required)
+        .form-group.col-xs-12.col-sm-6(ng-class="{ 'has-error': (userForm.username.$touched || userForm.$submitted) && userForm.username.$invalid }")
+            label.control-label(for="username") Username
+            input#username.form-control(placeholder="Ex: tomjones", type="text", name="username", ng-model="User.username")
+        .form-group.col-xs-12.col-sm-6(ng-class="{ 'has-error': (userForm.phone.$touched || userForm.$submitted) && userForm.phone.$invalid }")
+            label.control-label(for="phone") Phone Number
+            input#phone.form-control(ui-mask="(999) 999-9999", placeholder="(XXX) XXX-XXXX", type="tel", name="phone", ng-model="User.phone")
+        .form-group.required.col-xs-12(ng-if="creatingUser", ng-class="{ 'has-error': (userForm.password.$touched || userForm.$submitted) && userForm.password.$invalid }")
+            label.control-label(for="password") Password
+            input#password.form-control(placeholder="Your Password", type="{{ passwordType }}", name="password", ng-model="User.password", required)
+            a(ng-click="showHidePassword()") {{ showHidePasswordText }}
+        .form-group.required.col-xs-12(ng-if="creatingUser", ng-class="{ 'has-error': (userForm.repeatPassword.$touched || userForm.$submitted) && userForm.repeatPassword.$invalid }")
+            label.control-label(for="repeatPassword") Repeat Password
+            input#repeatPassword.form-control(match="User.password", placeholder="Repeat Password", type="{{ repeatPasswordType }}", name="repeatPassword", ng-model="User.repeatPassword", required)
+            a(ng-click="showHideRepeatPassword()") {{ showHideRepeatPasswordText }}
+        .form-group.required.col-xs-12(ng-if="perms.admin", ng-class="{ 'has-error': (userForm.admin.$touched || userForm.$submitted) && userForm.admin.$invalid }")
+            label.control-label Admin?
+            div.radio
+                label.radio-inline
+                    input(type="radio", name="admin", ng-model="User.admin", value="1", required)
+                    span Yes
+                label.radio-inline
+                    input(type="radio", name="admin", ng-model="User.admin", value="0", required)
+                    span No
+        .form-group.btn-toolbar.col-xs-12
+            button.btn.btn-primary(type="submit", ng-disabled="submitDisabled") Create Account
+            a.btn.btn-default(href="/settings/users") Cancel
+.col-md-1.col-lg-3

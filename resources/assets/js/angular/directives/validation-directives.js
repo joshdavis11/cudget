@@ -9,7 +9,7 @@ angular.module('ValidationDirectives', [])
 			},
 			link: function($scope, element, attributes, ngModel) {
 				ngModel.$validators.match = function(modelValue) {
-					return modelValue == $scope.otherModelValue;
+					return modelValue === $scope.otherModelValue;
 				};
 
 				$scope.$watch('otherModelValue', function() {

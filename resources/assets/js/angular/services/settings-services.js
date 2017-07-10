@@ -55,10 +55,6 @@ angular.module('SettingsServices', [])
 			return $http.put('/api/v1/users/' + User.id + '/password', User, options);
 		};
 
-		this.changePin = function(User, options) {
-			return $http.put('/api/v1/users/' + User.id + '/pin', User, options);
-		};
-
 		this.deleteUser = function(id, options) {
 			return $http.delete('/api/v1/users/' + id, options);
 		};

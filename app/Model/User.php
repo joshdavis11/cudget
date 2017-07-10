@@ -30,8 +30,6 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
 		'phone' => 'numeric',
 		'password' => 'required',
 		'repeat_password' => 'required|same:password',
-		'pin' => 'required',
-		'repeat_pin' => 'required|same:pin',
 		'admin' => 'required|boolean',
 	];
 
@@ -50,14 +48,14 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['username', 'email', 'password', 'firstName', 'lastName', 'phone', 'pin', 'admin'];
+	protected $fillable = ['username', 'email', 'password', 'firstName', 'lastName', 'phone', 'admin'];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
 	 * @var array
 	 */
-	protected $hidden = ['password', 'remember_token', 'pin', 'created_at', 'updated_at'];
+	protected $hidden = ['password', 'remember_token', 'created_at', 'updated_at'];
 
 	/**
      * The accessors to append to the model's array form.

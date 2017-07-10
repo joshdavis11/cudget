@@ -5,6 +5,7 @@ namespace App\Http\Controllers\V1;
 use App\Exceptions\InvalidDataException;
 use App\Exceptions\PermissionsException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Users\CreateUserRequest;
 use App\Services\UserService;
 use App\Model\User;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -47,17 +48,17 @@ class UsersController extends Controller {
 	/**
 	 * Store a newly created resource in storage.
 	 *
-	 * @param Request $Request
+	 * @param CreateUserRequest $Request
 	 *
 	 * @return Response
 	 */
-	public function store(Request $Request) {
+	public function store(CreateUserRequest $Request) {
 		try {
 			$User = $this->UserService->createUser($Request);
 		} catch (InvalidDataException $Exception) {
 			return new Response('Invalid data', Response::HTTP_BAD_REQUEST);
 		}
-		return new Response('Created', Response::HTTP_CREATED, ['Location' => '/api/users/' . $User->id]);
+		return new Response('Created', Response::HTTP_CREATED, ['Location' => '/api/v1/users/' . $User->id]);
 	}
 
 	/**
@@ -142,22 +143,5 @@ class UsersController extends Controller {
 			return new Response('User not found', Response::HTTP_BAD_REQUEST);
 		}
 		return new Response('Password Updated');
-	}
-
-	/**
-	 * Change a pin for a user
-	 *
-	 * @param int     $id
-	 * @param Request $Request
-	 *
-	 * @return Response
-	 */
-	public function pin($id, Request $Request) {
-		try {
-			$this->UserService->changePin($id, $Request);
-		} catch (ModelNotFoundException $Exception) {
-			return new Response('User not found', Response::HTTP_BAD_REQUEST);
-		}
-		return new Response('Pin Updated');
 	}
 }

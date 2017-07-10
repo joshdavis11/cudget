@@ -41,14 +41,13 @@ class UserService {
 	 * @throws InvalidDataException
 	 */
 	public function createUser(Request $Request) {
-		$data = $Request->only(['firstName', 'lastName', 'email', 'repeatEmail', 'username', 'phone', 'password', 'repeatPassword', 'pin', 'repeatPin', 'admin']);
+		$data = $Request->only(['firstName', 'lastName', 'email', 'repeatEmail', 'username', 'phone', 'password', 'repeatPassword', 'admin']);
 		if (User::validate($data)) {
 			$errors = User::errors();
 			throw new InvalidDataException(implode(', ', $errors->getMessages()));
 		}
-
 		$data['password'] = Hash::make($data['password']);
-		$data['pin'] = Hash::make($data['pin']);
+
 		return User::create($data);
 	}
 
@@ -102,26 +101,6 @@ class UserService {
 		}
 
 		return $this->getUser($id)->update(['password' => Hash::make($data['password'])]);
-	}
-
-	/**
-	 * Change a pin for a user
-	 *
-	 * @param int     $id
-	 * @param Request $Request
-	 *
-	 * @return bool|int
-	 * @throws InvalidDataException
-	 * @throws ModelNotFoundException
-	 */
-	public function changePin($id, $Request) {
-		$data = $Request->only(['pin', 'repeatPin']);
-		if (User::validate($data)) {
-			$errors = User::errors();
-			throw new InvalidDataException(implode(', ', $errors->getMessages()));
-		}
-
-		return $this->getUser($id)->update(['pin' => Hash::make($data['pin'])]);
 	}
 
 	/**
