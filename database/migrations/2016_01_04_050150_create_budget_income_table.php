@@ -11,9 +11,10 @@ class CreateBudgetIncomeTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('budget_income', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('budget_id')->index('budget_id');
-			$table->integer('income_id')->nullable()->index('income_id');
+			$table->integer('id', true)->unsigned();
+			$table->integer('budget_id')->unsigned()->index('budget_id');
+			$table->integer('income_id')->unsigned()->nullable()->index('income_id');
+			$table->nullableTimestamps();
 		});
 	}
 

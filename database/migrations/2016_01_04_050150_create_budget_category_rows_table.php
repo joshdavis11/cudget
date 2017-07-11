@@ -11,11 +11,12 @@ class CreateBudgetCategoryRowsTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('budget_category_rows', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('budget_category_id')->index('budget_category_id');
+			$table->integer('id', true)->unsigned();
+			$table->integer('budget_category_id')->unsigned()->index('budget_category_id');
 			$table->string('name')->default('No Name Row');
 			$table->decimal('estimated', 10)->nullable();
-			$table->integer('sort_order')->nullable();
+			$table->integer('sort_order')->unsigned()->nullable();
+			$table->nullableTimestamps();
 		});
 	}
 

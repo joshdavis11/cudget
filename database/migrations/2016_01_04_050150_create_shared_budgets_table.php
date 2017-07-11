@@ -11,10 +11,11 @@ class CreateSharedBudgetsTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('shared_budgets', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('budget_id')->index('budget_id');
-			$table->integer('user_id')->index('user_id');
+			$table->integer('id', true)->unsigned();
+			$table->integer('budget_id')->unsigned()->index('budget_id');
+			$table->integer('user_id')->unsigned()->index('user_id');
 			$table->dateTime('shared_datetime')->nullable();
+			$table->nullableTimestamps();
 		});
 	}
 

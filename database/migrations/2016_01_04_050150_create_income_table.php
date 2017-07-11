@@ -11,12 +11,13 @@ class CreateIncomeTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('income', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('user_id')->index('income_ibfk_2');
+			$table->integer('id', true)->unsigned();
+			$table->integer('user_id')->unsigned()->index('income_ibfk_2');
 			$table->dateTime('datetime')->nullable();
 			$table->string('description')->default('No Name Expense');
-			$table->integer('income_category_id')->nullable()->index('income_category_id');
+			$table->integer('income_category_id')->unsigned()->nullable()->index('income_category_id');
 			$table->decimal('amount', 10)->nullable();
+			$table->nullableTimestamps();
 		});
 	}
 

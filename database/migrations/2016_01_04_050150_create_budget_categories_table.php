@@ -11,10 +11,11 @@ class CreateBudgetCategoriesTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('budget_categories', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('budget_id')->index('budget_id');
+			$table->integer('id', true)->unsigned();
+			$table->integer('budget_id')->unsigned()->index('budget_id');
 			$table->string('name')->default('No Name Category');
-			$table->integer('sort_order')->nullable();
+			$table->integer('sort_order')->unsigned()->nullable();
+			$table->nullableTimestamps();
 		});
 	}
 

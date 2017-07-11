@@ -3,19 +3,16 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateAutoImportAccountsTable extends Migration {
+class CreatePermissionsTable extends Migration {
 	/**
 	 * Run the migrations.
 	 *
 	 * @return void
 	 */
 	public function up() {
-		Schema::create('auto_import_accounts', function (Blueprint $table) {
+		Schema::create('permissions', function (Blueprint $table) {
 			$table->integer('id', true)->unsigned();
-			$table->string('name');
-			$table->integer('description')->unsigned();
-			$table->integer('date')->unsigned();
-			$table->integer('amount')->unsigned();
+			$table->string('name')->unique();
 			$table->nullableTimestamps();
 		});
 	}
@@ -26,6 +23,6 @@ class CreateAutoImportAccountsTable extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		Schema::drop('auto_import_accounts');
+		Schema::drop('permissions');
 	}
 }

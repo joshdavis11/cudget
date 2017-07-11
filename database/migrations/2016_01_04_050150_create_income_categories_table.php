@@ -11,9 +11,10 @@ class CreateIncomeCategoriesTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('income_categories', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('user_id')->index('user_id');
+			$table->integer('id', true)->unsigned();
+			$table->integer('user_id')->unsigned()->index('user_id');
 			$table->string('name');
+			$table->nullableTimestamps();
 		});
 	}
 

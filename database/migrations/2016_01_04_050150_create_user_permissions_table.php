@@ -11,12 +11,11 @@ class CreateUserPermissionsTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('user_permissions', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('user_id');
-			$table->string('section', 100);
-			$table->enum('permission', array('add', 'delete', 'update', 'view'));
-			$table->boolean('access')->nullable()->default(0);
-			$table->unique(['user_id', 'section', 'permission'], 'user_section_permission');
+			$table->integer('id', true)->unsigned();
+			$table->integer('user_id')->unsigned();
+			$table->integer('permission_id')->unsigned();
+			$table->unique(['user_id', 'permission_id'], 'user_permission');
+			$table->nullableTimestamps();
 		});
 	}
 

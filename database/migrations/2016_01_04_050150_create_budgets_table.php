@@ -11,8 +11,8 @@ class CreateBudgetsTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('budgets', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('user_id')->index('user_id');
+			$table->integer('id', true)->unsigned();
+			$table->integer('user_id')->unsigned()->index('user_id');
 			$table->string('name')->default('No Name Budget');
 			$table->decimal('income', 10)->nullable();
 			$table->dateTime('start')->nullable();
@@ -20,6 +20,7 @@ class CreateBudgetsTable extends Migration {
 			$table->dateTime('created')->nullable();
 			$table->dateTime('last_access')->nullable();
 			$table->boolean('template')->default(0);
+			$table->nullableTimestamps();
 		});
 	}
 

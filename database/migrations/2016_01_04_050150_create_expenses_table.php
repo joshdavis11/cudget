@@ -11,12 +11,13 @@ class CreateExpensesTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('expenses', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('user_id')->index('expenses_ibfk_2');
+			$table->integer('id', true)->unsigned();
+			$table->integer('user_id')->unsigned()->index('expenses_ibfk_2');
 			$table->dateTime('datetime')->nullable();
 			$table->string('description')->default('No Name Expense');
-			$table->integer('expense_category_id')->nullable()->index('expense_category_id');
+			$table->integer('expense_category_id')->unsigned()->nullable()->index('expense_category_id');
 			$table->decimal('amount', 10)->nullable();
+			$table->nullableTimestamps();
 		});
 	}
 

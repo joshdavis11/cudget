@@ -11,12 +11,13 @@ class CreateUserLoginAttemptsTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('user_login_attempts', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('user_id')->index('user_id');
+			$table->integer('id', true)->unsigned();
+			$table->integer('user_id')->unsigned()->index('user_id');
 			$table->string('ip')->nullable();
 			$table->string('proxy')->nullable();
 			$table->enum('status', array('failure', 'success'))->nullable();
 			$table->dateTime('datetime')->nullable();
+			$table->nullableTimestamps();
 		});
 	}
 

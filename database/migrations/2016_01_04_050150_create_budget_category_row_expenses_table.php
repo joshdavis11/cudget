@@ -11,9 +11,10 @@ class CreateBudgetCategoryRowExpensesTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('budget_category_row_expenses', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('budget_category_row_id')->index('budget_category_row_id');
-			$table->integer('expense_id')->nullable()->index('expense_id');
+			$table->integer('id', true)->unsigned();
+			$table->integer('budget_category_row_id')->unsigned()->index('budget_category_row_id');
+			$table->integer('expense_id')->unsigned()->nullable()->index('expense_id');
+			$table->nullableTimestamps();
 		});
 	}
 

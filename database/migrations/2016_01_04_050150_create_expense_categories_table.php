@@ -11,9 +11,10 @@ class CreateExpenseCategoriesTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('expense_categories', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('user_id')->index('user_id');
+			$table->integer('id', true)->unsigned();
+			$table->integer('user_id')->unsigned()->index('user_id');
 			$table->string('name');
+			$table->nullableTimestamps();
 		});
 	}
 

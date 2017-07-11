@@ -11,9 +11,10 @@ class CreateConfigurationTable extends Migration {
 	 */
 	public function up() {
 		Schema::create('configuration', function (Blueprint $table) {
-			$table->integer('id', true);
-			$table->integer('user_id')->nullable()->index('user_id');
+			$table->integer('id', true)->unsigned();
+			$table->integer('user_id')->unsigned()->nullable()->index('user_id');
 			$table->string('bootswatch')->nullable()->default('cerulean');
+			$table->nullableTimestamps();
 		});
 	}
 
