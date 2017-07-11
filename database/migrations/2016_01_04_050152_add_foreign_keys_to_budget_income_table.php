@@ -11,8 +11,8 @@ class AddForeignKeysToBudgetIncomeTable extends Migration {
 	 */
 	public function up() {
 		Schema::table('budget_income', function (Blueprint $table) {
-			$table->foreign('budget_id', 'budget_income_ibfk_1')->references('id')->on('budgets')->onUpdate('RESTRICT')->onDelete('CASCADE');
-			$table->foreign('income_id', 'budget_income_ibfk_2')->references('id')->on('income')->onUpdate('RESTRICT')->onDelete('CASCADE');
+			$table->foreign('budget_id', 'budget_income_ibfk_1')->references('id')->on('budgets')->onUpdate('CASCADE')->onDelete('CASCADE');
+			$table->foreign('income_id', 'budget_income_ibfk_2')->references('id')->on('income')->onUpdate('CASCADE')->onDelete('CASCADE');
 		});
 	}
 

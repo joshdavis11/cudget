@@ -11,8 +11,8 @@ class AddForeignKeysToSharedBudgetsTable extends Migration {
 	 */
 	public function up() {
 		Schema::table('shared_budgets', function (Blueprint $table) {
-			$table->foreign('budget_id', 'shared_budgets_ibfk_1')->references('id')->on('budgets')->onUpdate('RESTRICT')->onDelete('CASCADE');
-			$table->foreign('user_id', 'shared_budgets_ibfk_2')->references('id')->on('users')->onUpdate('RESTRICT')->onDelete('CASCADE');
+			$table->foreign('budget_id', 'shared_budgets_ibfk_1')->references('id')->on('budgets')->onUpdate('CASCADE')->onDelete('CASCADE');
+			$table->foreign('user_id', 'shared_budgets_ibfk_2')->references('id')->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
 		});
 	}
 

@@ -11,7 +11,7 @@ class AddForeignKeysToIncomeCategoriesTable extends Migration {
 	 */
 	public function up() {
 		Schema::table('income_categories', function (Blueprint $table) {
-			$table->foreign('user_id', 'income_categories_ibfk_1')->references('id')->on('users')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+			$table->foreign('user_id', 'income_categories_ibfk_1')->references('id')->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
 		});
 	}
 

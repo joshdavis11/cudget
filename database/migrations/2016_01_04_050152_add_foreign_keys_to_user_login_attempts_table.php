@@ -11,7 +11,7 @@ class AddForeignKeysToUserLoginAttemptsTable extends Migration {
 	 */
 	public function up() {
 		Schema::table('user_login_attempts', function (Blueprint $table) {
-			$table->foreign('user_id', 'user_login_attempts_ibfk_1')->references('id')->on('users')->onUpdate('RESTRICT')->onDelete('RESTRICT');
+			$table->foreign('user_id', 'user_login_attempts_ibfk_1')->references('id')->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
 		});
 	}
 
