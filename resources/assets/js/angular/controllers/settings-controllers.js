@@ -1,3 +1,7 @@
+import {
+	forEach
+} from 'angular';
+
 angular.module('SettingsControllers', [])
 .controller('SettingsController', ['TitleService',
 	function(TitleService) {
@@ -61,6 +65,7 @@ angular.module('SettingsControllers', [])
 		TitleService.setTitle($scope.title);
 		$scope.User = {};
 		$scope.creatingUser = true;
+		$scope.cancel = '/settings/users';
 
 		function hidePassword() {
 			showPasswordVar = false;
@@ -115,6 +120,7 @@ angular.module('SettingsControllers', [])
 		TitleService.setTitle($scope.title);
 		$scope.creatingUser = false;
 		$scope.User = User;
+		$scope.cancel = '/settings/users';
 
 		$scope.submit = function() {
 			UsersService.editUser($scope.User, { ignoreLoadingBar: true }).then(function() {
@@ -185,38 +191,42 @@ angular.module('SettingsControllers', [])
 		};
 	}
 ])
-.controller('UserPermissionsController', ['User', 'Permissions', '$scope', 'TitleService', 'UsersService', 'PermissionService',
-	function(User, Permissions, $scope, TitleService, UsersService, PermissionService) {
+.controller('UserPermissionsController', ['User', 'UserPermissions', '$scope', 'TitleService', 'PermissionService',
+	function(User, UserPermissions, $scope, TitleService, PermissionService) {
 		TitleService.setTitle('User Permissions');
 		$scope.creatingUser = false;
 
 		$scope.User = User;
-		$scope.User.Permissions = Permissions;
-		$scope.Sections = PermissionService.getSections();
+		$scope.User.Permissions = {};
+		forEach(UserPermissions, function(UserPermission) {
+			$scope.User.Permissions[UserPermission.permission.definition] = UserPermission;
+		});
 
-		$scope.clickColumn = function(canDoIt, section, permission) {
-			if (!canDoIt) {
-				return;
-			}
+		PermissionService.getPermissions().then(function(permissions) {
+			$scope.Permissions = permissions;
+			forEach($scope.Permissions, function(Permission) {
+				Permission.clicked = User.admin || ($scope.User.Permissions[Permission.definition] && $scope.User.Permissions[Permission.definition].id > 0);
+			});
+		});
 
-			if (!$scope.User.Permissions[section]) {
-				$scope.User.Permissions[section] = {};
-			}
-			if (!$scope.User.Permissions[section][permission]) {
-				$scope.User.Permissions[section][permission] = {
-					access: false,
-					permission: permission,
-					section: section,
-					userId: $scope.User.id
+		$scope.clickColumn = function(Permission) {
+			if (!$scope.User.Permissions[Permission.definition]) {
+				$scope.User.Permissions[Permission.definition] = {
+					permission: Permission,
+					permissionId: Permission.id,
+					userId: $scope.User.id,
 				};
 			}
 
-			$scope.User.Permissions[section][permission].access = !$scope.User.Permissions[section][permission].access;
-			if ($scope.User.Permissions[section][permission].id) {
-				UsersService.updatePermission($scope.User.Permissions[section][permission], { ignoreLoadingBar: true });
-			} else {
-				UsersService.createPermission($scope.User.Permissions[section][permission], { ignoreLoadingBar: true }).then(function(UserPermission) {
-					$scope.User.Permissions[section][permission] = UserPermission;
+			// Permission.clicked = !Permission.clicked;
+			if($scope.User.Permissions[Permission.definition].id) {
+				PermissionService.deleteUserPermission($scope.User.Permissions[Permission.definition], { ignoreLoadingBar: true }).then(function() {
+					$scope.User.Permissions[Permission.definition] = null;
+				});
+			}
+			else {
+				PermissionService.createUserPermission($scope.User.Permissions[Permission.definition], { ignoreLoadingBar: true }).then(function(UserPermission) {
+					$scope.User.Permissions[Permission.definition].id = UserPermission.id;
 				});
 			}
 		};

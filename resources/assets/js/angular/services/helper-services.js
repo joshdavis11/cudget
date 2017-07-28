@@ -1,172 +1,137 @@
+import {
+	copy,
+	forEach
+} from 'angular';
+
 angular.module('HelperServices', [])
 .service('AuthenticationService', ['$http', '$location',
 	function($http, $location) {
-		let authenticatedPromise = $http.get('/api/v1/authenticated').then(function(response) {
-			return response.data;
-		});
+		let AuthUser = window.AuthUser;
 
 		this.isAuthenticated = function() {
-			return authenticatedPromise.then(function(response) {
-				return response.authenticated;
-			});
+			return AuthUser.id > 0;
 		};
 
 		this.redirectIfNotAuthenticated = function() {
-			return this.isAuthenticated().then(function(authenticated) {
-				if(!authenticated) {
-					$location.path('/login');
-				}
+			let authenticated = this.isAuthenticated();
+			if(!authenticated) {
+				$location.path('/login');
+			}
 
-				return authenticated;
-			});
+			return authenticated;
 		};
 
 		this.redirectIfAuthenticated = function() {
-			return this.isAuthenticated().then(function(authenticated) {
-				if(authenticated) {
-					$location.path('/home');
-				}
+			let authenticated = this.isAuthenticated();
+			if(authenticated) {
+				$location.path('/home');
+			}
 
-				return authenticated;
-			});
+			return authenticated;
 		};
 	}
 ])
 .service('PermissionService', ['$http', '$location',
 	function($http, $location) {
-		let that = this;
-		let authUserPromise = $http.get('/api/v1/auth/user').then(function(response) {
-			return response.data;
-		});
-		let permsPromise = $http.get('/api/v1/perms').then(function(response) {
-			return that.formatPermissions(response.data);
-		});
+		let AuthUser = window.AuthUser;
+		let myPerms = window.perms;
+		let myFormattedPerms = null;
 
 		this.getAuthUser = function() {
-			return authUserPromise;
+			return AuthUser;
 		};
 
-		this.getPerms = function() {
-			return permsPromise;
+		this.getMyUserPermsFormatted = function() {
+			if (!myFormattedPerms) {
+				if (!myPerms) {
+					this.getMyUserPerms().then(function(permissions) {
+						myPerms = permissions;
+						myFormattedPerms = this.formatPermissions(permissions);
+					});
+				} else {
+					myFormattedPerms = this.formatPermissions(myPerms);
+				}
+			}
+
+			return copy(myFormattedPerms);
+		};
+
+		this.getMyUserPerms = function() {
+			return $http.get('/api/v1/myperms').then(function(response) {
+				return response.data;
+			});
+		};
+
+		this.getUserPermsFormatted = function(userId) {
+			let that = this;
+			return this.getUserPerms(userId).then(function(permissions) {
+				return that.formatPermissions(permissions);
+			});
+		};
+
+		this.getUserPerms = function(userId) {
+			return $http.get('/api/v1/users/' + userId + '/permissions').then(function(response) {
+				return response.data;
+			});
 		};
 
 		this.formatPermissions = function(Perms) {
 			let Permissions = {};
-			angular.forEach(Perms, function(Permission) {
-				if (!Permissions[Permission.section]) {
-					Permissions[Permission.section] = {};
-				}
-				Permissions[Permission.section][Permission.permission] = Permission;
+			forEach(Perms, function(Permission) {
+				Permissions[Permission.permission.definition] = true;
 			});
 
 			return Permissions;
 		};
 
-		this.checkPermission = function(section, permission) {
-			return this.getAuthUser().then(function(AuthUser) {
-				if (AuthUser.admin) {
-					return;
-				}
-
-				return that.getPerms().then(function(permissions) {
-					if (!permissions[section] || !permissions[section][permission] || !permissions[section][permission].access) {
-						$location.path('/403');
-					}
-				});
+		this.updateAuthUser = function() {
+			$http.get('/api/v1/auth/user').then(function(response) {
+				AuthUser = response.data;
 			});
 		};
 
-		this.getSections = function() {
-			return [
-				{
-					name: 'Budgets',
-					value: 'budgets',
-					create: true,
-					delete: true,
-					edit: true,
-					view: true
-				},
-				{
-					name: 'Budget Templates',
-					value: 'budget_templates',
-					create: true,
-					delete: true,
-					edit: true,
-					view: true
-				},
-				{
-					name: 'Share Budgets',
-					value: 'budget_sharing',
-					create: true,
-					delete: true,
-					edit: false,
-					view: true
-				},
-				{
-					name: 'Expenses',
-					value: 'expenses',
-					create: true,
-					delete: true,
-					edit: true,
-					view: true
-				},
-				{
-					name: 'Expense Categories',
-					value: 'expense_categories',
-					create: true,
-					delete: true,
-					edit: true,
-					view: true
-				},
-				{
-					name: 'Import Income and Expenses',
-					value: 'import',
-					create: false,
-					delete: false,
-					edit: false,
-					view: true
-				},
-				{
-					name: 'Income',
-					value: 'income',
-					create: true,
-					delete: true,
-					edit: true,
-					view: true
-				},
-				{
-					name: 'Income Categories',
-					value: 'income_categories',
-					create: true,
-					delete: true,
-					edit: true,
-					view: true
-				},
-				{
-					name: 'Settings',
-					value: 'settings',
-					create: false,
-					delete: false,
-					edit: false,
-					view: true
-				},
-				{
-					name: 'User Management',
-					value: 'user_management',
-					create: true,
-					delete: true,
-					edit: true,
-					view: true
-				},
-				{
-					name: 'Color Scheme',
-					value: 'color_scheme',
-					create: false,
-					delete: false,
-					edit: true,
-					view: true
-				},
-			];
+		this.resetMyPerms = function() {
+			let that = this;
+			this.getPerms().then(function(permissions) {
+				window.perms = myPerms = permissions;
+				myFormattedPerms = that.formatPermissions(myPerms);
+			});
+		};
+
+		this.checkPermission = function(section, adminOnly) {
+			if (this.getAuthUser().admin) {
+				return;
+			}
+
+			if (adminOnly || !this.getMyUserPermsFormatted()[section]) {
+				$location.path('/403');
+			}
+		};
+
+		this.getPermissions = function() {
+			return $http.get('/api/v1/permissions').then(function(response) {
+				return response.data;
+			});
+		};
+
+		this.deleteUserPermission = function(UserPermission, options) {
+			let that = this;
+			return $http.delete('/api/v1/users/' + UserPermission.userId + '/permissions/' + UserPermission.id, options).then(function(response) {
+				if (that.getAuthUser().id === UserPermission.userId) {
+					that.resetMyPerms();
+				}
+				return response.data;
+			});
+		};
+
+		this.createUserPermission = function(UserPermission, options) {
+			let that = this;
+			return $http.post('/api/v1/users/' + UserPermission.userId + '/permissions', UserPermission, options).then(function(response) {
+				if (that.getAuthUser().id === UserPermission.userId) {
+					that.resetMyPerms();
+				}
+				return response.data;
+			});
 		};
 	}
 ])

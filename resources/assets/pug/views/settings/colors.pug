@@ -4,8 +4,9 @@
 			ul.breadcrumb
 				li
 					a(href="/home") Home
-				li
-					a(href="/settings/") Settings
+				li(ng-if="perms.admin")
+					a(href="/settings") Settings
+				li.active(ng-if="!perms.admin") Settings
 				li.active Color Scheme
 			.page-header
 				h1.center Color Scheme

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\SettingsService;
+use App\Services\UserService;
 use Illuminate\Auth\AuthManager;
 
 /**
@@ -16,12 +17,15 @@ class ViewController extends Controller {
 	 *
 	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
 	 */
-	public function angular(SettingsService $SettingsService, AuthManager $Auth) {
-		$Configuration = $SettingsService->getConfigurationForUser($Auth->user()->id);
+	public function angular(SettingsService $SettingsService, UserService $UserService, AuthManager $Auth) {
+		$AuthUser = $Auth->user();
+		$Configuration = $SettingsService->getConfigurationForUser($AuthUser->id);
 		$data = [
 			'bootswatch' => !empty($Configuration->bootswatch) ? $Configuration->bootswatch : 'cerulean',
 			'year' => date('Y'),
-			'csrf' => csrf_token()
+			'csrf' => csrf_token(),
+			'AuthUser' => $AuthUser,
+			'perms' => $UserService->getUserPermissions($AuthUser->id),
 		];
 		return view('home', $data);
 	}

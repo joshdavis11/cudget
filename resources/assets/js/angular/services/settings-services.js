@@ -58,30 +58,6 @@ angular.module('SettingsServices', [])
 		this.deleteUser = function(id, options) {
 			return $http.delete('/api/v1/users/' + id, options);
 		};
-
-		this.getPermissions = function(userId) {
-			return $http.get('/api/v1/users/' + userId + '/permissions').then(function(response) {
-				return response.data;
-			});
-		};
-
-		this.getFormattedPermissions = function(userId) {
-			return this.getPermissions(userId).then(function(Perms) {
-				return PermissionService.formatPermissions(Perms);
-			});
-		};
-
-		this.updatePermission = function(UserPermission, options) {
-			return $http.put('/api/v1/users/' + UserPermission.userId + '/permissions/' + UserPermission.id, UserPermission, options).then(function(response) {
-				return response.data;
-			});
-		};
-
-		this.createPermission = function(UserPermission, options) {
-			return $http.post('/api/v1/users/' + UserPermission.userId + '/permissions', UserPermission, options).then(function(response) {
-				return response.data;
-			});
-		};
 	}
 ])
 ;

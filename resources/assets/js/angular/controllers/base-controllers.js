@@ -38,13 +38,10 @@ angular.module('BaseControllers', [])
 ])
 .controller('HeaderController', ['$rootScope', '$scope', '$location', 'PermissionService', 'HeaderService',
 	function($rootScope, $scope, $location, PermissionService, HeaderService) {
-		PermissionService.getPerms().then(function(perms) {
-			$rootScope.perms = perms;
+		$rootScope.perms = PermissionService.getMyUserPermsFormatted();
 
-			PermissionService.getAuthUser().then(function(AuthUser) {
-				$rootScope.perms.admin = AuthUser.id > 0 ? AuthUser.admin : false;
-			});
-		});
+		let AuthUser = PermissionService.getAuthUser();
+		$rootScope.perms.admin = AuthUser.id > 0 ? AuthUser.admin : false;
 
 		$scope.isNavCollapsed = true;
 		$scope.isActiveBaseUri = function(baseUri) {
@@ -98,6 +95,7 @@ angular.module('BaseControllers', [])
 		$scope.User = {};
 		$scope.creatingUser = true;
 		$scope.submitDisabled = false;
+		$scope.cancel = '/';
 
 		function hidePassword() {
 			showPasswordVar = false;
@@ -157,9 +155,7 @@ angular.module('BaseControllers', [])
 	function(TitleService, AuthenticationService, $scope) {
 		TitleService.setTitle('404 Page Not Found');
 		$scope.url = '/';
-		AuthenticationService.isAuthenticated().then(function(authenticated) {
-			$scope.url = authenticated ? '/home' : '/';
-		});
+		$scope.url = AuthenticationService.isAuthenticated() ? '/home' : '/';
 	}
 ])
 ;

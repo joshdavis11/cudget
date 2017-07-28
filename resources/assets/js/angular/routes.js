@@ -21,7 +21,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('budget_templates', 'add');
+						return PermissionService.checkPermission('budgetTemplates', false);
 					}
 				],
 				Budgets: ['BudgetService',
@@ -37,7 +37,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('budget_templates', 'update')
+						return PermissionService.checkPermission('budgetTemplates', false)
 					}
 				],
 				BudgetTemplate: ['BudgetService', '$route',
@@ -53,7 +53,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 						function(PermissionService) {
-						return PermissionService.checkPermission('budget_sharing', 'add')
+						return PermissionService.checkPermission('budgetTemplates', false)
 					}
 				],
 				ShareData: ['BudgetService', '$route', '$location',
@@ -73,7 +73,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('budget_templates', 'view')
+						return PermissionService.checkPermission('budgetTemplates', false)
 					}
 				],
 				BudgetTemplate: ['BudgetService', '$route', '$location',
@@ -93,7 +93,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('budget_templates', 'view')
+						return PermissionService.checkPermission('budgetTemplates', false)
 					}
 				],
 				BudgetTemplates: ['BudgetService',
@@ -107,11 +107,6 @@ angular.module('CudgetRoutes', [])
 			template: require('../../pug/views/budgets/budget-create-form.pug'),
 			controller: 'BudgetCreateController',
 			resolve: {
-				checkPermission: ['PermissionService',
-					function(PermissionService) {
-						return PermissionService.checkPermission('budgets', 'add')
-					}
-				],
 				BudgetTemplates: ['BudgetService',
 					function(BudgetService) {
 						return BudgetService.getBudgetTemplates();
@@ -123,11 +118,6 @@ angular.module('CudgetRoutes', [])
 			template: require('../../pug/views/budgets/budget-edit-form.pug'),
 			controller: 'BudgetEditController',
 			resolve: {
-				checkPermission: ['PermissionService',
-					function(PermissionService) {
-						return PermissionService.checkPermission('budgets', 'update')
-					}
-				],
 				Budget: ['BudgetService', '$route',
 					function(BudgetService, $route) {
 						return BudgetService.getBudget($route.current.params.id);
@@ -141,7 +131,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('budget_sharing', 'add')
+						return PermissionService.checkPermission('budgetTemplates', false)
 					}
 				],
 				ShareData: ['BudgetService', '$route', '$location',
@@ -159,11 +149,6 @@ angular.module('CudgetRoutes', [])
 			template: require('../../pug/views/budgets/budget.pug'),
 			controller: 'BudgetController',
 			resolve: {
-				checkPermission: ['PermissionService',
-					function(PermissionService) {
-						return PermissionService.checkPermission('budgets', 'view')
-					}
-				],
 				Budget: ['BudgetService', '$route', '$location',
 					function(BudgetService, $route, $location) {
 						return BudgetService.getBudget($route.current.params.id).then(function(Budget) {
@@ -189,11 +174,6 @@ angular.module('CudgetRoutes', [])
 			template: require('../../pug/views/budgets/budgets.pug'),
 			controller: 'BudgetsController',
 			resolve: {
-				checkPermission: ['PermissionService',
-					function(PermissionService) {
-						return PermissionService.checkPermission('budgets', 'view')
-					}
-				],
 				Budgets: ['BudgetService',
 					function(BudgetService) {
 						return BudgetService.getBudgets();
@@ -207,32 +187,20 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('import', 'view')
+						return PermissionService.checkPermission('import', false)
 					}
 				]
 			}
 		})
 		.when('/expenses/create', {
 			template: require('../../pug/views/expenses/expense-create.pug'),
-			controller: 'ExpenseCreateController',
-			resolve: {
-				checkPermission: ['PermissionService',
-					function(PermissionService) {
-						return PermissionService.checkPermission('expenses', 'add')
-					}
-				]
-			}
+			controller: 'ExpenseCreateController'
 		})
 		.when('/expenses', {
 			template: require('../../pug/views/expenses/expenses.pug'),
 			controller: 'ExpenseController',
 			reloadOnSearch: false,
 			resolve: {
-				checkPermission: ['PermissionService',
-					function(PermissionService) {
-						return PermissionService.checkPermission('expenses', 'view')
-					}
-				],
 				Expenses: ['ExpenseService',
 					function(ExpenseService) {
 						return ExpenseService.getExpenses();
@@ -247,25 +215,13 @@ angular.module('CudgetRoutes', [])
 		})
 		.when('/income/create', {
 			template: require('../../pug/views/income/income-create.pug'),
-			controller: 'IncomeCreateController',
-			resolve: {
-				checkPermission: ['PermissionService',
-					function(PermissionService) {
-						return PermissionService.checkPermission('income', 'add')
-					}
-				]
-			}
+			controller: 'IncomeCreateController'
 		})
 		.when('/income', {
 			template: require('../../pug/views/income/income.pug'),
 			controller: 'IncomeController',
 			reloadOnSearch: false,
 			resolve: {
-				checkPermission: ['PermissionService',
-					function(PermissionService) {
-						return PermissionService.checkPermission('income', 'view')
-					}
-				],
 				Incomes: ['IncomeService',
 					function(IncomeService) {
 						return IncomeService.getIncome();
@@ -284,7 +240,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('color_scheme', 'view')
+						return PermissionService.checkPermission('colorScheme', false)
 					}
 				]
 			}
@@ -295,7 +251,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('user_management', 'add')
+						return PermissionService.checkPermission('user_management', true)
 					}
 				]
 			}
@@ -306,7 +262,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('user_management', 'update')
+						return PermissionService.checkPermission('user_management', true)
 					}
 				],
 				User: ['UsersService', '$route',
@@ -322,7 +278,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('user_management', 'update')
+						return PermissionService.checkPermission('user_management', true)
 					}
 				],
 				User: ['UsersService', '$route',
@@ -338,12 +294,12 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('user_management', 'update')
+						return PermissionService.checkPermission('user_management', true)
 					}
 				],
-				Permissions: ['UsersService', '$route',
-					function(UsersService, $route) {
-						return UsersService.getFormattedPermissions($route.current.params.id);
+				UserPermissions: ['PermissionService', '$route',
+					function(PermissionService, $route) {
+						return PermissionService.getUserPerms($route.current.params.id);
 					}
 				],
 				User: ['UsersService', '$route',
@@ -359,7 +315,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('user_management', 'view')
+						return PermissionService.checkPermission('user_management', true)
 					}
 				],
 				Users: ['UsersService',
@@ -375,7 +331,7 @@ angular.module('CudgetRoutes', [])
 			resolve: {
 				checkPermission: ['PermissionService',
 					function(PermissionService) {
-						return PermissionService.checkPermission('settings', 'update')
+						return PermissionService.checkPermission('settings', true)
 					}
 				]
 			}

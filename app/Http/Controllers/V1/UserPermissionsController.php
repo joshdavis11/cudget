@@ -4,7 +4,9 @@ namespace App\Http\Controllers\V1;
 
 use App\Exceptions\InvalidDataException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Permissions\CreateUserPermissionRequest;
 use App\Services\UserService;
+use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -24,11 +26,36 @@ class UserPermissionsController extends Controller {
 	}
 
 	/**
-	 * Display a listing of the resource.
+	 * Get perms for the authenticated user
+	 *
+	 * @param UserService $UserService
+	 * @param AuthManager $Auth
 	 *
 	 * @return Response
 	 */
-	public function index($userId) {
+	public function perms(UserService $UserService, AuthManager $Auth) {
+		return new Response($UserService->getUserPermissions($Auth->user()->id));
+	}
+
+	/**
+	 * Get the authenticated user
+	 *
+	 * @param AuthManager $Auth
+	 *
+	 * @return Response
+	 */
+	public function authUser(AuthManager $Auth) {
+		return new Response($Auth->user());
+	}
+
+	/**
+	 * Display a listing of the resource.
+	 *
+	 * @param int $userId
+	 *
+	 * @return Response
+	 */
+	public function index(int $userId) {
 		return new Response($this->UserService->getUserPermissions($userId));
 	}
 
@@ -44,17 +71,12 @@ class UserPermissionsController extends Controller {
 	/**
 	 * Store a newly created resource in storage.
 	 *
-	 * @param Request $Request
+	 * @param CreateUserPermissionRequest $Request
 	 *
 	 * @return Response
 	 */
-	public function store(Request $Request) {
-		try {
-			$UserPermission = $this->UserService->createUserPermission($Request);
-		} catch (InvalidDataException $InvalidDataException) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
-		}
-
+	public function store(CreateUserPermissionRequest $Request) {
+		$UserPermission = $this->UserService->createUserPermission($Request);
 		return new Response($UserPermission, Response::HTTP_CREATED, ['Location' => '/api/users/' . $UserPermission->userId . '/permissions/' . $UserPermission->id]);
 	}
 
@@ -91,23 +113,28 @@ class UserPermissionsController extends Controller {
 	 * @return Response
 	 */
 	public function update($userId, $id, Request $Request) {
-		try {
-			$this->UserService->updateUserPermission((int)$userId, (int)$id, $Request);
-		} catch (InvalidDataException $InvalidDataException) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
-		}
-
-		return new Response('Updated');
+//		try {
+//			$this->UserService->updateUserPermission((int)$userId, (int)$id, $Request);
+//		} catch (InvalidDataException $InvalidDataException) {
+//			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+//		}
+//
+//		return new Response('Updated');
 	}
 
 	/**
 	 * Remove the specified resource from storage.
 	 *
-	 * @param  int $id
+	 * @param int $userId
+	 * @param int $id
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id) {
-		//
+	public function destroy(int $userId, int $id) {
+		if (!$this->UserService->deleteUserPermission($userId, $id)) {
+			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		}
+
+		return new Response('Deleted');
 	}
 }

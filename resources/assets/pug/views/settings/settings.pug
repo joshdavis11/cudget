@@ -7,7 +7,7 @@
 				li.active Settings
 			.page-header
 				h1.center Settings
-			.col-xs-12.col-sm-6.col-md-4.col-lg-3(ng-if="perms.admin || perms.user_management.view.access")
+			.col-xs-12.col-sm-6.col-md-4.col-lg-3(ng-if="perms.admin")
 				.panel.panel-primary
 					.panel-heading
 						h3.panel-title User Management
@@ -17,7 +17,7 @@
 								a(href="/settings/users") User Management Home
 							li
 								a(href="/settings/users/create") + Create A New User
-			.col-xs-12.col-sm-6.col-md-4.col-lg-3(ng-if="perms.admin || perms.color_scheme.view.access")
+			.col-xs-12.col-sm-6.col-md-4.col-lg-3(ng-if="perms.admin || perms.colorScheme")
 				.panel.panel-primary
 					.panel-heading
 						h3.panel-title Color Scheme

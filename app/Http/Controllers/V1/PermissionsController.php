@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
+use App\Model\Permission;
 use App\Services\UserService;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 /**
@@ -14,25 +16,75 @@ use Illuminate\Http\Response;
  */
 class PermissionsController extends Controller {
 	/**
-	 * Get perms for the authenticated user
-	 *
-	 * @param UserService $UserService
-	 * @param AuthManager $Auth
+	 * Display a listing of the resource.
 	 *
 	 * @return Response
 	 */
-	public function perms(UserService $UserService, AuthManager $Auth) {
-		return new Response($UserService->getUserPermissions($Auth->user()->id));
+	public function index() {
+		return new Response(Permission::all());
 	}
 
 	/**
-	 * Get the authenticated user
+	 * Show the form for creating a new resource.
 	 *
-	 * @param AuthManager $Auth
+	 * @return \Illuminate\Http\Response
+	 */
+	public function create() {
+		//
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @param Request $Request
 	 *
 	 * @return Response
 	 */
-	public function authUser(AuthManager $Auth) {
-		return new Response($Auth->user());
+	public function store(Request $Request) {
+
+	}
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param int $id
+	 *
+	 * @return Response
+	 */
+	public function show(int $id) {
+		return new Response(Permission::findOrFail($id));
+	}
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function edit($id) {
+		//
+	}
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param Request $Request
+	 *
+	 * @return Response
+	 */
+	public function update(Request $Request) {
+
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int $id
+	 *
+	 * @return \Illuminate\Http\Response
+	 */
+	public function destroy($id) {
+		//
 	}
 }

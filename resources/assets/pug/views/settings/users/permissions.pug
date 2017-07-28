@@ -17,18 +17,9 @@
 				thead
 					tr
 						th
-						th Create
-						th Delete
-						th Edit
-						th View
+						th Enabled?
 				tbody
-					tr.js-user-permissions-tr(ng-repeat="Section in Sections")
-						td {{ Section.name }}
-						td(ng-click="clickColumn(Section.create, Section.value, 'add')")
-							input(type="checkbox", ng-if="Section.create", ng-model="User.Permissions[Section.value]['add'].access")
-						td(ng-click="clickColumn(Section.delete, Section.value, 'delete')")
-							input(type="checkbox", ng-if="Section.delete", ng-model="User.Permissions[Section.value]['delete'].access")
-						td(ng-click="clickColumn(Section.edit, Section.value, 'update')")
-							input(type="checkbox", ng-if="Section.edit", ng-model="User.Permissions[Section.value]['update'].access")
-						td(ng-click="clickColumn(Section.view, Section.value, 'view')")
-							input(type="checkbox", ng-if="Section.view", ng-model="User.Permissions[Section.value]['view'].access")
+					tr.js-user-permissions-tr(ng-repeat="Permission in Permissions")
+						td {{ Permission.name }} {{ Permissions.clicked ? 'yes' : 'no' }}
+						td(ng-click="clickColumn(Permission)")
+							input(type="checkbox", ng-model="Permission.clicked", ng-disabled="User.admin")

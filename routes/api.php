@@ -23,8 +23,9 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 	$router->group(['prefix' => 'v1'], function(Router $router) {
 
 		//Perms
-		$router->get('perms', V1\PermissionsController::class . '@perms');
-		$router->get('auth/user', V1\PermissionsController::class . '@authUser');
+		$router->resource('permissions', V1\PermissionsController::class);
+		$router->get('myperms', V1\UserPermissionsController::class . '@perms');
+		$router->get('auth/user', V1\UserPermissionsController::class . '@authUser');
 
 		//Budget routes
 		$router->group(['prefix' => 'budgets'], function(Router $router) {

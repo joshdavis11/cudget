@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Exceptions\InvalidDataException;
 use App\Exceptions\PermissionsException;
+use App\Http\Requests\Permissions\CreateUserPermissionRequest;
+use App\Model\Permission;
 use App\Model\User;
 use App\Model\UserPermission;
 use Illuminate\Auth\AuthManager;
@@ -42,13 +44,33 @@ class UserService {
 	 */
 	public function createUser(Request $Request) {
 		$data = $Request->only(['firstName', 'lastName', 'email', 'repeatEmail', 'username', 'phone', 'password', 'repeatPassword', 'admin']);
-		if (User::validate($data)) {
-			$errors = User::errors();
-			throw new InvalidDataException(implode(', ', $errors->getMessages()));
-		}
 		$data['password'] = Hash::make($data['password']);
+		$User = User::create($data);
+		$this->createNewUserPermissions($User->id);
 
-		return User::create($data);
+		return $User;
+	}
+
+	/**
+	 * Create new user permissions. Currently they get access to Import, Budget Templates, and Color Scheme.
+	 *
+	 * @param int $userId
+	 *
+	 * @return void
+	 */
+	private function createNewUserPermissions(int $userId) {
+		$Permissions = Permission
+			::where('name', '=', 'Import')
+			->orWhere('name', '=', 'Budget Templates')
+			->orWhere('name', '=', 'Color Scheme')
+			->get();
+
+		foreach ($Permissions as $Permission) {
+			$UserPermission = new UserPermission();
+			$UserPermission->userId = $userId;
+			$UserPermission->permissionId = $Permission->id;
+			$UserPermission->save();
+		}
 	}
 
 	/**
@@ -126,7 +148,7 @@ class UserService {
 	 * @return Collection
 	 */
 	public function getUserPermissions($userId) {
-		return UserPermission::where('user_id', '=', $userId)->get();
+		return UserPermission::with('permission')->where('user_id', '=', $userId)->get();
 	}
 
 	/**
@@ -173,18 +195,13 @@ class UserService {
 	/**
 	 * Create a user permission
 	 *
-	 * @param Request $Request
+	 * @param CreateUserPermissionRequest $Request
 	 *
 	 * @return UserPermission
 	 * @throws InvalidDataException
 	 */
-	public function createUserPermission(Request $Request) {
-		$data = $Request->only(['access', 'permission', 'section', 'userId']);
-		if (UserPermission::validate($data)) {
-			$errors = UserPermission::errors();
-			throw new InvalidDataException(implode(', ', $errors->getMessages()));
-		}
-
+	public function createUserPermission(CreateUserPermissionRequest $Request) {
+		$data = $Request->only(['permissionId', 'userId']);
 		return UserPermission::create($data);
 	}
 
@@ -208,5 +225,17 @@ class UserService {
 		}
 
 		return $this->getUserPermission($userId, $id)->update($data);
+	}
+
+	/**
+	 * Delete a User Permission
+	 *
+	 * @param int $userId
+	 * @param int $id
+	 *
+	 * @return bool|null
+	 */
+	public function deleteUserPermission(int $userId, int $id) {
+		return UserPermission::where('user_id', '=', $userId)->where('id', '=', $id)->delete();
 	}
 }

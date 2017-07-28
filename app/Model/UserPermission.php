@@ -13,9 +13,7 @@ class UserPermission extends BaseModel {
 	 */
 	static protected $rules = [
 		'user_id' => 'required|integer',
-		'section' => 'required|string',
-		'permission' => 'required|string|in:add,delete,update,view',
-		'access' => 'required|boolean',
+		'permission_id' => 'required|integer',
 	];
 
 	/**
@@ -26,7 +24,7 @@ class UserPermission extends BaseModel {
 	protected $casts = [
 		'id' => 'int',
 		'user_id' => 'int',
-		'access' => 'bool',
+		'permission_id' => 'int',
 	];
 
 	/**
@@ -34,7 +32,7 @@ class UserPermission extends BaseModel {
 	 *
 	 * @var array
 	 */
-	protected $fillable = ['userId', 'section', 'permission', 'access'];
+	protected $fillable = ['userId', 'permissionId',];
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -50,5 +48,14 @@ class UserPermission extends BaseModel {
 	 */
     public function user() {
 		return $this->belongsTo(User::class);
+	}
+
+	/**
+	 * Get the permission
+	 *
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+	 */
+	public function permission() {
+    	return $this->belongsTo(Permission::class);
 	}
 }
