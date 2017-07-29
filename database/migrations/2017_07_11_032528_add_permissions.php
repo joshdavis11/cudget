@@ -18,7 +18,7 @@ class AddPermissions extends Migration {
 			['name' => 'Import', 'definition' => 'import', 'created_at' => Carbon::now(),],
 			['name' => 'Budget Templates', 'definition' => 'budgetTemplates', 'created_at' => Carbon::now(),],
 			['name' => 'Color Scheme', 'definition' => 'colorScheme', 'created_at' => Carbon::now(),],
-			['name' => 'Budget Sharing', 'definition' => 'budgetTemplates', 'created_at' => Carbon::now(),],
+			['name' => 'Budget Sharing', 'definition' => 'budgetSharing', 'created_at' => Carbon::now(),],
 		]);
 	}
 
