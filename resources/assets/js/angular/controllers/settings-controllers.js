@@ -64,6 +64,7 @@ angular.module('SettingsControllers', [])
 		$scope.title = 'Create A New User';
 		TitleService.setTitle($scope.title);
 		$scope.User = {};
+		$scope.create = 'Create New User';
 		$scope.creatingUser = true;
 		$scope.cancel = '/settings/users';
 
@@ -118,6 +119,7 @@ angular.module('SettingsControllers', [])
 	function(User, $scope, TitleService, UsersService, $location) {
 		$scope.breadcrumb = $scope.title = 'Edit User';
 		TitleService.setTitle($scope.title);
+		$scope.create = 'Save Changes';
 		$scope.creatingUser = false;
 		$scope.User = User;
 		$scope.cancel = '/settings/users';

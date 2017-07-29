@@ -93,6 +93,7 @@ angular.module('BaseControllers', [])
 
 		TitleService.setTitle('Sign Up');
 		$scope.User = {};
+		$scope.create = 'Create Account';
 		$scope.creatingUser = true;
 		$scope.submitDisabled = false;
 		$scope.cancel = '/';
