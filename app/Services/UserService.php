@@ -60,9 +60,9 @@ class UserService {
 	 */
 	private function createNewUserPermissions(int $userId) {
 		$Permissions = Permission
-			::where('name', '=', 'Import')
-			->orWhere('name', '=', 'Budget Templates')
-			->orWhere('name', '=', 'Color Scheme')
+			::where('definition', '=', 'import')
+			->orWhere('definition', '=', 'budgetTemplates')
+			->orWhere('definition', '=', 'colorScheme')
 			->get();
 
 		foreach ($Permissions as $Permission) {
