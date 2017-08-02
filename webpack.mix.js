@@ -85,7 +85,6 @@ mix.
 	])
 	.sass('resources/assets/sass/app.scss', 'public/css')
 	.pug(readPath, writePath)
-	.sourceMaps()
 	.copy('node_modules/font-awesome/fonts', 'public/fonts')
 	.copy('node_modules/bootswatch/bower_components/bootstrap/fonts', 'public/css/fonts')
 ;
@@ -99,4 +98,7 @@ forEach(getColorNames(), bootswatch => {
 
 if (mix.config.inProduction) {
 	mix.version();
+}
+else {
+	mix.sourceMaps();
 }
