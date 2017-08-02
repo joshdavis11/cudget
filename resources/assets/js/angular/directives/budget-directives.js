@@ -179,15 +179,11 @@ angular.module('BudgetDirectives', [])
 						ui.item.sortable.moved.budgetCategoryRowId = $scope.BudgetCategoryRow.id;
 					},
 					stop: function(event, ui) {
-						angular.forEach(ui.item.sortable.sourceModel, updateBudgetCategoryRowExpenseSorting);
-						angular.forEach(ui.item.sortable.droptargetModel, updateBudgetCategoryRowExpenseSorting);
+						let BudgetCategoryRowExpenses = [];
+						Array.prototype.push.apply(BudgetCategoryRowExpenses, ui.item.sortable.sourceModel);
+						Array.prototype.push.apply(BudgetCategoryRowExpenses, ui.item.sortable.droptargetModel);
 
-						function updateBudgetCategoryRowExpenseSorting(BudgetCategoryRowExpense) {
-							CategoryRowExpenseService.update(BudgetCategoryRowExpense, { ignoreLoadingBar: true })
-								.error(function() {
-									console.error('Budget Category Row Expense didn\'t save new category row correctly');
-								});
-						}
+						CategoryRowExpenseService.bulkUpdate(BudgetCategoryRowExpenses, { ignoreLoadingBar: true });
 						BudgetService.setData($scope.Budget);
 					}
 				};

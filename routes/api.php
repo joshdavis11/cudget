@@ -38,6 +38,7 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 
 				//Budget category rows
 				$router->group(['prefix' => 'rows'], function(Router $router) {
+					$router->put('expenses/bulk', V1\BudgetCategoryRowExpensesController::class . '@bulkUpdate');
 					$router->resource('expenses', V1\BudgetCategoryRowExpensesController::class);
 				});
 				$router->resource('rows', V1\BudgetCategoryRowsController::class);
