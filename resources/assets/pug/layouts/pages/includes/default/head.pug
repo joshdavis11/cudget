@@ -6,4 +6,4 @@ block title
 	title(ng-bind="title || 'Cudget'") Cudget
 
 link(ng-href="/css/@{{ bootswatch }}/bootstrap.min.css", href!="/css/{{ $bootswatch }}/bootstrap.min.css" rel="stylesheet" type="text/css")
-link(href="/css/app.css" rel="stylesheet" type="text/css")
+link(href="{{ mix('/css/app.css') }}" rel="stylesheet" type="text/css")
