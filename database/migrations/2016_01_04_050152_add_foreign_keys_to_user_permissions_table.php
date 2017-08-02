@@ -12,6 +12,7 @@ class AddForeignKeysToUserPermissionsTable extends Migration {
 	public function up() {
 		Schema::table('user_permissions', function (Blueprint $table) {
 			$table->foreign('user_id', 'user_permissions_user_id')->references('id')->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
+			$table->foreign('permission_id', 'user_permissions_permission_id')->references('id')->on('permissions')->onUpdate('CASCADE')->onDelete('CASCADE');
 		});
 	}
 
