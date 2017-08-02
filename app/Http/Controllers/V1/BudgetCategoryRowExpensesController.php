@@ -96,17 +96,27 @@ class BudgetCategoryRowExpensesController extends Controller {
 	 * Update the specified resource in storage.
 	 *
 	 * @param  Request $request
-	 * @param  int                      $id
+	 * @param  int     $id
 	 *
 	 * @return Response
 	 */
 	public function update(Request $request, $id) {
-		try {
-			$this->BudgetService->updateBudgetCategoryRowExpense($id, $request);
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		$this->BudgetService->updateBudgetCategoryRowExpense($id, $request);
+		return new Response(null, Response::HTTP_OK);
+	}
+
+	/**
+	 * Update the specified resources in storage.
+	 *
+	 * @param Request $Request
+	 *
+	 * @return Response
+	 */
+	public function bulkUpdate(Request $Request) {
+		foreach ($Request->all() as $arrayOfData) {
+			$this->BudgetService->updateBudgetCategoryRowExpense($arrayOfData['id'], new Request($arrayOfData));
 		}
-		return new Response([], Response::HTTP_OK, ['Content-Type' => 'application/json']);
+		return new Response(null, Response::HTTP_OK);
 	}
 
 	/**

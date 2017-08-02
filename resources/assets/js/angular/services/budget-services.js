@@ -245,6 +245,10 @@ angular.module('BudgetServices', [])
 		this.update = function(BudgetCategoryRowExpense, options) {
 			return $http.put('/api/v1/budgets/categories/rows/expenses/' + BudgetCategoryRowExpense.id, BudgetCategoryRowExpense, options);
 		};
+
+		this.bulkUpdate = function(BudgetCategoryRowExpenses, options) {
+			return $http.put('/api/v1/budgets/categories/rows/expenses/bulk', BudgetCategoryRowExpenses, options);
+		};
 	}
 ])
 ;
