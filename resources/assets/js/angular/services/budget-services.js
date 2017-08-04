@@ -76,14 +76,14 @@ angular.module('BudgetServices', [])
 		};
 
 		this.editBudget = function(Budget, options) {
-			$http.put('/api/v1/budgets/' + Budget.id, Budget, options).then(function(response) {
-				return response;
+			return $http.put('/api/v1/budgets/' + Budget.id, Budget, options).then(function(response) {
+				return response.data;
 			});
 		};
 
 		this.editBudgetTemplate = function(BudgetTemplate, options) {
-			$http.put('/api/v1/budgets/templates/' + BudgetTemplate.id, BudgetTemplate, options).then(function(response) {
-				return response;
+			return $http.put('/api/v1/budgets/templates/' + BudgetTemplate.id, BudgetTemplate, options).then(function(response) {
+				return response.data;
 			});
 		};
 
