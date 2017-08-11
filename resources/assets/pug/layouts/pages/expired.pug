@@ -1,0 +1,18 @@
+doctype html
+html(lang="en")
+	block head
+		head
+			include includes/prelogin/head.pug
+	body
+		.container
+			.row
+				.col-xs-0.col-sm-2.col-md-3.col-lg-3
+				#token-expired.col-xs-12.col-sm-8.col-md-6.col-lg-6
+					.panel.panel-primary
+						.panel-heading
+							h2.panel-title Token Expired
+						.panel-body I'm sorry but your token expired. You can request a new one, though!
+						.panel-footer
+							.btn-toolbar
+								a.btn.btn-primary(href="/activate/new/{{ $token }}") Can I get a new link, please!
+				.col-xs-0.col-sm-2.col-md-3.col-lg-3

@@ -41,6 +41,7 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
 	protected $casts = [
 		'id' => 'int',
 		'admin' => 'bool',
+		'email_verified' => 'bool',
 	];
 
 	/**

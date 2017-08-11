@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Http\Auth\CudgetSessionGuard;
+use Illuminate\Contracts\Session\Session;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Class AuthServiceProvider

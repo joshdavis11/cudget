@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\Auth\ActivationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\PreLoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -25,6 +26,8 @@ $router->get('password/reset', ForgotPasswordController::class . '@showLinkReque
 $router->post('password/email', ForgotPasswordController::class . '@sendResetLinkEmail')->name('password.email');
 $router->get('password/reset/{token}', ResetPasswordController::class . '@showResetForm')->name('password.reset');
 $router->post('password/reset', ResetPasswordController::class . '@reset');
+$router->get('activate/new/{token}', ActivationController::class . '@new')->name('activation.new');
+$router->get('activate/{token}', ActivationController::class . '@activate')->name('activation');
 
 $router->group(['middleware' => 'auth'], function(Router $router) {
 	$router->get('logout', PreLoginController::class . '@logout')->name('logout');

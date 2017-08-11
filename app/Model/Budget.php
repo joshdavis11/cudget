@@ -49,7 +49,7 @@ class Budget extends BaseModel {
 	/**
 	 * sharedBudget
 	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\HasOne
+	 * @return \Illuminate\Database\Eloquent\Relations\HasMany
 	 */
 	public function sharedBudget() {
 		return $this->hasMany(SharedBudget::class);

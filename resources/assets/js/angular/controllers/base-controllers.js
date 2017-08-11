@@ -1,3 +1,12 @@
+import {
+	isEmpty,
+	isString
+} from 'lodash';
+
+import {
+	forEach
+} from 'angular';
+
 angular.module('BaseControllers', [])
 .controller('MasterController', ['$scope', '$timeout', 'uibPaginationConfig', '$location',
 	function($scope, $timeout, uibPaginationConfig, $location) {
@@ -86,8 +95,8 @@ angular.module('BaseControllers', [])
 		$scope.csrf = window.csrf;
 	}
 ])
-.controller('SignUpController', ['TitleService', '$scope', '$http', '$window',
-	function(TitleService, $scope, $http, $window) {
+.controller('SignUpController', ['TitleService', '$scope', '$http', '$location', 'MessageService',
+	function(TitleService, $scope, $http, $location, MessageService) {
 		let showPasswordVar = false;
 		let showRepeatPasswordVar = false;
 
@@ -139,13 +148,10 @@ angular.module('BaseControllers', [])
 		};
 
 		$scope.submit = function() {
+			$scope.submitDisabled = true;
 			$http.post('/api/v1/signup', $scope.User).then(function() {
-				$scope.submitDisabled = true;
-				$http.post('/login', $scope.User).then(function() {
-					$window.location.href = '/home';
-				}, function() {
-					$scope.submitDisabled = false;
-				});
+				MessageService.message('You will receive an email shortly containing a verification link. Please wait until you\'ve received this email before logging in.').info();
+				$location.path('/login');
 			}, function() {
 				$scope.submitDisabled = false;
 			});
@@ -157,6 +163,41 @@ angular.module('BaseControllers', [])
 		TitleService.setTitle('404 Page Not Found');
 		$scope.url = '/';
 		$scope.url = AuthenticationService.isAuthenticated() ? '/home' : '/';
+	}
+])
+.controller('MessageController', ['$scope', 'MessageService',
+	function($scope, MessageService) {
+		$scope.data = MessageService.getData();
+		$scope.closeMessage = function() {
+			$scope.data.showMessage = false;
+		};
+
+		function getMessageInfo(messages) {
+			let pageLoadMessage = '';
+			forEach(messages, function(arrayOfMessages) {
+				if(isString(arrayOfMessages)) {
+					pageLoadMessage += arrayOfMessages + '<br />';
+				}
+				else {
+					forEach(arrayOfMessages, function(message) {
+						pageLoadMessage += message + '<br />';
+					});
+				}
+			});
+
+			return pageLoadMessage;
+		}
+
+
+		if(!isEmpty(window.info)) {
+			MessageService.message(window.info).info();
+		}
+
+		if(!isEmpty(window.errors)) {
+			let pageLoadMessage = getMessageInfo(window.errors);
+
+			MessageService.message(pageLoadMessage).error();
+		}
 	}
 ])
 ;

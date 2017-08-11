@@ -4,12 +4,19 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\SignUpUserRequest;
+use App\Mail\Signup;
 use App\Services\UserService;
+use App\Services\UserTokenService;
+use App\Utilities\SignupEmailUtility;
+use DateTime;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Mail\Mailer;
+use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 /**
  * Class PreLoginController
@@ -28,7 +35,9 @@ class PreLoginController extends Controller {
 	|
 	*/
 
-	use AuthenticatesUsers;
+	use AuthenticatesUsers {
+		credentials as credentialsTrait;
+	}
 	/**
 	 * Where to redirect users after login.
 	 *
@@ -87,6 +96,18 @@ class PreLoginController extends Controller {
     }
 
 	/**
+	 * Get the needed authorization credentials from the request.
+	 *
+	 * @param  \Illuminate\Http\Request $request
+	 *
+	 * @return array
+	 */
+	protected function credentials(Request $request) {
+		$data = $this->credentialsTrait($request);
+		return array_add($data, 'email_verified', true);
+	}
+
+	/**
 	 * Is the user authenticated?
 	 *
 	 * @return Response
@@ -98,14 +119,23 @@ class PreLoginController extends Controller {
 	/**
 	 * Sign Up
 	 *
-	 * @param SignUpUserRequest $Request
-	 * @param UserService       $UserService
+	 * @param SignUpUserRequest  $Request
+	 * @param UserService        $UserService
+	 * @param UserTokenService   $UserTokenService
+	 * @param SignUpEmailUtility $SignUpEmailUtility
 	 *
 	 * @return Response
 	 */
-	public function signup(SignUpUserRequest $Request, UserService $UserService): Response {
+	public function signup(SignUpUserRequest $Request, UserService $UserService, UserTokenService $UserTokenService, SignUpEmailUtility $SignUpEmailUtility): Response {
     	$Request->merge(['admin' => false]);
 		$User = $UserService->createUser($Request);
+
+		$expires = new DateTime('+1 day');
+		$UserToken = $UserTokenService->createToken($User->id, $expires);
+
+		//Send new email
+		$SignUpEmailUtility->send($User, $UserToken);
+
 		return new Response('Created', Response::HTTP_CREATED, ['Location' => '/api/v1/users/' . $User->id]);
 	}
 }

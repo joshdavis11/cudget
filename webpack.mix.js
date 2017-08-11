@@ -7,8 +7,6 @@ const fs = require('fs');
 const pugOptions = {
 	pretty: !mix.config.inProduction
 };
-const readPath = './resources/assets/pug/layouts/pages/';
-const writePath = './resources/views/';
 
 /**
  * Render pug files in a given directory to a given directory
@@ -17,13 +15,13 @@ const writePath = './resources/views/';
  * @param writePath
  */
 function renderPugFilesInDir(readPath, writePath) {
+	checkForAndCreateDirectory(writePath);
+
 	fs.readdir(readPath, (err, files) => {
 		files.forEach(filename => {
 			let fileStat = fs.lstatSync(readPath + filename);
 			if (fileStat.isDirectory()) {
-				if (!fs.existsSync(writePath + filename + '/')) {
-					fs.mkdirSync(writePath + filename + '/');
-				}
+				checkForAndCreateDirectory(writePath + filename);
 				renderPugFilesInDir(readPath + filename + '/', writePath + filename + '/');
 			} else if (fileStat.isFile(filename)) {
 				fs.writeFile(writePath + filename.replace('.pug', '.blade.php'), pug.renderFile(readPath + filename, pugOptions));
@@ -32,6 +30,17 @@ function renderPugFilesInDir(readPath, writePath) {
 	});
 
 	return this;
+}
+
+/**
+ * Check for and create a directory if it doesn't exist
+ *
+ * @param writePath
+ */
+function checkForAndCreateDirectory(writePath) {
+	if (!fs.existsSync(writePath + '/')) {
+		fs.mkdirSync(writePath + '/');
+	}
 }
 
 mix.pug = renderPugFilesInDir;
@@ -84,7 +93,8 @@ mix.
 		'ng-file-upload'
 	])
 	.sass('resources/assets/sass/app.scss', 'public/css')
-	.pug(readPath, writePath)
+	.pug('./resources/assets/pug/layouts/pages/', './resources/views/')
+	.pug('./resources/assets/pug/emails/', './resources/views/emails/')
 	.copy('node_modules/font-awesome/fonts', 'public/fonts')
 	.copy('node_modules/bootswatch/bower_components/bootstrap/fonts', 'public/css/fonts')
 ;

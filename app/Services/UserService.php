@@ -81,7 +81,7 @@ class UserService {
 	 * @return User
 	 * @throws ModelNotFoundException
 	 */
-	public function getUser($id) {
+	public function getUser(int $id) {
 		return User::findOrFail($id);
 	}
 

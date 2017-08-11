@@ -4,6 +4,18 @@ div#footer.footer.panel-footer
 		p.text-center &copy; 2014-{{ $year }} Cudget
 
 script(type="text/javascript") window.bootswatch = '{{ $bootswatch }}'; window.csrf = '{{ $csrf }}'; window.AuthUser = {!! $AuthUser !!}; window.perms = {!! $perms !!};
+	| window.errors = @if(Session::has('errors'))
+	|    {!! json_encode(session('errors')->toArray()) !!}
+	| @else
+	|    {{ '{}' }}
+	| @endif
+	| ;
+	| window.info = @if(Session::has('info'))
+	|    {!! json_encode(session('info')) !!}
+	| @else
+	|    {{ '{}' }}
+	| @endif
+	| ;
 script(src="{{ mix('/js/manifest.js') }}" type="text/javascript")
 script(src="{{ mix('/js/vendor.js') }}" type="text/javascript")
 script(src="{{ mix('/js/app.js') }}" type="text/javascript")

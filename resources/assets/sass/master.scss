@@ -96,16 +96,18 @@ html {
 	height: 50px;
 }
 
-#session-message {
+.message {
 	position: fixed;
-	top: 0px;
+	top: -15px;
 	margin: 0 auto;
 	left: 0;
 	right: 0;
 	text-align: center;
 	z-index: 100000;
 	opacity: 0.95;
-	display: none;
+	border-top-right-radius: 0;
+	border-top-left-radius: 0;
+	padding-top: 30px;
 }
 
 .center {
@@ -226,6 +228,11 @@ html {
 	#loginContainer {
 		margin-top: 100px;
 	}
+
+	#email-verification,
+	#token-expired {
+		margin-top: 100px;
+	}
 }
 
 .width-33 {
@@ -241,16 +248,29 @@ html {
  *************/
 .fade-animation .ng-enter.ng-enter-active,
 .fade-animation .ng-leave {
-    opacity: 1;
-    -webkit-transition: opacity 300ms linear;
-    -moz-transition: opacity 300ms linear;
-    transition: opacity 300ms linear;
+	opacity: 1;
+	-webkit-transition: opacity 300ms linear;
+	-moz-transition: opacity 300ms linear;
+	transition: opacity 300ms linear;
 }
 
 .fade-animation .ng-leave.ng-leave-active,
 .fade-animation .ng-enter {
-    opacity: 0;
-    -webkit-transition: opacity 300ms linear;
-    -moz-transition: opacity 300ms linear;
-    transition: opacity 300ms linear;
+	opacity: 0;
+	-webkit-transition: opacity 300ms linear;
+	-moz-transition: opacity 300ms linear;
+	transition: opacity 300ms linear;
+}
+
+.message.slide-animation {
+	-webkit-transition: all 0.5s cubic-bezier(0, 0, 0.25, 2);
+	-moz-transition: all 0.5s cubic-bezier(0, 0, 0.25, 2);
+	transition: all 0.5s cubic-bezier(0, 0, 0.25, 2);
+
+	&.ng-hide {
+		-webkit-transition: all 0.5s cubic-bezier(0, 0, 0, 1);
+		-moz-transition: all 0.5s cubic-bezier(0, 0, 0, 1);
+		transition: all 0.5s cubic-bezier(0, 0, 0, 1);
+		top: -68px;
+	}
 }
