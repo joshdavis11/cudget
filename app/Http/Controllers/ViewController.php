@@ -21,7 +21,7 @@ class ViewController extends Controller {
 		$AuthUser = $Auth->user();
 		$Configuration = $SettingsService->getConfigurationForUser($AuthUser->id);
 		$data = [
-			'bootswatch' => !empty($Configuration->bootswatch) ? $Configuration->bootswatch : 'cerulean',
+			'bootswatch' => !empty($Configuration->bootswatch) ? $Configuration->bootswatch : 'flatly',
 			'year' => date('Y'),
 			'csrf' => csrf_token(),
 			'AuthUser' => $AuthUser,
