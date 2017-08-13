@@ -23,6 +23,10 @@ a,
 	margin-top: 60px;
 }
 
+.spacer-30 {
+	height: 30px;
+}
+
 /* make sidebar nav vertical */
 @media (min-width: 768px) {
 	.sidebar-nav .navbar {
@@ -221,6 +225,10 @@ html {
 	position: relative;
 	height: 325px;
 	min-height: 325px;
+}
+
+#loginContainer {
+	margin-top: 30px;
 }
 
 /* Login Container Margin */

@@ -8,40 +8,40 @@ div.navbar.navbar-default.navbar-fixed-top(role="navigation" ng-controller="Head
 				span.icon-bar
 				span.icon-bar
 				span.icon-bar
-			a.navbar-brand(href="/home") Cudget
+			a.navbar-brand(href="/home", ng-click="isNavCollapsed = true") Cudget
 		div.collapse.navbar-collapse.navbar-responsive-collapse(uib-collapse="isNavCollapsed")
 			ul.nav.navbar-nav
 				li(ng-class="{ active: isActiveBaseUri('/') }")
-					a(href="/home") Home
+					a(href="/home", ng-click="isNavCollapsed = true") Home
 
 				li.dropdown(ng-class="{ active: isActiveBaseUri('/budgets') }", uib-dropdown)
 					a(uib-dropdown-toggle) Budgets
 						b.caret
 					ul.dropdown-menu
 						li(ng-class="{ active: isActiveUri('/budgets') }")
-							a(href="/budgets") Budgets
+							a(href="/budgets", ng-click="isNavCollapsed = true") Budgets
 						li(ng-class="{ active: isActiveUri('/budgets/templates') }", ng-if="perms.admin || perms.budgetTemplates")
-							a(href="/budgets/templates") Budget Templates
+							a(href="/budgets/templates", ng-click="isNavCollapsed = true") Budget Templates
 
 				li.dropdown(ng-class="{ active: isActiveBaseUri('/expenses') }", uib-dropdown)
 					a(uib-dropdown-toggle) Expenses
 						b.caret
 					ul.dropdown-menu
 						li(ng-class="{ active: isActiveUri('/expenses') }")
-							a(href="/expenses") Expenses
+							a(href="/expenses", ng-click="isNavCollapsed = true") Expenses
 						li(ng-class="{ active: isActiveUri('/expenses/categories') }")
-							a(href="/expenses/categories") Expense Categories
+							a(href="/expenses/categories", ng-click="isNavCollapsed = true") Expense Categories
 
 				li.dropdown(ng-class="{ active: isActiveBaseUri('/income') }", uib-dropdown)
 					a(uib-dropdown-toggle) Income
 						b.caret
 					ul.dropdown-menu
 						li(ng-class="{ active: isActiveUri('/income') }")
-							a(href="/income") Income
+							a(href="/income", ng-click="isNavCollapsed = true") Income
 						li(ng-class="{ active: isActiveUri('/income/categories') }")
-							a(href="/income/categories") Income Categories
+							a(href="/income/categories", ng-click="isNavCollapsed = true") Income Categories
 				li(ng-class="{ active: isActiveBaseUri('/import') }", ng-if="perms.admin || perms.import")
-					a(href="/import") Import
+					a(href="/import", ng-click="isNavCollapsed = true") Import
 
 			ul.nav.navbar-nav.navbar-right(style="margin-right:0px;")
 				li(ng-class="{ active: isActiveBaseUri('/settings') }", uib-dropdown, ng-if="perms.admin || perms.colorScheme")
@@ -49,11 +49,11 @@ div.navbar.navbar-default.navbar-fixed-top(role="navigation" ng-controller="Head
 						b.caret
 					ul.dropdown-menu
 						li(ng-class="{ active: isActiveUri('/settings') }", ng-if="perms.admin")
-							a(href="/settings") Settings Home
+							a(href="/settings", ng-click="isNavCollapsed = true") Settings Home
 						li(ng-class="{ active: isActiveUri('/settings/users') }", ng-if="perms.admin")
-							a(href="/settings/users") User Management
+							a(href="/settings/users", ng-click="isNavCollapsed = true") User Management
 						li(ng-class="{ active: isActiveUri('/settings/colors') }", ng-if="perms.admin || perms.colorScheme")
-							a(href="/settings/colors") Color Scheme
+							a(href="/settings/colors", ng-click="isNavCollapsed = true") Color Scheme
 				li
 					a(href="/logout" target="_self") Logout
 div.nav-spacer
