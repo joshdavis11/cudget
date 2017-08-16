@@ -85,14 +85,13 @@ angular.module('BaseControllers', [])
 ])
 .controller('LoginController', ['TitleService', '$scope',
 	function(TitleService, $scope) {
-		TitleService.setTitle('Login');
+		TitleService.setTitle('Cudget - Login');
 		$scope.csrf = window.csrf;
 	}
 ])
 .controller('PreLoginController', ['TitleService', '$scope',
 	function(TitleService, $scope) {
-		TitleService.setTitle('Cudget - The Custom Budgeting App!');
-		$scope.csrf = window.csrf;
+		TitleService.setTitle('Cudget');
 	}
 ])
 .controller('SignUpController', ['TitleService', '$scope', '$http', '$location', 'MessageService',
@@ -100,7 +99,7 @@ angular.module('BaseControllers', [])
 		let showPasswordVar = false;
 		let showRepeatPasswordVar = false;
 
-		TitleService.setTitle('Sign Up');
+		TitleService.setTitle('Cudget - Sign Up');
 		$scope.User = {};
 		$scope.create = 'Create Account';
 		$scope.creatingUser = true;
