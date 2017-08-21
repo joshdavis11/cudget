@@ -4,19 +4,15 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\SignUpUserRequest;
-use App\Mail\Signup;
 use App\Services\UserService;
 use App\Services\UserTokenService;
-use App\Utilities\SignupEmailUtility;
+use App\Utilities\SignUpEmailUtility;
 use DateTime;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Mail\Mailer;
-use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
 
 /**
  * Class PreLoginController

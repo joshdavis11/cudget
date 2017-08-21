@@ -3,15 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Mail\Signup;
 use App\Services\UserService;
 use App\Services\UserTokenService;
-use App\Utilities\SignupEmailUtility;
+use App\Utilities\SignUpEmailUtility;
 use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Mail\Mailer;
-use Illuminate\Routing\UrlGenerator;
-use Illuminate\Support\Facades\Session;
 
 /**
  * Class ActivationController
@@ -48,7 +44,7 @@ class ActivationController extends Controller {
 	 * @param string             $token
 	 * @param UserService        $UserService
 	 * @param UserTokenService   $UserTokenService
-	 * @param SignupEmailUtility $SignUpEmailUtility
+	 * @param SignUpEmailUtility $SignUpEmailUtility
 	 * @param Request            $Request
 	 *
 	 * @return \Illuminate\Http\RedirectResponse
