@@ -1,7 +1,7 @@
 div.footer-spacer
 div#footer.footer.panel-footer
 	div.container
-		p.text-center &copy; 2014-{{ $year }} Cudget
+		p.text-center {{ $year }} Cudget
 
 script(type="text/javascript") window.bootswatch = '{{ $bootswatch }}'; window.csrf = '{{ $csrf }}'; window.AuthUser = {!! $AuthUser !!}; window.perms = {!! $perms !!};
 	| window.errors = @if(Session::has('errors'))

@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Model\UserToken;
-use DateTime;
+use DateTimeImmutable;
 use Illuminate\Support\Facades\Hash;
 
 /**
@@ -15,18 +15,18 @@ class UserTokenService {
 	/**
 	 * createToken
 	 *
-	 * @param int           $userId  The user's ID
-	 * @param string|null   $token   The token. If null, a random string will be generated and encrypted.
-	 * @param DateTime|null $expires The DateTime when the token expires. If null, a DateTime of +30 minutes will be generated.
+	 * @param int                    $userId  The user's ID
+	 * @param string|null            $token   The token. If null, a random string will be generated and encrypted.
+	 * @param DateTimeImmutable|null $expires The DateTimeImmutable when the token expires. If null, a DateTimeImmutable of +30 minutes will be generated.
 	 *
 	 * @return UserToken
 	 */
-	public function createToken(int $userId, DateTime $expires = null, string $token = null) {
+	public function createToken(int $userId, DateTimeImmutable $expires = null, string $token = null) {
 		if (null === $expires) {
-			$expires = new DateTime('+30 minutes');
+			$expires = new DateTimeImmutable('+30 minutes');
 		}
 		if (null === $token) {
-			$token = Hash::make(str_random(16));
+			$token = str_random(64);
 		}
 
 		$UserToken = new UserToken();

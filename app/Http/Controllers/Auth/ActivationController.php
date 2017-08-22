@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\UserService;
 use App\Services\UserTokenService;
 use App\Utilities\SignUpEmailUtility;
-use DateTime;
+use DateTimeImmutable;
 use Illuminate\Http\Request;
 
 /**
@@ -55,7 +55,7 @@ class ActivationController extends Controller {
 		$UserToken->delete();
 
 		//Create new token
-		$UserToken = $UserTokenService->createToken($User->id, new DateTime('+1 day'));
+		$UserToken = $UserTokenService->createToken($User->id, new DateTimeImmutable('+1 day'));
 
 		//Send new email
 		$SignUpEmailUtility->send($User, $UserToken);

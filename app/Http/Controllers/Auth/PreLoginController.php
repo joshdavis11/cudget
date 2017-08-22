@@ -7,7 +7,7 @@ use App\Http\Requests\Users\SignUpUserRequest;
 use App\Services\UserService;
 use App\Services\UserTokenService;
 use App\Utilities\SignUpEmailUtility;
-use DateTime;
+use DateTimeImmutable;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
@@ -126,8 +126,7 @@ class PreLoginController extends Controller {
     	$Request->merge(['admin' => false]);
 		$User = $UserService->createUser($Request);
 
-		$expires = new DateTime('+1 day');
-		$UserToken = $UserTokenService->createToken($User->id, $expires);
+		$UserToken = $UserTokenService->createToken($User->id, new DateTimeImmutable('+1 day'));
 
 		//Send new email
 		$SignUpEmailUtility->send($User, $UserToken);
