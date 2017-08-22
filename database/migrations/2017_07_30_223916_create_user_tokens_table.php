@@ -15,7 +15,7 @@ class CreateUserTokensTable extends Migration {
 		Schema::create('user_tokens', function (Blueprint $table) {
 			$table->integer('id', true)->unsigned();
 			$table->integer('user_id')->unsigned();
-			$table->string('token', 16000);
+			$table->string('token');
 			$table->timestamp('expires')->default(DB::raw('CURRENT_TIMESTAMP'));
 			$table->timestamps();
 			$table->foreign('user_id', 'user_tokens_user_id')->references('id')->on('users')->onUpdate('CASCADE')->onDelete('CASCADE');
