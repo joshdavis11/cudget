@@ -33,3 +33,6 @@ $router->group(['middleware' => 'auth'], function(Router $router) {
 	$router->get('logout', PreLoginController::class . '@logout')->name('logout');
 	$router->any('{catchall}', ViewController::class . '@angular')->where('catchall', '^(?!.*[.].*$).*$');
 });
+
+//404
+$router->any('{catchall}', PreLoginController::class . '@preLogin')->where('catchall', '^(?!\/?api).*');
