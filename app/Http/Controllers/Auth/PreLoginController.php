@@ -102,7 +102,7 @@ class PreLoginController extends Controller {
 	 * @return Response
 	 */
 	public function signup(SignUpUserRequest $Request, UserService $UserService, UserTokenService $UserTokenService, SignUpEmailUtility $SignUpEmailUtility): Response {
-    	$Request->merge(['admin' => false]);
+    	$Request->merge(['admin' => false, 'emailVerified' => false]);
 		$User = $UserService->createUser($Request);
 
 		$UserToken = $UserTokenService->createToken($User->id, new DateTimeImmutable('+1 day'));

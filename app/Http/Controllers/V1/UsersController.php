@@ -53,11 +53,8 @@ class UsersController extends Controller {
 	 * @return Response
 	 */
 	public function store(CreateUserRequest $Request) {
-		try {
-			$User = $this->UserService->createUser($Request);
-		} catch (InvalidDataException $Exception) {
-			return new Response('Invalid data', Response::HTTP_BAD_REQUEST);
-		}
+		$Request->merge(['emailVerified' => true]);
+		$User = $this->UserService->createUser($Request);
 		return new Response('Created', Response::HTTP_CREATED, ['Location' => '/api/v1/users/' . $User->id]);
 	}
 

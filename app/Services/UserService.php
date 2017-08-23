@@ -43,7 +43,7 @@ class UserService {
 	 * @throws InvalidDataException
 	 */
 	public function createUser(Request $Request) {
-		$data = $Request->only(['firstName', 'lastName', 'email', 'repeatEmail', 'username', 'phone', 'password', 'repeatPassword', 'admin']);
+		$data = $Request->only(['firstName', 'lastName', 'email', 'repeatEmail', 'username', 'phone', 'password', 'repeatPassword', 'admin', 'emailVerified']);
 		$data['password'] = Hash::make($data['password']);
 		$User = User::create($data);
 		$this->createNewUserPermissions($User->id);
