@@ -48,13 +48,6 @@ class PreLoginController extends Controller {
 	protected $username = 'email';
 
 	/**
-	 * Create a new controller instance.
-	 */
-	public function __construct() {
-		$this->middleware('guest')->except('logout');
-	}
-
-	/**
 	 * Handle a login request to the application.
 	 *
 	 * @param Request $request
