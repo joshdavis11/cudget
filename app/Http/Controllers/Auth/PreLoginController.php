@@ -8,7 +8,6 @@ use App\Services\UserService;
 use App\Services\UserTokenService;
 use App\Utilities\SignUpEmailUtility;
 use DateTimeImmutable;
-use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -53,19 +52,6 @@ class PreLoginController extends Controller {
 	 */
 	public function __construct() {
 		$this->middleware('guest')->except('logout');
-	}
-
-	/**
-	 * Any route before login.
-	 *
-	 * @return View
-	 */
-	public function preLogin() {
-		$data = [
-			'year' => date('Y'),
-			'csrf' => csrf_token()
-		];
-		return view('prelogin', $data);
 	}
 
 	/**

@@ -28,7 +28,9 @@ class UserTokenService {
 		if (null === $token) {
 			$token = str_random(64);
 		}
-
+		if (strlen($token) > 191) {
+			$token = substr($token, 0, 191);
+		}
 		$UserToken = new UserToken();
 		$UserToken->userId = $userId;
 		$UserToken->token = $token;
