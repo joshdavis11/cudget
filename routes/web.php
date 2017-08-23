@@ -35,4 +35,4 @@ $router->group(['middleware' => 'auth'], function(Router $router) {
 });
 
 //404
-$router->any('{catchall}', PreLoginController::class . '@preLogin')->where('catchall', '^(?!\/?api).*');
+//$router->any('{catchall}', PreLoginController::class . '@preLogin')->where('catchall', '^(?!\/?api).*');
