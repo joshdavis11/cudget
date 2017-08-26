@@ -90,10 +90,6 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 
 // /api/v1
 $router->group(['prefix' => 'v1'], function(Router $router) {
-
-	//Authentication
-	$router->get('authenticated', PreLoginController::class . '@isAuthenticated');
-
 	//Sign Up
 	$router->post('signup', PreLoginController::class . '@signup');
 });

@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\Auth\ActivationController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\PreLoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
@@ -31,6 +32,11 @@ $router->group(['middleware' => 'guest'], function(Router $router) {
 	$router->get('activate/new/{token}', ActivationController::class . '@new')->name('activation.new');
 	$router->get('activate/{token}', ActivationController::class . '@activate')->name('activation');
 	$router->get('403', ViewController::class . '@angular')->name('403');
+
+	//web specific routes
+	$router->group(['prefix' => 'web'], function(Router $router) {
+		$router->get('authenticated', PreLoginController::class . '@isAuthenticated');
+	});
 });
 
 //Auth: requires authenticated and redirects if you're not
@@ -84,6 +90,10 @@ $router->group(['middleware' => 'auth'], function(Router $router) {
 		});
 	});
 
+	//web specific routes
+	$router->group(['prefix' => 'web'], function(Router $router) {
+		$router->get('csrf', AuthController::class . '@getCSRF');
+	});
 });
 
 //Catch-all including 404

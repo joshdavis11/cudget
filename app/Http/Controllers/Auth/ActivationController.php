@@ -61,7 +61,7 @@ class ActivationController extends Controller {
 		$SignUpEmailUtility->send($User, $UserToken);
 
 		//Set flash info
-		$Request->session()->flash('info', 'A new account verification email has been sent!');
+		$Request->session()->flash('info', trans('auth.emailVerification'));
 
 		return redirect()->route('login');
 	}

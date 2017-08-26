@@ -15,5 +15,6 @@ return [
 
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
-
+	'inactivity' => 'You have been logged out due to inactivity.',
+	'emailVerification' => 'A new account verification email has been sent!',
 ];

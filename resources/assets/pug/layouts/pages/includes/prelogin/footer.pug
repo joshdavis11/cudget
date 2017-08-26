@@ -4,8 +4,8 @@ div#footer.footer.panel-footer
 		p.text-center {{ $year }} Cudget
 
 script(type="text/javascript") window.csrf = '{{ $csrf }}'; window.AuthUser = { id: 0, admin: false }; window.perms = {};
-	| window.errors = @if(Session::has('errors'))
-	| 	{!! json_encode(session('errors')->toArray()) !!}
+	| window.errors = @if(Session::has('error'))
+	| 	{!! json_encode(session('error')) !!}
 	| @else
 	| 	{{ '{}' }}
 	| @endif

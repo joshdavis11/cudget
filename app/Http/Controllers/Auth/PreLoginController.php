@@ -58,7 +58,17 @@ class PreLoginController extends Controller {
 		$this->username = filter_var($request->input('username'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 		$request->merge([$this->username => $request->input('username')]);
 
-		return $this->login($request);
+		$response = $this->login($request);
+
+		if ($request->session()->has('errors')) {
+			$messages = '';
+			foreach ($request->session()->get('errors')->toArray() as $arrayOfMessages) {
+				$messages .= implode(' ', $arrayOfMessages);
+			}
+			$request->session()->flash('error', $messages);
+		}
+
+		return $response;
 	}
 
 	/**
@@ -85,10 +95,17 @@ class PreLoginController extends Controller {
 	/**
 	 * Is the user authenticated?
 	 *
+	 * @param Request $Request
+	 *
 	 * @return Response
 	 */
-    public function isAuthenticated(): Response {
-		return new Response(['authenticated' => Auth::check()]);
+    public function isAuthenticated(Request $Request): Response {
+    	$authenticated = Auth::check();
+    	if (!$authenticated) {
+			$Request->session()->flash('info', trans('auth.inactivity'));
+		}
+
+		return new Response(['authenticated' => $authenticated]);
 	}
 
 	/**

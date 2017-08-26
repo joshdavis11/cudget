@@ -12,6 +12,12 @@ angular.module('HelperServices', [])
 			return AuthUser.id > 0;
 		};
 
+		this.isAuthenticatedNow = function() {
+			return $http.get('/web/authenticated').then(function(response) {
+				return response.data.authenticated;
+			});
+		};
+
 		this.redirectIfNotAuthenticated = function() {
 			let authenticated = this.isAuthenticated();
 			if(!authenticated) {
@@ -179,6 +185,21 @@ angular.module('HelperServices', [])
 				return date;
 			}
 			return new Date(date.replace(/-/g, '/'));
+		};
+	}
+])
+.service('CSRFService', ['$http',
+	function($http) {
+		this.getCSRF = function() {
+			return window.csrf;
+		};
+
+		this.resetCSRF = function() {
+			$http.get('/web/csrf').then((response) => {
+				if (response.data.csrf !== window.csrf) {
+					window.csrf = response.data.csrf;
+				}
+			})
 		};
 	}
 ])

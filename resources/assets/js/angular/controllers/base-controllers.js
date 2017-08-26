@@ -7,11 +7,13 @@ import {
 	forEach
 } from 'angular';
 
+import moment from 'moment';
+
 angular.module('BaseControllers', [])
-.controller('MasterController', ['$scope', '$timeout', 'uibPaginationConfig', '$location',
-	function($scope, $timeout, uibPaginationConfig, $location) {
+.controller('MasterController', ['$scope', '$timeout', 'uibPaginationConfig', '$location', '$window', 'AuthenticationService', 'CSRFService',
+	function($scope, $timeout, uibPaginationConfig, $location, $window, AuthenticationService, CSRFService) {
 		$scope.loading = false;
-		var loading = false;
+		let loading = false;
 
 		$scope.$on('cfpLoadingBar:started', function() {
 			loading = true;
@@ -36,7 +38,36 @@ angular.module('BaseControllers', [])
 		
 		$scope.uibPageChange = function(currentPage) {
 			$location.search('page', currentPage);
+		};
+
+		let currentDateTime = moment();
+		const sessionExpireMinutes = 120;
+		function checkAuthenticationStatus() {
+			let newCurrentDateTime = moment();
+			if (currentDateTime <= newCurrentDateTime.subtract(sessionExpireMinutes, 'minutes')) {
+				currentDateTime = newCurrentDateTime.add(sessionExpireMinutes, 'minutes').clone();
+				if (AuthenticationService.isAuthenticated()) {
+					AuthenticationService.isAuthenticatedNow().then(function(authenticated) {
+						//If not authenticated, redirect to login
+						if (!authenticated) {
+							$window.location.href = '/login';
+						}
+						//If we are still authenticated, reset the CSRF token because we're probably using the remember token
+						else {
+							CSRFService.resetCSRF();
+						}
+					});
+				}
+				//If not authenticated, just reload the page to get the new CSRF token
+				else {
+					$window.location.reload();
+				}
+			}
 		}
+
+		$window.onfocus = function() {
+			checkAuthenticationStatus();
+		};
 	}
 ])
 //Has to be $rootScope so color controller can update
@@ -83,10 +114,10 @@ angular.module('BaseControllers', [])
 		TitleService.setTitle('Home');
 	}
 ])
-.controller('LoginController', ['TitleService', '$scope',
-	function(TitleService, $scope) {
+.controller('LoginController', ['TitleService', '$scope', 'CSRFService',
+	function(TitleService, $scope, CSRFService) {
 		TitleService.setTitle('Cudget - Login');
-		$scope.csrf = window.csrf;
+		$scope.csrf = CSRFService.getCSRF();
 	}
 ])
 .controller('PreLoginController', ['TitleService', '$scope',

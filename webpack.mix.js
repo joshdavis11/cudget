@@ -90,7 +90,9 @@ mix.
 		'angular-ui-bootstrap',
 		'angular-ui-sortable',
 		'angular-ui-mask',
-		'ng-file-upload'
+		'ng-file-upload',
+		'moment',
+		'lodash',
 	])
 	.sass('resources/assets/sass/app.scss', 'public/css')
 	.pug('./resources/assets/pug/layouts/pages/', './resources/views/')
