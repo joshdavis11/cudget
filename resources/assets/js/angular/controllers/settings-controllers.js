@@ -57,9 +57,6 @@ angular.module('SettingsControllers', [])
 ])
 .controller('UserCreateController', ['$scope', 'TitleService', 'UsersService', '$location',
 	function($scope, TitleService, UsersService, $location) {
-		let showPasswordVar = false;
-		let showRepeatPasswordVar = false;
-
 		$scope.breadcrumb = 'Create New User';
 		$scope.title = 'Create A New User';
 		TitleService.setTitle($scope.title);
@@ -67,46 +64,6 @@ angular.module('SettingsControllers', [])
 		$scope.create = 'Create New User';
 		$scope.creatingUser = true;
 		$scope.cancel = '/settings/users';
-
-		function hidePassword() {
-			showPasswordVar = false;
-			$scope.passwordType = 'password';
-			$scope.showHidePasswordText = 'Show Password';
-		}
-		function showPassword() {
-			showPasswordVar = true;
-			$scope.passwordType = 'text';
-			$scope.showHidePasswordText = 'Hide Password';
-		}
-		hidePassword();
-
-		function hideRepeatPassword() {
-			showRepeatPasswordVar = false;
-			$scope.repeatPasswordType = 'password';
-			$scope.showHideRepeatPasswordText = 'Show Password';
-		}
-		function showRepeatPassword() {
-			showRepeatPasswordVar = true;
-			$scope.repeatPasswordType = 'text';
-			$scope.showHideRepeatPasswordText = 'Hide Password';
-		}
-		hideRepeatPassword();
-
-		$scope.showHidePassword = function() {
-			if (showPasswordVar) {
-				hidePassword();
-			} else {
-				showPassword();
-			}
-		};
-
-		$scope.showHideRepeatPassword = function() {
-			if (showRepeatPasswordVar) {
-				hideRepeatPassword();
-			} else {
-				showRepeatPassword();
-			}
-		};
 
 		$scope.submit = function() {
 			UsersService.createUser($scope.User, { ignoreLoadingBar: true }).then(function() {
@@ -246,6 +203,85 @@ angular.module('SettingsControllers', [])
 			UsersService.deleteUser(User.id, { ignoreLoadingBar: true }).then(function() {
 				$uibModalInstance.close(User);
 			});
+		};
+	}
+])
+.controller('UserFormController', ['$scope', 'UsersService', 'MessageService',
+	function($scope, UsersService, MessageService) {
+		let showPasswordVar = false;
+		let showRepeatPasswordVar = false;
+
+		function hidePassword() {
+			showPasswordVar = false;
+			$scope.passwordType = 'password';
+			$scope.showHidePasswordText = 'Show Password';
+		}
+		function showPassword() {
+			showPasswordVar = true;
+			$scope.passwordType = 'text';
+			$scope.showHidePasswordText = 'Hide Password';
+		}
+		hidePassword();
+
+		function hideRepeatPassword() {
+			showRepeatPasswordVar = false;
+			$scope.repeatPasswordType = 'password';
+			$scope.showHideRepeatPasswordText = 'Show Password';
+		}
+		function showRepeatPassword() {
+			showRepeatPasswordVar = true;
+			$scope.repeatPasswordType = 'text';
+			$scope.showHideRepeatPasswordText = 'Hide Password';
+		}
+		hideRepeatPassword();
+
+		$scope.showHidePassword = function() {
+			if (showPasswordVar) {
+				hidePassword();
+			} else {
+				showPassword();
+			}
+		};
+
+		$scope.showHideRepeatPassword = function() {
+			if (showRepeatPasswordVar) {
+				hideRepeatPassword();
+			} else {
+				showRepeatPassword();
+			}
+		};
+
+		$scope.emailExists = false;
+		$scope.checkEmailExists = function() {
+			if (!$scope.User.email) {
+				$scope.emailExists = false;
+				return;
+			}
+			UsersService.checkEmailExists($scope.User.email).then((response) => {
+				$scope.emailExists = response.data.exists;
+				$scope.userForm.email.$setValidity('duplicate', !$scope.emailExists);
+			});
+		};
+
+		$scope.usernameExists = false;
+		$scope.checkUsernameExists = function() {
+			if (!$scope.User.username) {
+				$scope.usernameExists = false;
+				return;
+			}
+			UsersService.checkUsernameExists($scope.User.username).then((response) => {
+				$scope.usernameExists = response.data.exists;
+				$scope.userForm.username.$setValidity('duplicate', !$scope.usernameExists);
+			});
+		};
+
+		$scope.valid = function() {
+			if (!$scope.userForm.$valid) {
+				MessageService.message('Something wasn\'t quite right there... Please fix any errors and try again.').error();
+				return false;
+			}
+
+			return true;
 		};
 	}
 ])

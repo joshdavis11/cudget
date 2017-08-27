@@ -126,6 +126,28 @@ class UserService {
 	}
 
 	/**
+	 * Check if the given email already exists
+	 *
+	 * @param string $email
+	 *
+	 * @return bool
+	 */
+	public function checkEmailExists(string $email) {
+		return User::where('email', '=', $email)->exists();
+	}
+
+	/**
+	 * Check if the given username already exists
+	 *
+	 * @param string $username
+	 *
+	 * @return bool
+	 */
+	public function checkUsernameExists(string $username) {
+		return User::where('username', '=', $username)->exists();
+	}
+
+	/**
 	 * deleteUser
 	 *
 	 * @param $id

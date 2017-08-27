@@ -141,4 +141,26 @@ class UsersController extends Controller {
 		}
 		return new Response('Password Updated');
 	}
+
+	/**
+	 * See if an email already exists
+	 *
+	 * @param string $email
+	 *
+	 * @return Response
+	 */
+	public function emailExists(string $email) {
+		return new Response(['exists' => $this->UserService->checkEmailExists($email)]);
+	}
+
+	/**
+	 * See if a username already exists
+	 *
+	 * @param string $username
+	 *
+	 * @return Response
+	 */
+	public function usernameExists(string $username) {
+		return new Response(['exists' => $this->UserService->checkUsernameExists($username)]);
+	}
 }

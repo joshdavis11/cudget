@@ -127,9 +127,6 @@ angular.module('BaseControllers', [])
 ])
 .controller('SignUpController', ['TitleService', '$scope', '$http', '$location', 'MessageService',
 	function(TitleService, $scope, $http, $location, MessageService) {
-		let showPasswordVar = false;
-		let showRepeatPasswordVar = false;
-
 		TitleService.setTitle('Cudget - Sign Up');
 		$scope.User = {};
 		$scope.create = 'Create Account';
@@ -137,52 +134,13 @@ angular.module('BaseControllers', [])
 		$scope.submitDisabled = false;
 		$scope.cancel = '/';
 
-		function hidePassword() {
-			showPasswordVar = false;
-			$scope.passwordType = 'password';
-			$scope.showHidePasswordText = 'Show Password';
-		}
-		function showPassword() {
-			showPasswordVar = true;
-			$scope.passwordType = 'text';
-			$scope.showHidePasswordText = 'Hide Password';
-		}
-		hidePassword();
-
-		function hideRepeatPassword() {
-			showRepeatPasswordVar = false;
-			$scope.repeatPasswordType = 'password';
-			$scope.showHideRepeatPasswordText = 'Show Password';
-		}
-		function showRepeatPassword() {
-			showRepeatPasswordVar = true;
-			$scope.repeatPasswordType = 'text';
-			$scope.showHideRepeatPasswordText = 'Hide Password';
-		}
-		hideRepeatPassword();
-
-		$scope.showHidePassword = function() {
-			if (showPasswordVar) {
-				hidePassword();
-			} else {
-				showPassword();
-			}
-		};
-
-		$scope.showHideRepeatPassword = function() {
-			if (showRepeatPasswordVar) {
-				hideRepeatPassword();
-			} else {
-				showRepeatPassword();
-			}
-		};
-
 		$scope.submit = function() {
 			$scope.submitDisabled = true;
 			$http.post('/api/v1/signup', $scope.User).then(function() {
 				MessageService.message('You will receive an email shortly containing a verification link. Please wait until you\'ve received this email before logging in.').info();
 				$location.path('/login');
 			}, function() {
+				MessageService.message('Something wasn\'t quite right there... Please fix any errors and try again.').error();
 				$scope.submitDisabled = false;
 			});
 		};

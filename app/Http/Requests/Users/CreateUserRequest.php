@@ -28,9 +28,9 @@ class CreateUserRequest extends BaseFormRequest {
 		return [
 			'firstName' => 'required',
 			'lastName' => 'required',
-			'email' => 'required|email|unique:users,email',
-			'repeatEmail' => 'required|email|same:email',
-			'username' => 'unique:users,username',
+			'email' => 'required|email|unique:users,email|min:6',
+			'repeatEmail' => 'required|email|same:email|min:6',
+			'username' => 'unique:users,username|max:32',
 			'phone' => 'numeric',
 			'password' => 'required',
 			'repeatPassword' => 'required|same:password',

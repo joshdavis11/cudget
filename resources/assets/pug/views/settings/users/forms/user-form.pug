@@ -1,32 +1,41 @@
 .col-md-1.col-lg-3
 .col-sm-12.col-md-10.col-lg-6
-    form(name="userForm", ng-submit="userForm.$valid && submit()", novalidate)
+    form(name="userForm", ng-submit="valid() && submit()", novalidate, ng-controller="UserFormController")
         .form-group.required.col-xs-12.col-sm-6(ng-class="{ 'has-error': (userForm.firstName.$touched || userForm.$submitted) && userForm.firstName.$invalid }")
             label.control-label(for="firstName") First Name
             input#firstName.form-control(placeholder="Ex: Tom", type="text", name="firstName", ng-model="User.firstName", required)
+            span.help-block(ng-show="(userForm.firstName.$touched || userForm.$submitted) && userForm.firstName.$invalid") First name is required.
         .form-group.required.col-xs-12.col-sm-6(ng-class="{ 'has-error': (userForm.lastName.$touched || userForm.$submitted) && userForm.lastName.$invalid }")
             label.control-label(for="lastName") Last Name
             input#lastName.form-control(placeholder="Ex: Jones", type="text", name="lastName", ng-model="User.lastName", required)
+            span.help-block(ng-show="(userForm.lastName.$touched || userForm.$submitted) && userForm.lastName.$invalid") Last name is required.
         .form-group.required.col-xs-12(ng-class="{ 'has-error': (userForm.email.$touched || userForm.$submitted) && userForm.email.$invalid }")
             label.control-label(for="email") Email
-            input#email.form-control(placeholder="email@example.com", type="email", name="email", ng-model="User.email", required)
+            input#email.form-control(placeholder="email@example.com", type="email", name="email", ng-model="User.email", required, ng-blur="checkEmailExists(); emailFocus = false;", ng-focus="emailFocus = true;")
+            span.help-block(ng-show="!emailExists && (emailFocus || (userForm.email.$touched || userForm.$submitted) && userForm.email.$invalid)") We need your email to make sure you're not a robot.
+            span.help-block(ng-show="emailExists") This email already exists!
         .form-group.required.col-xs-12(ng-if="creatingUser", ng-class="{ 'has-error': (userForm.repeatEmail.$touched || userForm.$submitted) && userForm.repeatEmail.$invalid }")
             label.control-label(for="repeatEmail") Repeat Email
             input#repeatEmail.form-control(match="User.email", placeholder="email@example.com", type="email", name="repeatEmail", ng-model="User.repeatEmail", required)
         .form-group.col-xs-12.col-sm-6(ng-class="{ 'has-error': (userForm.username.$touched || userForm.$submitted) && userForm.username.$invalid }")
             label.control-label(for="username") Username
-            input#username.form-control(placeholder="Ex: tomjones", type="text", name="username", ng-model="User.username")
+            input#username.form-control(placeholder="Ex: tomjones", type="text", name="username", ng-model="User.username", ng-maxlength="32", ng-blur="checkUsernameExists(); usernameFocus = false;", ng-focus="usernameFocus = true;")
+            span.help-block(ng-show="!usernameExists && usernameFocus") Username is optional but provides another way to login. Max of 32 characters.
+            span.help-block(ng-show="usernameExists") This username already exists!
         .form-group.col-xs-12.col-sm-6(ng-class="{ 'has-error': (userForm.phone.$touched || userForm.$submitted) && userForm.phone.$invalid }")
-            label.control-label(for="phone") Phone Number
-            input#phone.form-control(ui-mask="(999) 999-9999", placeholder="(XXX) XXX-XXXX", type="tel", name="phone", ng-model="User.phone")
+            label.control-label(for="phone") Mobile Phone Number
+            input#phone.form-control(ui-mask="(999) 999-9999", placeholder="(XXX) XXX-XXXX", type="tel", name="phone", ng-model="User.phone", ng-blur="phoneFocus = false;", ng-focus="phoneFocus = true;")
+            span.help-block(ng-show="phoneFocus") Mobile phone number will be used to send text messages about your account.
         .form-group.required.col-xs-12(ng-if="creatingUser", ng-class="{ 'has-error': (userForm.password.$touched || userForm.$submitted) && userForm.password.$invalid }")
             label.control-label(for="password") Password
-            input#password.form-control(placeholder="Your Password", type="{{ passwordType }}", name="password", ng-model="User.password", required)
+            input#password.form-control(placeholder="Your Password", type="{{ passwordType }}", name="password", ng-model="User.password", ng-minlength="6", ng-blur="passwordFocus = false;", ng-focus="passwordFocus = true;", required)
             a(ng-click="showHidePassword()") {{ showHidePasswordText }}
+            span.help-block(ng-show="(!User.password && passwordFocus) || ((userForm.password.$touched || userForm.$submitted) && userForm.password.$invalid)") Please use at least 6 characters for your password.
         .form-group.required.col-xs-12(ng-if="creatingUser", ng-class="{ 'has-error': (userForm.repeatPassword.$touched || userForm.$submitted) && userForm.repeatPassword.$invalid }")
             label.control-label(for="repeatPassword") Repeat Password
             input#repeatPassword.form-control(match="User.password", placeholder="Repeat Password", type="{{ repeatPasswordType }}", name="repeatPassword", ng-model="User.repeatPassword", required)
             a(ng-click="showHideRepeatPassword()") {{ showHideRepeatPasswordText }}
+            span.help-block(ng-show="User.password && (userForm.repeatPassword.$touched || userForm.$submitted) && userForm.repeatPassword.$invalid") Oops. Looks like your passwords might not match!
         .form-group.required.col-xs-12(ng-if="perms.admin", ng-class="{ 'has-error': (userForm.admin.$touched || userForm.$submitted) && userForm.admin.$invalid }")
             label.control-label Admin?
             div.radio

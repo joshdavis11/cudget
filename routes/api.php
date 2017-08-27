@@ -92,6 +92,8 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 $router->group(['prefix' => 'v1'], function(Router $router) {
 	//Sign Up
 	$router->post('signup', PreLoginController::class . '@signup');
+	$router->get('users/emailExists/{email}', V1\UsersController::class . '@emailExists');
+	$router->get('users/usernameExists/{username}', V1\UsersController::class . '@usernameExists');
 });
 
 //404

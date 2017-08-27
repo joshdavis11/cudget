@@ -29,8 +29,8 @@ angular.module('SettingsServices', [])
 		};
 	}
 ])
-.service('UsersService', ['$http', 'PermissionService',
-	function($http, PermissionService) {
+.service('UsersService', ['$http',
+	function($http) {
 		this.getUsers = function() {
 			return $http.get('/api/v1/users').then(function(response) {
 				return response.data;
@@ -57,6 +57,14 @@ angular.module('SettingsServices', [])
 
 		this.deleteUser = function(id, options) {
 			return $http.delete('/api/v1/users/' + id, options);
+		};
+
+		this.checkEmailExists = function(email) {
+			return $http.get('/api/v1/users/emailExists/' + encodeURIComponent(email));
+		};
+
+		this.checkUsernameExists = function(username) {
+			return $http.get('/api/v1/users/usernameExists/' + encodeURIComponent(username));
 		};
 	}
 ])
