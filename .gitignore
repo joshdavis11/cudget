@@ -13,3 +13,4 @@ Homestead.json
 /public/images
 /.idea
 /resources/views
+!/resources/views/vendor
