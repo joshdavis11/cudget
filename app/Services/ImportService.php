@@ -163,7 +163,7 @@ class ImportService {
 	protected function addIncomeToBudget(Income $Income, DateTimeImmutable $Date) {
 		$Budget = $this->getBudget($Date);
 
-		if (!$Budget->id) {
+		if (empty($Budget->id)) {
 			return;
 		}
 		$BudgetIncome = new BudgetIncome();
@@ -231,13 +231,13 @@ class ImportService {
 	protected function addExpenseToBudget(Expense $Expense, Expense $CommonExpense, DateTimeImmutable $Date) {
 		$Budget = $this->getBudget($Date);
 
-		if (!$Budget->id) {
+		if (empty($Budget->id)) {
 			return;
 		}
 
 		//If there is a common expense and we're able to find a match in the new budget, return since we don't
 		//need to add it to the uncategorized category.
-		if ($CommonExpense->id && $this->addExpenseToCommonBudgetCategory($Expense, $CommonExpense, $Budget)) {
+		if (!empty($CommonExpense->id) && $this->addExpenseToCommonBudgetCategory($Expense, $CommonExpense, $Budget)) {
 			return;
 		}
 		$this->addExpenseToUncategorizedBudgetCategory($Expense, $Budget);
@@ -297,11 +297,11 @@ class ImportService {
 		$BudgetCategory = BudgetCategory::where("budget_id", "=", $Budget->id)
 			->where('name', '=', 'Uncategorized')
 			->first();
-		if ($BudgetCategory->id) {
+		if (!empty($BudgetCategory->id)) {
 			$BudgetCategoryRow = BudgetCategoryRow::where("budget_category_id", "=", $BudgetCategory->id)
 				->where('name', '=', 'Uncategorized')
 				->first();
-			if ($BudgetCategoryRow->id) {
+			if (!empty($BudgetCategoryRow->id)) {
 				$BudgetCategoryRowExpense = new BudgetCategoryRowExpense();
 				$BudgetCategoryRowExpense->budgetCategoryRowId = $BudgetCategoryRow->id;
 				$BudgetCategoryRowExpense->expenseId = $Expense->id;
@@ -327,7 +327,7 @@ class ImportService {
 	 */
 	protected function getBudget(DateTimeImmutable $Date) {
 		$Budget = Budget::whereRaw('"' . $Date->format('Y-m-d H:i:s') . '" BETWEEN start AND end')->first();
-		if ($Budget->id) {
+		if (!empty($Budget->id)) {
 			$this->LatestBudget = $Budget;
 		}
 		return $Budget;
