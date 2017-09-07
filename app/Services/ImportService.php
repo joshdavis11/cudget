@@ -29,6 +29,10 @@ class ImportService {
 	 */
 	protected $Auth;
 	/**
+	 * @var int
+	 */
+	protected $authUserId;
+	/**
 	 * @var Connection
 	 */
 	protected $Database;
@@ -45,6 +49,7 @@ class ImportService {
 	 */
 	public function __construct(AuthManager $Auth, Connection $Database) {
 		$this->Auth = $Auth;
+		$this->authUserId = $Auth->user()->id;
 		$this->Database = $Database;
 	}
 
@@ -117,14 +122,13 @@ class ImportService {
 	 * @return Income
 	 */
 	protected function saveIncome(DateTimeImmutable $Date, $amount, $description) {
-		$authUserId = $this->Auth->user()->id;
 		$Income = new Income();
-		$Income->userId = $authUserId;
+		$Income->userId = $this->authUserId;
 		$Income->datetime = $Date->format('Y-m-d H:i:s');
 		$Income->amount = abs($amount);
 		$Income->description = $this->cleanIncomeDescription($description);
 
-		$CommonIncome = Income::where('user_id', '=', $authUserId)
+		$CommonIncome = Income::where('user_id', '=', $this->authUserId)
 			->where('description', 'LIKE', '%' . preg_replace('/\s/', '%', $Income->description) . '%')
 			->orderBy('datetime', 'DESC')
 			->first();
@@ -182,14 +186,13 @@ class ImportService {
 	 * @return Expense
 	 */
 	protected function saveExpense(DateTimeImmutable $Date, $amount, $description) {
-		$authUserId = $this->Auth->user()->id;
 		$Expense = new Expense();
-		$Expense->userId = $authUserId;
+		$Expense->userId = $this->authUserId;
 		$Expense->datetime = $Date->format('Y-m-d H:i:s');
 		$Expense->amount = abs($amount);
 		$Expense->description = $this->cleanExpenseDescription($description);
 
-		$CommonExpense = Expense::where('user_id', '=', $authUserId)
+		$CommonExpense = Expense::where('user_id', '=', $this->authUserId)
 			->where('description', 'LIKE', '%' . preg_replace('/\s/', '%', $Expense->description) . '%')
 			->orderBy('datetime', 'DESC')
 			->first();
@@ -326,7 +329,10 @@ class ImportService {
 	 * @return Budget
 	 */
 	protected function getBudget(DateTimeImmutable $Date) {
-		$Budget = Budget::whereRaw('"' . $Date->format('Y-m-d H:i:s') . '" BETWEEN start AND end')->first();
+		$Budget = Budget::whereRaw('"' . $Date->format('Y-m-d H:i:s') . '" BETWEEN start AND end')
+						->where('user_id', '=', $this->authUserId)
+						->orderBy('start', 'DESC')
+						->first();
 		if (!empty($Budget->id)) {
 			$this->LatestBudget = $Budget;
 		}
