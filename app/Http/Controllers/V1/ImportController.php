@@ -42,7 +42,7 @@ class ImportController extends Controller {
 			return new Response('Invalid file', Response::HTTP_BAD_REQUEST);
 		}
 		$headers = [];
-		if ($Budget->id) {
+		if (!empty($Budget->id)) {
 			$headers['Location'] = '/budgets/' . $Budget->id;
 		}
 		return new Response('Imported!', Response::HTTP_OK, $headers);

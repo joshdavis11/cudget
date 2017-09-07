@@ -14,6 +14,7 @@ use DateTimeImmutable;
 use Dotenv\Exception\InvalidFileException;
 use Exception;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Connection;
 use Illuminate\Http\Request;
@@ -24,10 +25,6 @@ use Illuminate\Http\Request;
  * @package App\Http\Services
  */
 class ImportService {
-	/**
-	 * @var AuthManager
-	 */
-	protected $Auth;
 	/**
 	 * @var int
 	 */
@@ -44,12 +41,9 @@ class ImportService {
 	/**
 	 * ImportService constructor.
 	 *
-	 * @param AuthManager $Auth
 	 * @param Connection  $Database
 	 */
-	public function __construct(AuthManager $Auth, Connection $Database) {
-		$this->Auth = $Auth;
-		$this->authUserId = $Auth->user()->id;
+	public function __construct(Connection $Database) {
 		$this->Database = $Database;
 	}
 
@@ -61,6 +55,8 @@ class ImportService {
 	 * @return Budget
 	 */
 	public function import(Request $Request) {
+		$this->authUserId = $Request->user()->id;
+
 		$file = $Request->file('file');
 		if (!$file->isValid() || $file->getClientMimeType() !== 'text/csv') {
 			throw new InvalidFileException('Invalid File');
