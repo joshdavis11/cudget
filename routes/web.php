@@ -32,11 +32,11 @@ $router->group(['middleware' => 'guest'], function(Router $router) {
 	$router->get('activate/new/{token}', ActivationController::class . '@new')->name('activation.new');
 	$router->get('activate/{token}', ActivationController::class . '@activate')->name('activation');
 	$router->get('403', ViewController::class . '@angular')->name('403');
+});
 
-	//web specific routes
-	$router->group(['prefix' => 'web'], function(Router $router) {
-		$router->get('authenticated', PreLoginController::class . '@isAuthenticated');
-	});
+// /web/authenticated -- not auth or guest because we don't want a redirect
+$router->group(['prefix' => 'web'], function(Router $router) {
+	$router->get('authenticated', PreLoginController::class . '@isAuthenticated');
 });
 
 //Auth: requires authenticated and redirects if you're not
