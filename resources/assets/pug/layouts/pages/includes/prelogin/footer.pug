@@ -1,7 +1,7 @@
 div.footer-spacer
 div#footer.footer.panel-footer
 	div.container
-		p.text-center {{ $year }} Cudget
+		p.text-center &copy; {{ $year }} Cudget. All rights reserved.
 
 script(type="text/javascript") window.csrf = '{{ $csrf }}'; window.AuthUser = { id: 0, admin: false }; window.perms = {};
 	| window.errors = @if(Session::has('error'))
