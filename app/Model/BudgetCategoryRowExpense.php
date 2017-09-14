@@ -2,6 +2,8 @@
 
 namespace App\Model;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 /**
  * Class BudgetCategoryRowExpense
  *
@@ -39,5 +41,14 @@ class BudgetCategoryRowExpense extends BaseModel {
 	 */
     public function expense() {
 		return $this->belongsTo(Expense::class);
+	}
+
+	/**
+	 * Get the budget category row it belongs to
+	 *
+	 * @return BelongsTo
+	 */
+	public function budgetCategoryRow(): BelongsTo {
+    	return $this->belongsTo(BudgetCategoryRow::class);
 	}
 }

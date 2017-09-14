@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\V1;
 
 use App\Exceptions\InvalidDataException;
+use App\Exceptions\PermissionsException;
 use App\Http\Controllers\Controller;
 use App\Services\BudgetService;
 use App\Model\SharedBudget;
@@ -36,7 +37,6 @@ class BudgetTemplatesController extends Controller {
 	 * @param BudgetService $BudgetService
 	 */
 	public function __construct(AuthManager $Auth, BudgetService $BudgetService) {
-		$this->middleware('auth');
 		$this->Auth = $Auth;
 		$this->BudgetService = $BudgetService;
 	}
@@ -82,9 +82,8 @@ class BudgetTemplatesController extends Controller {
 			$BudgetTemplate = $this->BudgetService->createBudgetTemplate($request);
 		} catch (InvalidDataException $InvalidDataException) {
 			return new Response($InvalidDataException->getMessage(), Response::HTTP_BAD_REQUEST);
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
 		}
+
 		return new Response($BudgetTemplate, Response::HTTP_CREATED, ['Location' => '/api/v1/budgets/templates/' . $BudgetTemplate->id]);
 	}
 
@@ -99,9 +98,10 @@ class BudgetTemplatesController extends Controller {
 		try {
 			$BudgetTemplate = $this->BudgetService->getBudgetWithRelations($id);
 			$this->BudgetService->saveLastAccess($id);
-		} catch (ModelNotFoundException $exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
+
 		return new Response($BudgetTemplate, Response::HTTP_OK);
 	}
 
@@ -112,13 +112,14 @@ class BudgetTemplatesController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function edit($id) {
-		try {
-			$BudgetTemplate = $this->BudgetService->getBudget($id);
-		} catch (ModelNotFoundException $exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+	public function edit(int $id) {
+		if (!$this->BudgetService->canSeeBudget($id)) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
+
+		$BudgetTemplate = $this->BudgetService->getBudget($id);
 		$Budgets = $this->BudgetService->getBudgetsForUser($this->Auth->user()->id);
+
 		return new Response(['BudgetTemplate' => $BudgetTemplate, 'Budgets' => $Budgets], Response::HTTP_OK, ['Content-Type' => 'application/json']);
 	}
 
@@ -136,10 +137,11 @@ class BudgetTemplatesController extends Controller {
 			$this->BudgetService->updateBudgetTemplate($id, $request);
 		} catch (InvalidDataException $InvalidDataException) {
 			return new Response($InvalidDataException->getMessage(), Response::HTTP_BAD_REQUEST);
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
-		return new Response('', Response::HTTP_OK);
+
+		return new Response(null, Response::HTTP_OK);
 	}
 
 	/**
@@ -152,10 +154,11 @@ class BudgetTemplatesController extends Controller {
 	public function destroy($id) {
 		try {
 			$this->BudgetService->deleteBudget($id);
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
-		return new Response('Template removed.', Response::HTTP_OK);
+
+		return new Response(null, Response::HTTP_OK);
 	}
 
 	/**

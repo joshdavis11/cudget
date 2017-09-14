@@ -34,11 +34,6 @@ $router->group(['middleware' => 'guest'], function(Router $router) {
 	$router->get('403', ViewController::class . '@angular')->name('403');
 });
 
-// /web/authenticated -- not auth or guest because we don't want a redirect
-$router->group(['prefix' => 'web'], function(Router $router) {
-	$router->get('authenticated', PreLoginController::class . '@isAuthenticated');
-});
-
 //Auth: requires authenticated and redirects if you're not
 $router->group(['middleware' => 'auth'], function(Router $router) {
 	$router->get('logout', PreLoginController::class . '@logout')->name('logout');
@@ -94,6 +89,11 @@ $router->group(['middleware' => 'auth'], function(Router $router) {
 	$router->group(['prefix' => 'web'], function(Router $router) {
 		$router->get('csrf', AuthController::class . '@getCSRF');
 	});
+});
+
+// /web/authenticated -- not auth or guest because we don't want a redirect
+$router->group(['prefix' => 'web'], function(Router $router) {
+	$router->get('authenticated', PreLoginController::class . '@isAuthenticated');
 });
 
 //Catch-all including 404

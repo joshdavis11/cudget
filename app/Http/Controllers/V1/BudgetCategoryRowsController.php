@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Exceptions\PermissionsException;
 use App\Services\BudgetService;
 use Exception;
 use Illuminate\Http\Request;
@@ -45,7 +46,12 @@ class BudgetCategoryRowsController extends Controller {
 	 * @return Response
 	 */
 	public function forBudgetCategory($budgetCategoryId) {
-		$BudgetCategoryRows = $this->BudgetService->getBudgetCategoryRowsForBudgetCategory($budgetCategoryId);
+		try {
+			$BudgetCategoryRows = $this->BudgetService->getBudgetCategoryRowsForBudgetCategory($budgetCategoryId);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
+		}
+
 		return new Response($BudgetCategoryRows);
 	}
 
@@ -68,10 +74,10 @@ class BudgetCategoryRowsController extends Controller {
 	public function store(Request $request) {
 		try {
 			$BudgetCategoryRow = $this->BudgetService->createBudgetCategoryRow($request);
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_BAD_REQUEST);
 		}
-		return new Response(['BudgetCategoryRow' => $BudgetCategoryRow, 'message' => $BudgetCategoryRow->name . ' added!'], Response::HTTP_OK, ['Content-Type' => 'application/json']);
+		return new Response(null, Response::HTTP_CREATED, ['Location' => route('budgetCategoryRow.show', $BudgetCategoryRow->id)]);
 	}
 
 	/**
@@ -104,13 +110,13 @@ class BudgetCategoryRowsController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id) {
+	public function update(Request $request, int $id) {
 		try {
 			$this->BudgetService->updateBudgetCategoryRow($id, $request);
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
-		return new Response(['message' => $request->input('name') . ' updated!'], Response::HTTP_OK, ['Content-Type' => 'application/json']);
+		return new Response(null, Response::HTTP_OK);
 	}
 
 	/**
@@ -120,12 +126,12 @@ class BudgetCategoryRowsController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id) {
+	public function destroy(int $id) {
 		try {
 			$this->BudgetService->deleteBudgetCategoryRow($id);
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
-		return new Response(['message' => 'Budget category row removed.'], Response::HTTP_OK, ['Content-Type' => 'application/json']);
+		return new Response(null, Response::HTTP_OK);
 	}
 }

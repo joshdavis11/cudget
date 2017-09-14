@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Exceptions\PermissionsException;
 use App\Http\Controllers\Controller;
 use App\Services\BudgetService;
 use Exception;
@@ -64,10 +65,10 @@ class BudgetCategoryRowExpensesController extends Controller {
 		$request->merge(['userId' => $this->Auth->user()->id]);
 		try {
 			$BudgetCategoryRowExpense = $this->BudgetService->createBudgetCategoryRowExpense($request);
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
-		return new Response(['BudgetCategoryRowExpense' => $BudgetCategoryRowExpense, 'message' => $BudgetCategoryRowExpense->description . ' added!'], Response::HTTP_OK, ['Content-Type' => 'application/json']);
+		return new Response(null, Response::HTTP_CREATED, ['Location' => route('budgetCategoryRowExpense.show', ['expense' => $BudgetCategoryRowExpense->id])]);
 	}
 
 	/**
@@ -100,8 +101,12 @@ class BudgetCategoryRowExpensesController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function update(Request $request, $id) {
-		$this->BudgetService->updateBudgetCategoryRowExpense($id, $request);
+	public function update(Request $request, int $id) {
+		try {
+			$this->BudgetService->updateBudgetCategoryRowExpense($id, $request);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
+		}
 		return new Response(null, Response::HTTP_OK);
 	}
 
@@ -114,7 +119,12 @@ class BudgetCategoryRowExpensesController extends Controller {
 	 */
 	public function bulkUpdate(Request $Request) {
 		foreach ($Request->all() as $arrayOfData) {
-			$this->BudgetService->updateBudgetCategoryRowExpense($arrayOfData['id'], new Request($arrayOfData));
+			try {
+				$this->BudgetService->updateBudgetCategoryRowExpense($arrayOfData['id'], new Request($arrayOfData));
+			} catch (PermissionsException $PermissionsException) {
+				//If we catch a permissions issue, just skip it. We'll do the bulk update for all with perms to do so.
+				continue;
+			}
 		}
 		return new Response(null, Response::HTTP_OK);
 	}
@@ -129,9 +139,9 @@ class BudgetCategoryRowExpensesController extends Controller {
 	public function destroy($id) {
 		try {
 			$this->BudgetService->deleteBudgetCategoryRowExpense($id);
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
-		return new Response('', Response::HTTP_OK);
+		return new Response(null, Response::HTTP_OK);
 	}
 }

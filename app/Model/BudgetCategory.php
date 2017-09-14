@@ -3,7 +3,7 @@
 namespace App\Model;
 
 use App\Model\Interfaces\SortOrderInterface;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -45,5 +45,14 @@ class BudgetCategory extends BaseModel implements SortOrderInterface {
 	 */
     public function budgetCategoryRows() {
 		return $this->hasMany(BudgetCategoryRow::class);
+	}
+
+	/**
+	 * Get the budget category it belongs to
+	 *
+	 * @return BelongsTo
+	 */
+	public function budget(): BelongsTo {
+    	return $this->belongsTo(Budget::class);
 	}
 }

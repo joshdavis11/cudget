@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\V1;
 
+use App\Exceptions\PermissionsException;
 use App\Services\BudgetIncomeService;
 use App\Services\IncomeService;
 use App\Http\Controllers\Controller;
@@ -62,13 +63,13 @@ class BudgetIncomeController extends Controller {
 	 */
 	public function store(Request $request) {
 		$request->merge(['userId' => $this->Auth->user()->id]);
-
 		try {
 			$BudgetIncome = $this->BudgetIncomeService->createBudgetIncome($request);
-		} catch (Exception $exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
-		return new Response($BudgetIncome);
+
+		return new Response($BudgetIncome, Response::HTTP_CREATED, ['Location' => route('budgetIncome.show', $BudgetIncome->id)]);
 	}
 
 	/**
@@ -101,23 +102,15 @@ class BudgetIncomeController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function update(Request $request, $id) {
-		$incomeId = $request->input('incomeId');
-		if (!$incomeId) {
-			try {
-				$incomeId = $this->BudgetIncomeService->getBudgetIncome($id)->incomeId;
-			} catch (Exception $exception) {
-				return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
-			}
-		}
-
+	public function update(Request $request, int $id) {
 		$request->merge(['userId' => $this->Auth->user()->id]);
 		try {
-			$this->IncomeService->updateIncome($incomeId, new Request($request->input('income')));
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+			$this->BudgetIncomeService->updateBudgetIncome($id, $request);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
-		return new Response(['message' => $request->input('name') . ' updated!'], Response::HTTP_OK, ['Content-Type' => 'application/json']);
+
+		return new Response(null, Response::HTTP_OK);
 	}
 
 	/**
@@ -127,12 +120,12 @@ class BudgetIncomeController extends Controller {
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy($id) {
+	public function destroy(int $id) {
 		try {
 			$this->BudgetIncomeService->deleteBudgetIncome($id);
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		} catch (PermissionsException $PermissionsException) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
-		return new Response(['message' => 'Income was removed from this budget.'], Response::HTTP_OK, ['Content-Type' => 'application/json']);
+		return new Response(null, Response::HTTP_OK);
 	}
 }

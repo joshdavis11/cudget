@@ -3,11 +3,13 @@
 namespace App\Services;
 
 use App\Exceptions\InvalidDataException;
+use App\Exceptions\PermissionsException;
 use App\Http\DataObjects\BudgetData;
 use App\Model\Budget;
 use App\Model\BudgetCategory;
 use App\Model\BudgetCategoryRow;
 use App\Model\BudgetCategoryRowExpense;
+use App\Model\SharedBudget;
 use App\Model\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Database\Connection;
@@ -56,12 +58,14 @@ class BudgetService {
 	/**
 	 * Get a budget with relations
 	 *
-	 * @param int $id The ID to load
+	 * @param int $id The budget ID to load
 	 *
 	 * @return Budget
 	 * @throws ModelNotFoundException
 	 */
-	public function getBudgetWithRelations($id) {
+	public function getBudgetWithRelations(int $id) {
+		$this->checkBudgetPermission($id);
+
 		return Budget
 			::with('budgetIncome')
 			->with('budgetIncome.income')
@@ -72,6 +76,56 @@ class BudgetService {
 			->with('budgetCategories.budgetCategoryRows.budgetCategoryRowExpenses.expense')
 			->with('budgetCategories.budgetCategoryRows.budgetCategoryRowExpenses.expense.expenseCategory')
 			->findOrFail($id);
+	}
+
+	/**
+	 * Can the authenticated user see the given budget?
+	 *
+	 * @param int $budgetId
+	 *
+	 * @return void
+	 * @throws PermissionsException
+	 */
+	public function checkBudgetPermission(int $budgetId) {
+		if (!$this->canSeeBudget($budgetId)) {
+			throw new PermissionsException("You can't access that budget.");
+		}
+	}
+
+	/**
+	 * Can the authenticated user see the given budget?
+	 *
+	 * @param int $budgetId
+	 *
+	 * @return bool
+	 */
+	public function canSeeBudget(int $budgetId): bool {
+		$authUserId = $this->Auth->user()->id;
+		return $this->getBudget($budgetId)->userId === $authUserId || $this->isBudgetSharedWithUser($budgetId, $authUserId);
+	}
+
+	/**
+	 * Is the budget shared with the user?
+	 *
+	 * @param int $budgetId
+	 * @param int $userId
+	 *
+	 * @return bool
+	 */
+	public function isBudgetSharedWithUser(int $budgetId, int $userId): bool {
+		return null !== $this->getSharedBudgetWithUser($budgetId, $userId);
+	}
+
+	/**
+	 * Get a SharedBudget via budget ID and user ID
+	 *
+	 * @param int $budgetId
+	 * @param int $userId
+	 *
+	 * @return SharedBudget|null
+	 */
+	public function getSharedBudgetWithUser(int $budgetId, int $userId) {
+		return SharedBudget::where('budget_id', '=', $budgetId)->where('user_id', '=', $userId)->first();
 	}
 
 	/**
@@ -214,16 +268,18 @@ class BudgetService {
 	/**
 	 * Update a budget
 	 *
-	 * @param int     $id      The ID of the account
+	 * @param int     $id      The ID of the budget
 	 * @param Request $request The request object
 	 *
 	 * @return bool
 	 * @throws InvalidDataException
 	 * @throws ModelNotFoundException
 	 */
-	public function updateBudget($id, Request $request) {
+	public function updateBudget(int $id, Request $request) {
+		$this->checkBudgetPermission($id);
 		$this->validateBudget($request);
 		$this->updateData($request);
+
 		return $this->getBudget($id)->update($request->only(['userId', 'name', 'income', 'start', 'end', 'created', 'lastAccess', 'template']));
 	}
 
@@ -237,9 +293,11 @@ class BudgetService {
 	 * @throws InvalidDataException
 	 * @throws ModelNotFoundException
 	 */
-	public function updateBudgetTemplate($id, Request $request) {
+	public function updateBudgetTemplate(int $id, Request $request) {
+		$this->checkBudgetPermission($id);
 		$this->validateBudget($request);
 		$request->merge(['lastAccess' => date('Y-m-d H:i:s')]);
+
 		return $this->getBudget($id)->update($request->only(['userId', 'name', 'income', 'lastAccess', 'template']));
 	}
 
@@ -260,7 +318,9 @@ class BudgetService {
 	 *
 	 * @return void
 	 */
-	public function deleteBudget($id) {
+	public function deleteBudget(int $id) {
+		$this->checkBudgetPermission($id);
+
 		Budget::destroy($id);
 	}
 
@@ -314,8 +374,15 @@ class BudgetService {
 		}
 		return $totalEstimated;
 	}
-	
-	public function getAndSetBudgetDataForBudget(Budget $Budget) {
+
+	/**
+	 * Get and set budget data for a given Budget object
+	 *
+	 * @param Budget $Budget
+	 *
+	 * @return BudgetData
+	 */
+	public function getAndSetBudgetDataForBudget(Budget $Budget): BudgetData {
 		$BudgetData = new BudgetData();
 		foreach ($Budget->getRelation('budgetCategories') as $BudgetCategory) {
 			$BudgetCategory->spent = 0.00;
@@ -376,11 +443,14 @@ class BudgetService {
 	/**
 	 * Get budget categories for a given budget
 	 *
-	 * @param $budgetId
+	 * @param int $budgetId
 	 *
 	 * @return Collection
+	 * @throws PermissionsException
 	 */
-	public function getBudgetCategoriesForBudget($budgetId) {
+	public function getBudgetCategoriesForBudget(int $budgetId) {
+		$this->checkBudgetPermission($budgetId);
+
 		return BudgetCategory::where('budget_id', '=', $budgetId)->get();
 	}
 
@@ -402,11 +472,15 @@ class BudgetService {
 	 * @param Request $request
 	 *
 	 * @return BudgetCategory
+	 * @throws PermissionsException
 	 */
 	public function createBudgetCategory(Request $request) {
+		$this->checkBudgetPermission($request->get('budgetId'));
+
 		$BudgetCategory = new BudgetCategory($request->only(['budgetId', 'name']));
 		$BudgetCategory->sortOrder = $BudgetCategory->getMaxSortOrder() + 1;
 		$BudgetCategory->save();
+
 		return $BudgetCategory;
 	}
 
@@ -415,10 +489,14 @@ class BudgetService {
 	 *
 	 * @param $id
 	 *
-	 * @return void
+	 * @return bool|null
+	 * @throws PermissionsException
 	 */
-	public function deleteBudgetCategory($id) {
-		BudgetCategory::destroy($id);
+	public function deleteBudgetCategory(int $id) {
+		$BudgetCategory = $this->getBudgetCategory($id);
+		$this->checkBudgetPermission($BudgetCategory->budgetId);
+
+		return $BudgetCategory->delete();
 	}
 
 	/**
@@ -427,10 +505,13 @@ class BudgetService {
 	 * @param int     $id
 	 * @param Request $request
 	 *
-	 * @return void
+	 * @return bool
+	 * @throws PermissionsException
 	 */
-	public function updateBudgetCategory($id, Request $request) {
-		$this->getBudgetCategory($id)->update($request->only(['budgetId', 'name', 'sortOrder']));
+	public function updateBudgetCategory(int $id, Request $request): bool {
+		$this->checkBudgetPermission($request->get('budgetId'));
+
+		return $this->getBudgetCategory($id)->update($request->only(['budgetId', 'name', 'sortOrder']));
 	}
 
 	/**
@@ -438,9 +519,12 @@ class BudgetService {
 	 *
 	 * @param $budgetCategoryId
 	 *
-	 * @return mixed
+	 * @return Collection
+	 * @throws PermissionsException
 	 */
 	public function getBudgetCategoryRowsForBudgetCategory($budgetCategoryId) {
+		$this->checkBudgetPermission($this->getBudgetCategory($budgetCategoryId)->budgetId);
+
 		return BudgetCategoryRow::where('budget_category_id', '=', $budgetCategoryId)->get();
 	}
 
@@ -462,10 +546,14 @@ class BudgetService {
 	 * @param int     $id
 	 * @param Request $request
 	 *
-	 * @return void
+	 * @return bool
+	 * @throws PermissionsException
 	 */
-	public function updateBudgetCategoryRow($id, Request $request) {
-		$this->getBudgetCategoryRow($id)->update($request->only(['budgetCategoryId', 'name', 'estimated', 'sortOrder']));
+	public function updateBudgetCategoryRow(int $id, Request $request): bool {
+		$BudgetCategoryRow = $this->getBudgetCategoryRow($id);
+		$this->checkBudgetPermission($BudgetCategoryRow->budgetCategory()->getResults()->budgetId);
+
+		return $BudgetCategoryRow->update($request->only(['budgetCategoryId', 'name', 'estimated', 'sortOrder']));
 	}
 
 	/**
@@ -474,11 +562,15 @@ class BudgetService {
 	 * @param Request $request
 	 *
 	 * @return BudgetCategoryRow
+	 * @throws PermissionsException
 	 */
 	public function createBudgetCategoryRow(Request $request) {
+		$this->checkBudgetPermission($this->getBudgetCategory($request->get('budgetCategoryId'))->budgetId);
+
 		$BudgetCategoryRow = new BudgetCategoryRow($request->only(['budgetCategoryId', 'name', 'estimated']));
 		$BudgetCategoryRow->sortOrder = $BudgetCategoryRow->getMaxSortOrder() + 1;
 		$BudgetCategoryRow->save();
+
 		return $BudgetCategoryRow;
 	}
 
@@ -487,10 +579,14 @@ class BudgetService {
 	 *
 	 * @param int $id
 	 *
-	 * @return void
+	 * @return bool|null
+	 * @throws PermissionsException
 	 */
-	public function deleteBudgetCategoryRow($id) {
-		BudgetCategoryRow::destroy($id);
+	public function deleteBudgetCategoryRow(int $id) {
+		$BudgetCategoryRow = $this->getBudgetCategoryRow($id);
+		$this->checkBudgetPermission($BudgetCategoryRow->budgetCategory()->getResults()->budgetId);
+
+		return $BudgetCategoryRow->delete();
 	}
 
 	/**
@@ -510,8 +606,12 @@ class BudgetService {
 	 * @param Request $request
 	 *
 	 * @return BudgetCategoryRowExpense
+	 * @throws PermissionsException
 	 */
 	public function createBudgetCategoryRowExpense(Request $request) {
+		$budgetCategoryRowId = $request->get('budgetCategoryRowId');
+		$this->checkBudgetPermission($this->getBudgetCategoryRow($budgetCategoryRowId)->budgetCategory()->getResults()->budgetId);
+
 		$expenseRequest = new Request($request->input('expense'));
 		$expenseRequest->merge(['userId' => $request->input('userId')]);
 
@@ -521,8 +621,9 @@ class BudgetService {
 			$Expense = $this->ExpenseService->createExpense($expenseRequest);
 		}
 
-		$BudgetCategoryRowExpense = new BudgetCategoryRowExpense($request->only(['budgetCategoryRowId']));
+		$BudgetCategoryRowExpense = new BudgetCategoryRowExpense(['budgetCategoryRowId' => $budgetCategoryRowId]);
 		$BudgetCategoryRowExpense->expense()->associate($Expense)->save();
+
 		return $BudgetCategoryRowExpense;
 	}
 
@@ -533,12 +634,15 @@ class BudgetService {
 	 * @param Request $request
 	 *
 	 * @return void
+	 * @throws PermissionsException
 	 */
-	public function updateBudgetCategoryRowExpense($id, Request $request) {
+	public function updateBudgetCategoryRowExpense(int $id, Request $request) {
+		$BudgetCategoryRowExpense = $this->getBudgetCategoryRowExpense($id);
+		$this->checkBudgetPermission($BudgetCategoryRowExpense->budgetCategoryRow()->getResults()->budgetCategory()->getResults()->budgetId);
+
 		$expenseRequest = new Request($request->input('expense'));
 		$expenseId = $expenseRequest->input('id');
 
-		$BudgetCategoryRowExpense = $this->getBudgetCategoryRowExpense($id);
 		$BudgetCategoryRowExpense->update($request->only(['budgetCategoryRowId']));
 		if (!$expenseId) {
 			$expenseId = $BudgetCategoryRowExpense->expenseId;
@@ -552,9 +656,13 @@ class BudgetService {
 	 *
 	 * @param int $id
 	 *
-	 * @return void
+	 * @return bool|null
+	 * @throws PermissionsException
 	 */
-	public function deleteBudgetCategoryRowExpense($id) {
-		BudgetCategoryRowExpense::destroy($id);
+	public function deleteBudgetCategoryRowExpense(int $id) {
+		$BudgetCategoryRowExpense = $this->getBudgetCategoryRowExpense($id);
+		$this->checkBudgetPermission($BudgetCategoryRowExpense->budgetCategoryRow()->getResults()->budgetCategory()->getResults()->budgetId);
+
+		return $BudgetCategoryRowExpense->delete();
 	}
 }

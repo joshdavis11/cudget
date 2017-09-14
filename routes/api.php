@@ -31,7 +31,19 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 		$router->group(['prefix' => 'budgets'], function(Router $router) {
 			$router->get('{id}/share', V1\BudgetsController::class. '@getShare');
 			$router->post('{id}/share', V1\BudgetsController::class . '@postShare');
-			$router->resource('income', V1\BudgetIncomeController::class);
+			$router->resource('income', V1\BudgetIncomeController::class,
+				[
+					'names' => [
+						'create' => 'budgetIncome.create',
+						'store' => 'budgetIncome.store',
+						'show' => 'budgetIncome.show',
+						'index' => 'budgetIncome.index',
+						'update' => 'budgetIncome.update',
+						'destroy' => 'budgetIncome.destroy',
+						'edit' => 'budgetIncome.edit',
+					],
+				]
+			);
 
 			//Budget categories
 			$router->group(['prefix' => 'categories'], function(Router $router) {
@@ -39,12 +51,48 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 				//Budget category rows
 				$router->group(['prefix' => 'rows'], function(Router $router) {
 					$router->put('expenses/bulk', V1\BudgetCategoryRowExpensesController::class . '@bulkUpdate');
-					$router->resource('expenses', V1\BudgetCategoryRowExpensesController::class);
+					$router->resource('expenses', V1\BudgetCategoryRowExpensesController::class,
+						[
+							'names' => [
+								'create' => 'budgetCategoryRowExpense.create',
+								'store' => 'budgetCategoryRowExpense.store',
+								'show' => 'budgetCategoryRowExpense.show',
+								'index' => 'budgetCategoryRowExpense.index',
+								'update' => 'budgetCategoryRowExpense.update',
+								'destroy' => 'budgetCategoryRowExpense.destroy',
+								'edit' => 'budgetCategoryRowExpense.edit',
+							],
+						]
+					);
 				});
-				$router->resource('rows', V1\BudgetCategoryRowsController::class);
+				$router->resource('rows', V1\BudgetCategoryRowsController::class,
+					[
+						'names' => [
+							'create' => 'budgetCategoryRow.create',
+							'store' => 'budgetCategoryRow.store',
+							'show' => 'budgetCategoryRow.show',
+							'index' => 'budgetCategoryRow.index',
+							'update' => 'budgetCategoryRow.update',
+							'destroy' => 'budgetCategoryRow.destroy',
+							'edit' => 'budgetCategoryRow.edit',
+						],
+					]
+				);
 				$router->get('rows/bcid/{id}', V1\BudgetCategoryRowsController::class . '@forBudgetCategory');
 			});
-			$router->resource('categories', V1\BudgetCategoriesController::class);
+			$router->resource('categories', V1\BudgetCategoriesController::class,
+				[
+					'names' => [
+						'create' => 'budgetCategory.create',
+						'store' => 'budgetCategory.store',
+						'show' => 'budgetCategory.show',
+						'index' => 'budgetCategory.index',
+						'update' => 'budgetCategory.update',
+						'destroy' => 'budgetCategory.destroy',
+						'edit' => 'budgetCategory.edit',
+					],
+				]
+			);
 			$router->get('categories/bid/{id}', V1\BudgetCategoriesController::class . '@forBudget');
 
 			//Templates

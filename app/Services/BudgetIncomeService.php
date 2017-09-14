@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\PermissionsException;
 use App\Model\BudgetIncome;
 use App\Model\Income;
 use Illuminate\Http\Request;
@@ -16,14 +17,20 @@ class BudgetIncomeService {
 	 * @var IncomeService
 	 */
 	protected $IncomeService;
+	/**
+	 * @var BudgetService
+	 */
+	protected $BudgetService;
 
 	/**
 	 * BudgetIncomeService constructor.
 	 *
 	 * @param IncomeService $IncomeService
+	 * @param BudgetService $BudgetService
 	 */
-	public function __construct(IncomeService $IncomeService) {
+	public function __construct(IncomeService $IncomeService, BudgetService $BudgetService) {
 		$this->IncomeService = $IncomeService;
+		$this->BudgetService = $BudgetService;
 	}
 
 	/**
@@ -33,7 +40,7 @@ class BudgetIncomeService {
 	 *
 	 * @return BudgetIncome
 	 */
-	public function getBudgetIncome($id) {
+	public function getBudgetIncome(int $id) {
 		return BudgetIncome::findOrFail($id);
 	}
 
@@ -43,8 +50,12 @@ class BudgetIncomeService {
 	 * @param Request $request
 	 *
 	 * @return BudgetIncome
+	 * @throws PermissionsException
 	 */
 	public function createBudgetIncome(Request $request) {
+		$budgetId = $request->get('budgetId');
+		$this->BudgetService->checkBudgetPermission($budgetId);
+
 		$incomeRequest = new Request($request->input('income'));
 		$incomeRequest->merge(['userId' => $request->input('userId')]);
 
@@ -56,20 +67,39 @@ class BudgetIncomeService {
 		}
 
 		//Save the budget income relationship
-		$BudgetIncome = new BudgetIncome($request->only(['budgetId']));
+		$BudgetIncome = new BudgetIncome(['budgetId' => $budgetId]);
 		$BudgetIncome->income()->associate($Income)->save();
 
 		return $BudgetIncome;
 	}
 
 	/**
+	 * Update a budget income
+	 *
+	 * @param int     $id
+	 * @param Request $request
+	 *
+	 * @return bool|int
+	 * @throws PermissionsException
+	 */
+	public function updateBudgetIncome(int $id, Request $request) {
+		$BudgetIncome = $this->getBudgetIncome($id);
+		$this->BudgetService->checkBudgetPermission($BudgetIncome->budgetId);
+
+		return $this->IncomeService->updateIncome($BudgetIncome->incomeId, new Request($request->input('income')));
+	}
+
+	/**
 	 * Delete a budget income from a budget
 	 *
-	 * @param $id
+	 * @param int $id
 	 *
-	 * @return void
+	 * @return bool|null
 	 */
-	public function deleteBudgetIncome($id) {
-		BudgetIncome::destroy($id);
+	public function deleteBudgetIncome(int $id) {
+		$BudgetIncome = $this->getBudgetIncome($id);
+		$this->BudgetService->checkBudgetPermission($BudgetIncome->budgetId);
+
+		return $BudgetIncome->delete();
 	}
 }
