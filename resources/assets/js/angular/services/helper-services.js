@@ -198,6 +198,7 @@ angular.module('HelperServices', [])
 			$http.get('/web/csrf').then((response) => {
 				if (response.data.csrf !== window.csrf) {
 					window.csrf = response.data.csrf;
+					$http.defaults.headers.common['X-CSRF-TOKEN'] = window.csrf;
 				}
 			})
 		};
