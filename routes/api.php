@@ -128,11 +128,13 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 		});
 
 		//User routes
-		$router->group(['prefix' => 'users'], function(Router $router) {
-			$router->put('{id}/password', V1\UsersController::class . '@password');
-			$router->resource('{userId}/permissions', V1\UserPermissionsController::class);
+		$router->group(['middleware' => 'admin'], function(Router $router) {
+			$router->group(['prefix' => 'users'], function(Router $router) {
+				$router->put('{id}/password', V1\UsersController::class . '@password');
+				$router->resource('{userId}/permissions', V1\UserPermissionsController::class);
+			});
+			$router->resource('users', V1\UsersController::class);
 		});
-		$router->resource('users', V1\UsersController::class);
 	});
 });
 
