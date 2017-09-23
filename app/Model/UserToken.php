@@ -8,6 +8,9 @@ namespace App\Model;
  * @package App\Model
  */
 class UserToken extends BaseModel {
+	const TYPE_PASSWORD_RESET = 'password_reset';
+	const TYPE_ACTIVATION = 'activation';
+
 	/**
 	 * The attributes that are mass assignable.
 	 *

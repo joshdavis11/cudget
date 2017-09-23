@@ -86,6 +86,18 @@ class UserService {
 	}
 
 	/**
+	 * Get a user by email
+	 *
+	 * @param string $email
+	 *
+	 * @return User
+	 * @throws ModelNotFoundException
+	 */
+	public function getUserByEmail(string $email) {
+		return User::where('email', '=', $email)->firstOrFail();
+	}
+
+	/**
 	 * Update a user
 	 *
 	 * @param int     $id

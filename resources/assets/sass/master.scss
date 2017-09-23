@@ -194,7 +194,7 @@ html {
 
 .panorama {
 	position: absolute;
-	top: 0px;
+	top: 0;
 	display: inline-block;
 	height: 300px;
 	width: 100%;
@@ -238,7 +238,8 @@ html {
 	}
 
 	#email-verification,
-	#token-expired {
+	#token-expired,
+	#password-reset {
 		margin-top: 100px;
 	}
 }
@@ -281,4 +282,11 @@ html {
 		transition: all 0.5s cubic-bezier(0, 0, 0, 1);
 		top: -68px;
 	}
+}
+
+/***********
+ * Buttons *
+ ***********/
+.btn-link {
+	margin-left: 5px;
 }

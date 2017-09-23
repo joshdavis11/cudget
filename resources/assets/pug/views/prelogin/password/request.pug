@@ -1,0 +1,17 @@
+.container
+	.row
+		.col-xs-12.col-sm-12.col-md-12.col-lg-12
+			.page-header
+				h1.center Reset Your Password
+				.col-md-1.col-lg-3
+				.col-sm-12.col-md-10.col-lg-6
+					form(ng-submit="valid() && submit()", novalidate, name="passwordRequestForm")
+						input(type="hidden" name="_token" value="{{ csrf }}")
+						.form-group.required.col-xs-12(ng-class="{ 'has-error': (passwordRequestForm.email.$touched || passwordRequestForm.$submitted) && passwordRequestForm.email.$invalid }")
+							label.control-label(for="email") Email
+							input#email.form-control(placeholder="email@example.com", type="email", name="email", ng-model="email", required)
+							span.help-block Enter your email address to receive a password reset email.
+						.form-group.btn-toolbar.col-xs-12
+							input.btn.btn-primary(type="submit", ng-disabled="passwordRequestForm.$invalid || passwordRequestForm.$submitted", value="Send me the email")
+							a.btn.btn-default(href="/login") I remember now!
+				.col-md-1.col-lg-3

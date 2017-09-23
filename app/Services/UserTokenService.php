@@ -16,12 +16,13 @@ class UserTokenService {
 	 * createToken
 	 *
 	 * @param int                    $userId  The user's ID
-	 * @param string|null            $token   The token. If null, a random string will be generated and encrypted.
+	 * @param string                 $type    The type of token
 	 * @param DateTimeImmutable|null $expires The DateTimeImmutable when the token expires. If null, a DateTimeImmutable of +30 minutes will be generated.
+	 * @param string|null            $token   The token. If null, a random string will be generated and encrypted.
 	 *
 	 * @return UserToken
 	 */
-	public function createToken(int $userId, DateTimeImmutable $expires = null, string $token = null) {
+	public function createToken(int $userId, string $type, DateTimeImmutable $expires = null, string $token = null) {
 		if (null === $expires) {
 			$expires = new DateTimeImmutable('+30 minutes');
 		}
@@ -35,6 +36,7 @@ class UserTokenService {
 		$UserToken->userId = $userId;
 		$UserToken->token = $token;
 		$UserToken->expires = $expires->format('Y-m-d H:i:s');
+		$UserToken->type = $type;
 		$UserToken->save();
 
 		return $UserToken;

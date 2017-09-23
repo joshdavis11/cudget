@@ -25,10 +25,10 @@ $router->group(['middleware' => 'guest'], function(Router $router) {
 	$router->get('login', ViewController::class . '@preLogin')->name('login');
 	$router->get('signup', ViewController::class . '@preLogin')->name('signup');
 	$router->post('login', PreLoginController::class . '@postLogin');
-	$router->get('password/reset', ForgotPasswordController::class . '@showLinkRequestForm')->name('password.request');
+	$router->get('password/reset', ViewController::class . '@preLogin')->name('password.request');
 	$router->post('password/email', ForgotPasswordController::class . '@sendResetLinkEmail')->name('password.email');
-	$router->get('password/reset/{token}', ResetPasswordController::class . '@showResetForm')->name('password.reset');
-	$router->post('password/reset', ResetPasswordController::class . '@reset');
+	$router->get('password/reset/{token}', ResetPasswordController::class . '@showResetPasswordForm')->name('password.reset');
+	$router->post('password/reset', ResetPasswordController::class . '@reset')->name('password.doReset');
 	$router->get('activate/new/{token}', ActivationController::class . '@new')->name('activation.new');
 	$router->get('activate/{token}', ActivationController::class . '@activate')->name('activation');
 	$router->get('403', ViewController::class . '@angular')->name('403');

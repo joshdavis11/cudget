@@ -8,8 +8,12 @@ angular.module('CudgetRoutes', [])
 			controller: 'PreLoginController'
 		})
 		.when('/signup', {
-			template: require('../../pug/views/signup.pug'),
+			template: require('../../pug/views/prelogin/signup.pug'),
 			controller: 'SignUpController'
+		})
+		.when('/password/reset', {
+			template: require('../../pug/views/prelogin/password/request.pug'),
+			controller: 'PasswordRequestController'
 		})
 		.when('/home', {
 			template: require('../../pug/views/home.pug'),

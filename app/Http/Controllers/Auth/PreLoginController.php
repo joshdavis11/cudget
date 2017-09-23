@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Users\SignUpUserRequest;
+use App\Model\UserToken;
 use App\Services\UserService;
 use App\Services\UserTokenService;
 use App\Utilities\SignUpEmailUtility;
@@ -122,7 +123,7 @@ class PreLoginController extends Controller {
     	$Request->merge(['admin' => false, 'emailVerified' => false]);
 		$User = $UserService->createUser($Request);
 
-		$UserToken = $UserTokenService->createToken($User->id, new DateTimeImmutable('+1 day'));
+		$UserToken = $UserTokenService->createToken($User->id, UserToken::TYPE_ACTIVATION, new DateTimeImmutable('+1 day'));
 
 		//Send new email
 		$SignUpEmailUtility->send($User, $UserToken);

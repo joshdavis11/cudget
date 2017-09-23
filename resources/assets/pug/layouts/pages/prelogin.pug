@@ -7,7 +7,8 @@ html(ng-app="Cudget", lang="en", ng-cloak, ng-controller="MasterController")
 		block header
 			include includes/prelogin/header.pug
 		block content
-			div(ng-view)
+			div.container#loader(ng-show="loading")
+			div(ng-show="!loading", ng-view)
 		block footer
 			footer(ng-controller="FooterController")
 				include includes/prelogin/footer.pug

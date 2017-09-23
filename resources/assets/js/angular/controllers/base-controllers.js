@@ -146,6 +146,31 @@ angular.module('BaseControllers', [])
 		};
 	}
 ])
+.controller('PasswordRequestController', ['TitleService', '$scope', 'CSRFService', '$http', 'MessageService', '$location',
+	function(TitleService, $scope, CSRFService, $http, MessageService, $location) {
+		TitleService.setTitle('Cudget - Reset Your Password');
+		$scope.csrf = CSRFService.getCSRF();
+		$scope.email = '';
+
+		$scope.valid = function() {
+			if (!$scope.passwordRequestForm.$valid) {
+				MessageService.message('Something wasn\'t quite right there... Please fix any errors and try again.').error();
+				return false;
+			}
+
+			return true;
+		};
+
+		$scope.submit = function() {
+			$http.post('/password/email', {email: $scope.email}).then(function() {
+				MessageService.message('Look for an email with instructions on how to reset your password.').info();
+				$location.path('/login');
+			}, function() {
+				MessageService.message('Oh boy... something didn\'t work right. Refresh and try again.').error();
+			});
+		};
+	}
+])
 .controller('404Controller', ['TitleService', 'AuthenticationService', '$scope',
 	function(TitleService, AuthenticationService, $scope) {
 		TitleService.setTitle('404 Page Not Found');
@@ -161,6 +186,10 @@ angular.module('BaseControllers', [])
 		};
 
 		function getMessageInfo(messages) {
+			if(isString(messages)) {
+				return messages;
+			}
+
 			let pageLoadMessage = '';
 			forEach(messages, function(arrayOfMessages) {
 				if(isString(arrayOfMessages)) {
@@ -178,13 +207,11 @@ angular.module('BaseControllers', [])
 
 
 		if(!isEmpty(window.info)) {
-			MessageService.message(window.info).info();
+			MessageService.message(getMessageInfo(window.info)).info();
 		}
 
 		if(!isEmpty(window.errors)) {
-			let pageLoadMessage = getMessageInfo(window.errors);
-
-			MessageService.message(pageLoadMessage).error();
+			MessageService.message(getMessageInfo(window.errors)).error();
 		}
 	}
 ])

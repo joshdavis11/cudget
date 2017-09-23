@@ -2,12 +2,13 @@
 
 namespace App\Model;
 
+use App\Notifications\ResetPassword;
 use Illuminate\Auth\Authenticatable;
-use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
 /**
@@ -16,7 +17,7 @@ use Laravel\Passport\HasApiTokens;
  * @package App\Model
  */
 class User extends BaseModel implements AuthenticatableContract, AuthorizableContract, CanResetPasswordContract {
-	use Authenticatable, Authorizable, CanResetPassword, HasApiTokens;
+	use Authenticatable, Authorizable, HasApiTokens, Notifiable;
 
 	/**
 	 * @var array
@@ -72,5 +73,25 @@ class User extends BaseModel implements AuthenticatableContract, AuthorizableCon
 	 */
 	public function getNameAttribute() {
 		return $this->firstName . ' ' . $this->lastName;
+	}
+
+	/**
+	 * Get the e-mail address where password reset links are sent.
+	 *
+	 * @return string
+	 */
+	public function getEmailForPasswordReset() {
+		return $this->email;
+	}
+
+	/**
+	 * Send the password reset notification.
+	 *
+	 * @param  string $token
+	 *
+	 * @return void
+	 */
+	public function sendPasswordResetNotification($token) {
+		$this->notify(new ResetPassword($token));
 	}
 }
