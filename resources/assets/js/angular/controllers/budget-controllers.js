@@ -395,8 +395,8 @@ angular.module('BudgetControllers', [])
 
 		$scope.submit = function() {
 			$http.post('/api/v1/budgets/categories', $scope.BudgetCategory, { ignoreLoadingBar: true })
-				.success(function(response) {
-					$uibModalInstance.close(response.BudgetCategory);
+				.then(function(response) {
+					$uibModalInstance.close(response.data);
 				});
 		};
 	}
@@ -449,8 +449,8 @@ angular.module('BudgetControllers', [])
 
 		$scope.submit = function() {
 			$http.post('/api/v1/budgets/categories/rows', $scope.BudgetCategoryRow, { ignoreLoadingBar: true })
-				.success(function(response) {
-					$uibModalInstance.close(response.BudgetCategoryRow);
+				.then(function(response) {
+					$uibModalInstance.close(response.data);
 				});
 		};
 	}
@@ -504,8 +504,8 @@ angular.module('BudgetControllers', [])
 
 		$scope.submit = function() {
 			$http.post('/api/v1/budgets/categories/rows/expenses', $scope.BudgetCategoryRowExpense, { ignoreLoadingBar: true })
-				.success(function(response) {
-					$uibModalInstance.close(response.BudgetCategoryRowExpense);
+				.then(function(response) {
+					$uibModalInstance.close(response.data);
 				});
 		};
 	}

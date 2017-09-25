@@ -68,7 +68,7 @@ class BudgetCategoryRowExpensesController extends Controller {
 		} catch (PermissionsException $PermissionsException) {
 			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
-		return new Response(null, Response::HTTP_CREATED, ['Location' => route('budgetCategoryRowExpense.show', ['expense' => $BudgetCategoryRowExpense->id])]);
+		return new Response($BudgetCategoryRowExpense, Response::HTTP_CREATED, ['Location' => route('budgetCategoryRowExpense.show', ['expense' => $BudgetCategoryRowExpense->id])]);
 	}
 
 	/**
