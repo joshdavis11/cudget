@@ -341,7 +341,7 @@ angular.module('BudgetControllers', [])
 
 		$scope.submit = function() {
 			$http.post('/api/v1/budgets/income', $scope.BudgetIncome, { ignoreLoadingBar: true })
-				.success(function(response) {
+				.then(function(response) {
 					$uibModalInstance.close(response.data);
 				});
 		};
