@@ -206,13 +206,17 @@ angular.module('BudgetDirectives', [])
 					});
 
 					modalInstance.result.then(function() {
-						//setMessage()
-						angular.forEach($scope.ExpenseCategories, function(ExpenseCategory) {
-							if (ExpenseCategory.id === $scope.BudgetCategoryRowExpense.expense.expenseCategoryId) {
-								$scope.BudgetCategoryRowExpense.expense.expenseCategory = ExpenseCategory;
-								return false;
-							}
-						});
+						if (!$scope.BudgetCategoryRowExpense.expense || !$scope.BudgetCategoryRowExpense.expense.expenseCategoryId) {
+							$scope.BudgetCategoryRowExpense.expense.expenseCategory = null;
+						}
+						else {
+							angular.forEach($scope.ExpenseCategories, function(ExpenseCategory) {
+								if (ExpenseCategory.id === $scope.BudgetCategoryRowExpense.expense.expenseCategoryId) {
+									$scope.BudgetCategoryRowExpense.expense.expenseCategory = ExpenseCategory;
+									return false;
+								}
+							});
+						}
 						BudgetService.setData($scope.Budget);
 					}, function() {
 						angular.copy(OriginalBudgetCategoryRowExpense, $scope.BudgetCategoryRowExpense);

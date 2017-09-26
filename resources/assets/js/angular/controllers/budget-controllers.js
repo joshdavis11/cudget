@@ -202,12 +202,17 @@ angular.module('BudgetControllers', [])
 			});
 
 			modalInstance.result.then(function() {
-				angular.forEach($scope.IncomeCategories, function(IncomeCategory) {
-					if (IncomeCategory.id === BudgetIncome.income.incomeCategoryId) {
-						BudgetIncome.income.incomeCategory = IncomeCategory;
-						return false;
-					}
-				});
+				if (!BudgetIncome.income || !BudgetIncome.income.incomeCategoryId) {
+					BudgetIncome.income.incomeCategory = null;
+				}
+				else {
+					angular.forEach($scope.IncomeCategories, function(IncomeCategory) {
+						if (IncomeCategory.id === BudgetIncome.income.incomeCategoryId) {
+							BudgetIncome.income.incomeCategory = IncomeCategory;
+							return false;
+						}
+					});
+				}
 				BudgetService.setData($scope.Budget);
 			}, function() {
 				angular.copy(OriginalBudgetIncome, BudgetIncome);
@@ -320,7 +325,7 @@ angular.module('BudgetControllers', [])
 
 		$scope.submit = function() {
 			$http.put('/api/v1/budgets/income/' + BudgetIncome.id, BudgetIncome, { ignoreLoadingBar: true })
-				.success(function() {
+				.then(function() {
 					$uibModalInstance.close();
 				});
 		};
@@ -483,7 +488,7 @@ angular.module('BudgetControllers', [])
 
 		$scope.submit = function() {
 			CategoryRowExpenseService.update($scope.BudgetCategoryRowExpense, { ignoreLoadingBar: true })
-				.success(function() {
+				.then(function() {
 					$uibModalInstance.close();
 				});
 		};

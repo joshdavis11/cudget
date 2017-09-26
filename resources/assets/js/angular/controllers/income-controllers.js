@@ -43,13 +43,17 @@ angular.module('IncomeControllers', [])
 			});
 
 			modalInstance.result.then(function() {
-				//setMessage()
-				angular.forEach($scope.IncomeCategories, function(IncomeCategory) {
-					if (IncomeCategory.id === Income.incomeCategoryId) {
-						Income.incomeCategory = IncomeCategory;
-						return false;
-					}
-				});
+				if (!Income.incomeCategoryId) {
+					Income.incomeCategory = null;
+				}
+				else {
+					angular.forEach($scope.IncomeCategories, function(IncomeCategory) {
+						if (IncomeCategory.id === Income.incomeCategoryId) {
+							Income.incomeCategory = IncomeCategory;
+							return false;
+						}
+					});
+				}
 			}, function() {
 				angular.copy(OriginalIncome, Income);
 			});

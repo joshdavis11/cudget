@@ -14,8 +14,8 @@
 .form-group.required(ng-class="{ 'has-error': (incomeForm.description.$touched && incomeForm.description.$invalid) || (incomeForm.$submitted && incomeForm.description.$invalid) }")
 	label.control-label(for="incomeDescription") Description
 	input#incomeDescription.form-control(placeholder="Limit of 255 Characters", type="text", name="description", maxlength="255", ng-model="Income.description", required)
-.form-group.required(ng-class="{ 'has-error': (incomeForm.incomeCategory.$touched && incomeForm.incomeCategory.$invalid) || (incomeForm.$submitted && incomeForm.incomeCategory.$invalid) }")
-	income-category-chooser(ng-model="Income.incomeCategoryId", icc-name="incomeCategory", icc-required="true")
+.form-group(ng-class="{ 'has-error': (incomeForm.incomeCategory.$touched && incomeForm.incomeCategory.$invalid) || (incomeForm.$submitted && incomeForm.incomeCategory.$invalid) }")
+	income-category-chooser(ng-model="Income.incomeCategoryId", icc-name="incomeCategory", icc-required="false")
 .form-group.btn-toolbar(ng-if="showFooterButtons")
 	button.btn.btn-primary(type="submit") Submit
 	a.btn.btn-default(href="/income") Cancel

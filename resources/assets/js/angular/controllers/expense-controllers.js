@@ -43,13 +43,17 @@ angular.module('ExpenseControllers', [])
 			});
 
 			modalInstance.result.then(function() {
-				//setMessage()
-				angular.forEach($scope.ExpenseCategories, function(ExpenseCategory) {
-					if (ExpenseCategory.id === Expense.expenseCategoryId) {
-						Expense.expenseCategory = ExpenseCategory;
-						return false;
-					}
-				});
+				if (!Expense.expenseCategoryId) {
+					Expense.expenseCategory = null;
+				}
+				else {
+					angular.forEach($scope.ExpenseCategories, function(ExpenseCategory) {
+						if (ExpenseCategory.id === Expense.expenseCategoryId) {
+							Expense.expenseCategory = ExpenseCategory;
+							return false;
+						}
+					});
+				}
 			}, function() {
 				angular.copy(OriginalExpense, Expense);
 			});
