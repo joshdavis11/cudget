@@ -102,8 +102,15 @@ class ExpenseController extends Controller {
 	 * @return Response
 	 */
 	public function update(Request $Request, $id) {
-		$Request->merge(['userId' => $this->Auth->user()->id]);
+		$authUserId = $this->Auth->user()->id;
+		$Expense = $this->ExpenseService->getExpense($id);
+		if ($authUserId !== $Expense->userId) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
+		}
+
+		$Request->merge(['userId' => $authUserId]);
 		$this->ExpenseService->updateExpense($id, $Request);
+
 		return new Response('Expense updated');
 	}
 

@@ -23,7 +23,9 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 	$router->group(['prefix' => 'v1'], function(Router $router) {
 
 		//Perms
-		$router->resource('permissions', V1\PermissionsController::class);
+		$router->group(['middleware' => 'admin'], function(Router $router) {
+			$router->resource('permissions', V1\PermissionsController::class);
+		});
 		$router->get('myperms', V1\UserPermissionsController::class . '@perms');
 		$router->get('auth/user', V1\UserPermissionsController::class . '@authUser');
 

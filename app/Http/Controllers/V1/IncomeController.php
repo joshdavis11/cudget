@@ -94,12 +94,15 @@ class IncomeController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function update(Request $request, $id) {
-		$request->merge(['userId' => $this->Auth->user()->id]);
-		try {
-			$this->IncomeService->updateIncome($id, $request);
-		} catch (Exception $Exception) {
-			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		$authUserId = $this->Auth->user()->id;
+		$Income = $this->IncomeService->getIncome($id);
+		if ($authUserId !== $Income->userId) {
+			return new Response($this->authorizationMessage(), Response::HTTP_FORBIDDEN);
 		}
+
+		$request->merge(['userId' => $authUserId]);
+		$this->IncomeService->updateIncome($id, $request);
+
 		return new Response(['message' => $request->input('name') . ' updated!'], Response::HTTP_OK, ['Content-Type' => 'application/json']);
 	}
 

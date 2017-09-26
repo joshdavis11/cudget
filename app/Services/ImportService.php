@@ -330,7 +330,9 @@ class ImportService {
 						->orderBy('start', 'DESC')
 						->first();
 		if (!empty($Budget->id)) {
-			$this->LatestBudget = $Budget;
+			if (empty($this->LatestBudget) || $this->LatestBudget->start > $Budget->start) {
+				$this->LatestBudget = $Budget;
+			}
 		}
 		return $Budget;
 	}
