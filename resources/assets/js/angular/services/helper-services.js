@@ -4,18 +4,12 @@ import {
 } from 'angular';
 
 angular.module('HelperServices', [])
-.service('AuthenticationService', ['$http', '$location',
-	function($http, $location) {
+.service('AuthenticationService', ['$location',
+	function($location) {
 		let AuthUser = window.AuthUser;
 
 		this.isAuthenticated = function() {
 			return AuthUser.id > 0;
-		};
-
-		this.isAuthenticatedNow = function() {
-			return $http.get('/web/authenticated').then(function(response) {
-				return response.data.authenticated;
-			});
 		};
 
 		this.redirectIfNotAuthenticated = function() {
@@ -34,6 +28,15 @@ angular.module('HelperServices', [])
 			}
 
 			return authenticated;
+		};
+	}
+])
+.service('AuthenticationHttpService', ['$http', '$location',
+	function($http) {
+		this.isAuthenticatedNow = function() {
+			return $http.get('/web/authenticated').then(function(response) {
+				return response.data.authenticated;
+			});
 		};
 	}
 ])

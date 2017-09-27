@@ -10,8 +10,8 @@ import {
 import moment from 'moment';
 
 angular.module('BaseControllers', [])
-.controller('MasterController', ['$scope', '$timeout', 'uibPaginationConfig', '$location', '$window', 'AuthenticationService', 'CSRFService',
-	function($scope, $timeout, uibPaginationConfig, $location, $window, AuthenticationService, CSRFService) {
+.controller('MasterController', ['$scope', '$timeout', 'uibPaginationConfig', '$location', '$window', 'AuthenticationService', 'AuthenticationHttpService', 'CSRFService',
+	function($scope, $timeout, uibPaginationConfig, $location, $window, AuthenticationService, AuthenticationHttpService, CSRFService) {
 		$scope.loading = false;
 		let loading = false;
 
@@ -47,7 +47,7 @@ angular.module('BaseControllers', [])
 			if (currentDateTime <= newCurrentDateTime.subtract(sessionExpireMinutes, 'minutes')) {
 				currentDateTime = newCurrentDateTime.add(sessionExpireMinutes, 'minutes').clone();
 				if (AuthenticationService.isAuthenticated()) {
-					AuthenticationService.isAuthenticatedNow().then(function(authenticated) {
+					AuthenticationHttpService.isAuthenticatedNow().then(function(authenticated) {
 						//If not authenticated, redirect to login
 						if (!authenticated) {
 							$window.location.href = '/login';
