@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\Admin;
 use App\Http\Middleware\CreateCudgetFreshApiToken;
+use App\Http\Middleware\AddAssetHeaders;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -37,28 +38,31 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
 			CreateCudgetFreshApiToken::class,
+			'assets',
         ],
 
         'api' => [
             'throttle:60,1',
             'bindings',
+			'assets',
         ],
     ];
 
-    /**
-     * The application's route middleware.
-     *
-     * These middleware may be assigned to groups or used individually.
-     *
-     * @var array
-     */
-    protected $routeMiddleware = [
-        'admin' => Admin::class,
-        'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-    ];
+	/**
+	 * The application's route middleware.
+	 *
+	 * These middleware may be assigned to groups or used individually.
+	 *
+	 * @var array
+	 */
+	protected $routeMiddleware = [
+		'admin' => Admin::class,
+		'assets' => AddAssetHeaders::class,
+		'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
+		'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+		'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
+		'can' => \Illuminate\Auth\Middleware\Authorize::class,
+		'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+		'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+	];
 }

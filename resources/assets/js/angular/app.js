@@ -1,3 +1,4 @@
+require('./interceptors');
 require('./config');
 require('./controllers');
 require('./datepicker');
@@ -22,5 +23,6 @@ angular.module('Cudget', [
 	'CudgetFilters',
 	'CudgetDirectives',
 	'CudgetDatepicker',
-	'CudgetConfig'
+	'CudgetInterceptors',
+	'CudgetConfig',
 ]);

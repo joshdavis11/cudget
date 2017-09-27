@@ -7,15 +7,5 @@ angular.module('CudgetConfig', [])
 .config(['$httpProvider', function($httpProvider) {
 	$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 	$httpProvider.defaults.headers.common['X-CSRF-TOKEN'] = window.csrf;
-	$httpProvider.interceptors.push(function() {
-		return {
-			responseError: function(response) {
-				switch (response.status) {
-					case 401:
-						window.location.reload();
-						break;
-				}
-			}
-		};
-	});
+	$httpProvider.interceptors.push('HttpInterceptor');
 }]);

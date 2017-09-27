@@ -16,6 +16,6 @@ script(type="text/javascript") window.bootswatch = '{{ $bootswatch }}'; window.c
 	|    {{ '{}' }}
 	| @endif
 	| ;
-script(src="{{ mix('/js/manifest.js') }}" type="text/javascript")
-script(src="{{ mix('/js/vendor.js') }}" type="text/javascript")
-script(src="{{ mix('/js/app.js') }}" type="text/javascript")
+script(id="cudget-manifest-js", src="{{ mix('/js/manifest.js') }}" type="text/javascript")
+script(id="cudget-vendor-js", src="{{ mix('/js/vendor.js') }}" type="text/javascript")
+script(id="cudget-app-js", src="{{ mix('/js/app.js') }}" type="text/javascript")

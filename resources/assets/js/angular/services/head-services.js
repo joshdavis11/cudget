@@ -1,5 +1,5 @@
 import {
-	isArray
+	includes
 } from 'lodash';
 
 angular.module('HeadServices', [])
@@ -7,6 +7,22 @@ angular.module('HeadServices', [])
 	function($rootScope) {
 		this.setTitle = function(title) {
 			$rootScope.title = title;
+		};
+	}
+])
+.service('AssetsService', ['MessageService', '$sce',
+	function(MessageService, $sce) {
+		this.checkForJsUpdates = function(response) {
+			let appJs = response.headers('Cudget-app.js');
+			let manifestJs = response.headers('Cudget-manifest.js');
+			let vendorJs = response.headers('Cudget-vendor.js');
+			if (
+				(appJs && !document.getElementById('cudget-app-js').src.includes(appJs)) ||
+				(manifestJs && !document.getElementById('cudget-manifest-js').src.includes(manifestJs)) ||
+				(vendorJs && !document.getElementById('cudget-vendor-js').src.includes(vendorJs))
+			) {
+				MessageService.message($sce.trustAsHtml('A new version of the app is available. Please <a onclick="window.location.reload();">reload</a>.')).warning();
+			}
 		};
 	}
 ])
