@@ -1,9 +1,11 @@
 angular.module('CudgetInterceptors', [])
-.factory('HttpInterceptor', ['AssetsService',
-	function(AssetsService) {
+.factory('HttpInterceptor', ['AssetsService', 'AuthenticationService',
+	function(AssetsService, AuthenticationService) {
 		return {
 			response: function(response) {
-				AssetsService.checkForJsUpdates(response);
+				if (AuthenticationService.isAuthenticated()) {
+					AssetsService.checkForJsUpdates(response);
+				}
 
 				return response;
 			},
