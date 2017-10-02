@@ -48,6 +48,8 @@ div.navbar.navbar-default.navbar-fixed-top(role="navigation" ng-controller="Head
 					ul.dropdown-menu
 						li(ng-class="{ active: isActiveUri('/reports/budget-daily-expenses') }")
 							a(href="/reports/budget-daily-expenses", ng-click="isNavCollapsed = true") Budget Daily Expenses Report
+						li(ng-class="{ active: isActiveUri('/reports/budget-expenses-by-category') }")
+							a(href="/reports/budget-expenses-by-category", ng-click="isNavCollapsed = true") Budget Expenses By Category Report
 
 			ul.nav.navbar-nav.navbar-right(style="margin-right:0px;")
 				li(ng-class="{ active: isActiveBaseUri('/settings') }", uib-dropdown, ng-if="perms.admin || perms.colorScheme")

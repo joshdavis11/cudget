@@ -114,4 +114,55 @@ angular.module('ReportControllers', [])
 		};
 	}
 ])
+.controller('BudgetExpensesByCategoryReportController', ['$scope', 'Budgets', 'BudgetService',
+	function($scope, Budgets, BudgetService) {
+		$scope.Budget = { id: null };
+		$scope.Budgets = Budgets;
+
+		$scope.budgetChange = function() {
+			if ($scope.Budget && $scope.Budget.id) {
+				BudgetService.getBudget($scope.Budget.id).then(function(Budget) {
+					BudgetService.setData(Budget);
+
+					$scope.data = [];
+					forEach(Budget.budgetCategories, function(BudgetCategory) {
+						$scope.data.push({ key: BudgetCategory.name, value: BudgetCategory.spent });
+					});
+
+					$scope.api.refresh();
+				});
+			}
+			else {
+				setDefaultReportData();
+				$scope.api.refresh();
+			}
+		};
+
+		function setDefaultReportData() {
+			$scope.data = [];
+		}
+		setDefaultReportData();
+
+		$scope.options = {
+			chart: {
+				noData: 'Please choose a budget',
+				type: 'pieChart',
+				height: 500,
+				showLabels: true,
+				duration: 500,
+				labelSunbeamLayout: false, //false with percent so it shows horizontally
+				labelType: 'percent',
+				x: function(d) {
+					return d.key;
+				},
+				y: function(d) {
+					return d.value;
+				},
+				valueFormat: function(d) {
+					return '$' + format(',.2f')(d);
+				},
+			}
+		};
+	}
+])
 ;
