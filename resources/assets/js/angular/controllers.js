@@ -2,6 +2,7 @@ require('./controllers/base-controllers');
 require('./controllers/expense-controllers');
 require('./controllers/budget-controllers');
 require('./controllers/income-controllers');
+require('./controllers/report-controllers');
 require('./controllers/settings-controllers');
 
 angular.module('CudgetControllers', [
@@ -9,5 +10,6 @@ angular.module('CudgetControllers', [
 	'BudgetControllers',
 	'ExpenseControllers',
 	'IncomeControllers',
+	'ReportControllers',
 	'SettingsControllers'
 ]);

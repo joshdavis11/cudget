@@ -25,4 +25,5 @@ angular.module('Cudget', [
 	'CudgetDatepicker',
 	'CudgetInterceptors',
 	'CudgetConfig',
+	'nvd3',
 ]);

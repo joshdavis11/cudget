@@ -93,6 +93,9 @@ mix.
 		'ng-file-upload',
 		'moment',
 		'lodash',
+		'd3',
+		'nvd3',
+		'angular-nvd3',
 	])
 	.sass('resources/assets/sass/app.scss', 'public/css')
 	.pug('./resources/assets/pug/layouts/pages/', './resources/views/')

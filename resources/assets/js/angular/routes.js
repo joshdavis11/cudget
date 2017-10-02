@@ -238,6 +238,18 @@ angular.module('CudgetRoutes', [])
 				]
 			}
 		})
+		.when('/reports/budget-daily-expenses', {
+			template: require('../../pug/views/reports/budget.pug'),
+			controller: 'BudgetDailyExpensesReportController',
+			reloadOnSearch: false,
+			resolve: {
+				Budgets: ['BudgetService',
+					function(BudgetService) {
+						return BudgetService.getBudgets();
+					}
+				]
+			}
+		})
 		.when('/settings/colors', {
 			template: require('../../pug/views/settings/colors.pug'),
 			controller: 'ColorsController',

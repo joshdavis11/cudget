@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class BudgetService
@@ -67,13 +68,7 @@ class BudgetService {
 		$this->checkBudgetPermission($id);
 
 		return Budget
-			::with('budgetIncome')
-			->with('budgetIncome.income')
-			->with('budgetIncome.income.incomeCategory')
-			->with('budgetCategories')
-			->with('budgetCategories.budgetCategoryRows')
-			->with('budgetCategories.budgetCategoryRows.budgetCategoryRowExpenses')
-			->with('budgetCategories.budgetCategoryRows.budgetCategoryRowExpenses.expense')
+			::with('budgetIncome.income.incomeCategory')
 			->with('budgetCategories.budgetCategoryRows.budgetCategoryRowExpenses.expense.expenseCategory')
 			->findOrFail($id);
 	}
@@ -664,5 +659,27 @@ class BudgetService {
 		$this->checkBudgetPermission($BudgetCategoryRowExpense->budgetCategoryRow()->getResults()->budgetCategory()->getResults()->budgetId);
 
 		return $BudgetCategoryRowExpense->delete();
+	}
+
+	/**
+	 * Get a budget's expenses
+	 *
+	 * @param int $id The budget ID to load
+	 *
+	 * @return Collection
+	 * @throws ModelNotFoundException
+	 */
+	public function getBudgetExpenses(int $id) {
+		$this->checkBudgetPermission($id);
+
+		return DB::table('expenses')
+			->select('expenses.*')
+			->join('budget_category_row_expenses', 'expenses.id', '=', 'budget_category_row_expenses.expense_id')
+			->join('budget_category_rows', 'budget_category_row_expenses.budget_category_row_id', '=', 'budget_category_rows.id')
+			->join('budget_categories', 'budget_category_rows.budget_category_id', '=', 'budget_categories.id')
+			->join('budgets', 'budget_categories.budget_id', '=', 'budgets.id')
+			->where('budgets.id', '=', $id)
+			->orderBy('expenses.datetime', 'ASC')
+			->get();
 	}
 }

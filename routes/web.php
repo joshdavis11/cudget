@@ -70,6 +70,12 @@ $router->group(['middleware' => 'auth'], function(Router $router) {
 		$router->get('', ViewController::class . '@angular');
 	});
 
+	//Reports
+	$router->group(['prefix' => 'reports'], function(Router $router) {
+		$router->get('budget-daily-expenses', ViewController::class . '@angular');
+		$router->get('', ViewController::class . '@angular');
+	});
+
 	//Settings
 	$router->group(['prefix' => 'settings'], function(Router $router) {
 		$router->get('colors', ViewController::class . '@angular');

@@ -192,4 +192,21 @@ class BudgetsController extends Controller {
 		SharedBudget::create(['userId' => $request->input('userId'), 'budgetId' => $id]);
 		return new Response('Budget Shared Successfully!', Response::HTTP_OK);
 	}
+
+	/**
+	 * Get expenses for a given budget
+	 *
+	 * @param int $id Budget ID
+	 *
+	 * @return Response
+	 */
+	public function getExpensesForBudget(int $id) {
+		try {
+			$BudgetExpenses = $this->BudgetService->getBudgetExpenses($id);
+		} catch (ModelNotFoundException $exception) {
+			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		}
+
+		return new Response($BudgetExpenses);
+	}
 }

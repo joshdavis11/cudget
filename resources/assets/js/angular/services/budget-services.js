@@ -122,6 +122,12 @@ angular.module('BudgetServices', [])
 				return response;
 			});
 		};
+
+		this.getBudgetExpenses = function(id) {
+			return $http.get('/api/v1/budgets/' + id + '/expenses').then(function(response) {
+				return response.data;
+			});
+		};
 	}
 ])
 .service('CategoryService', ['CategoryRowService', '$http',
