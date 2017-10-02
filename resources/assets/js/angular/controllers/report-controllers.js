@@ -6,8 +6,9 @@ import {
 } from 'd3';
 
 angular.module('ReportControllers', [])
-.controller('BudgetDailyExpensesReportController', ['$scope', 'Budgets', 'BudgetService',
-	function($scope, Budgets, BudgetService) {
+.controller('BudgetDailyExpensesReportController', ['$scope', 'Budgets', 'BudgetService', 'TitleService',
+	function($scope, Budgets, BudgetService, TitleService) {
+		TitleService.setTitle('Budget Daily Expenses Report');
 		$scope.Budget = { id: null };
 		$scope.Budgets = Budgets;
 
@@ -114,8 +115,9 @@ angular.module('ReportControllers', [])
 		};
 	}
 ])
-.controller('BudgetExpensesByCategoryReportController', ['$scope', 'Budgets', 'BudgetService',
-	function($scope, Budgets, BudgetService) {
+.controller('BudgetExpensesByCategoryReportController', ['$scope', 'Budgets', 'BudgetService', 'TitleService',
+	function($scope, Budgets, BudgetService, TitleService) {
+		TitleService.setTitle('Budget Expenses By Category Report');
 		$scope.Budget = { id: null };
 		$scope.Budgets = Budgets;
 
