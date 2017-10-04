@@ -67,9 +67,9 @@ angular.module('ReportControllers', [])
 				height: 450,
 				margin: {
 					top: 20,
-					right: 100,
+					right: 120,
 					bottom: 90,
-					left: 100
+					left: 120
 				},
 				x: function(d) {
 					return d[0];
@@ -92,7 +92,7 @@ angular.module('ReportControllers', [])
 				},
 				yAxis: {
 					axisLabel: 'Amount spent',
-					axisLabelDistance: 40,
+					axisLabelDistance: 50,
 					tickFormat: function(d) {
 						return '$' + format(',.2f')(d);
 					}
