@@ -128,6 +128,12 @@ angular.module('BudgetServices', [])
 				return response.data;
 			});
 		};
+
+		this.getBudgetIncome = function(id) {
+			return $http.get('/api/v1/budgets/' + id + '/income').then(function(response) {
+				return response.data;
+			});
+		};
 	}
 ])
 .service('CategoryService', ['CategoryRowService', '$http',

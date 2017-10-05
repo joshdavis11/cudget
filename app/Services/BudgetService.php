@@ -677,9 +677,27 @@ class BudgetService {
 			->join('budget_category_row_expenses', 'expenses.id', '=', 'budget_category_row_expenses.expense_id')
 			->join('budget_category_rows', 'budget_category_row_expenses.budget_category_row_id', '=', 'budget_category_rows.id')
 			->join('budget_categories', 'budget_category_rows.budget_category_id', '=', 'budget_categories.id')
-			->join('budgets', 'budget_categories.budget_id', '=', 'budgets.id')
-			->where('budgets.id', '=', $id)
+			->where('budget_categories.budget_id', '=', $id)
 			->orderBy('expenses.datetime', 'ASC')
+			->get();
+	}
+
+	/**
+	 * Get a budget's income
+	 *
+	 * @param int $id The budget ID to load
+	 *
+	 * @return Collection
+	 * @throws ModelNotFoundException
+	 */
+	public function getBudgetIncome(int $id) {
+		$this->checkBudgetPermission($id);
+
+		return DB::table('income')
+			->select('income.*')
+			->join('budget_income', 'income.id', '=', 'budget_income.income_id')
+			->where('budget_income.budget_id', '=', $id)
+			->orderBy('income.datetime', 'ASC')
 			->get();
 	}
 }

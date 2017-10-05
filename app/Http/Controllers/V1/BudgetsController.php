@@ -209,4 +209,21 @@ class BudgetsController extends Controller {
 
 		return new Response($BudgetExpenses);
 	}
+
+	/**
+	 * Get income for a given budget
+	 *
+	 * @param int $id Budget ID
+	 *
+	 * @return Response
+	 */
+	public function getIncomeForBudget(int $id) {
+		try {
+			$BudgetIncome = $this->BudgetService->getBudgetIncome($id);
+		} catch (ModelNotFoundException $exception) {
+			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
+		}
+
+		return new Response($BudgetIncome);
+	}
 }

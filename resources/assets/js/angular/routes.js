@@ -239,7 +239,7 @@ angular.module('CudgetRoutes', [])
 			}
 		})
 		.when('/reports/budget-daily-expenses', {
-			template: require('../../pug/views/reports/budget-daily-expenses.pug'),
+			template: require('../../pug/views/reports/budgets.pug'),
 			controller: 'BudgetDailyExpensesReportController',
 			reloadOnSearch: false,
 			resolve: {
@@ -251,8 +251,20 @@ angular.module('CudgetRoutes', [])
 			}
 		})
 		.when('/reports/budget-expenses-by-category', {
-			template: require('../../pug/views/reports/budget-expenses-by-category.pug'),
+			template: require('../../pug/views/reports/budgets.pug'),
 			controller: 'BudgetExpensesByCategoryReportController',
+			reloadOnSearch: false,
+			resolve: {
+				Budgets: ['BudgetService',
+					function(BudgetService) {
+						return BudgetService.getBudgets();
+					}
+				]
+			}
+		})
+		.when('/reports/budget-daily-net', {
+			template: require('../../pug/views/reports/budgets.pug'),
+			controller: 'BudgetDailyNetReportController',
 			reloadOnSearch: false,
 			resolve: {
 				Budgets: ['BudgetService',

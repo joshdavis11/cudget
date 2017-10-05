@@ -34,6 +34,7 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 			$router->get('{id}/share', V1\BudgetsController::class. '@getShare');
 			$router->post('{id}/share', V1\BudgetsController::class . '@postShare');
 			$router->get('{id}/expenses', V1\BudgetsController::class . '@getExpensesForBudget');
+			$router->get('{id}/income', V1\BudgetsController::class . '@getIncomeForBudget');
 			$router->resource('income', V1\BudgetIncomeController::class,
 				[
 					'names' => [
