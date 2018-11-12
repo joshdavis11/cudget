@@ -76,8 +76,8 @@ angular.module('BaseControllers', [])
 		$rootScope.bootswatch = window.bootswatch;
 	}
 ])
-.controller('HeaderController', ['$rootScope', '$scope', '$location', 'PermissionService', 'HeaderService',
-	function($rootScope, $scope, $location, PermissionService, HeaderService) {
+.controller('HeaderController', ['$rootScope', '$scope', '$location', 'PermissionService', 'HeaderService', '$http',
+	function($rootScope, $scope, $location, PermissionService, HeaderService, $http) {
 		$rootScope.perms = PermissionService.getMyUserPermsFormatted();
 
 		let AuthUser = PermissionService.getAuthUser();
@@ -90,6 +90,31 @@ angular.module('BaseControllers', [])
 
 		$scope.isActiveUri = function(baseUri) {
 			return HeaderService.isActiveUri($location, baseUri);
+		};
+
+		let handler = window.Plaid.create({
+			clientName: 'Cudget',
+			env: window.PlaidData.env,
+			// Replace with your public_key from the Dashboard
+			key: window.PlaidData.publicKey,
+			product: ['transactions'],
+			onSuccess: function(publicToken, metadata) {
+				$http.post('/api/v1/banking/connect', {
+					publicToken: publicToken,
+					// metadata: metadata,
+				});
+				// Send the public_token to your app server.
+				// The metadata object contains info about the institution the
+				// user selected and the account ID or IDs, if the Select Account
+				// view is enabled.
+				// $.post('/get_access_token', {
+				// 	public_token: public_token,
+				// });
+			},
+		});
+
+		$scope.linkAccount = function() {
+			handler.open();
 		};
 	}
 ])

@@ -6,6 +6,18 @@ div.container
 			div.page-header
 				h1.center Home
 
+			div.col-xs-12.col-sm-6.col-md-4.col-lg-3(ng-if="perms.admin || perms.connect || perms.import")
+				div.panel.panel-primary
+					div.panel-heading
+						h3.panel-title Banking
+					div.panel-body
+						ul.nav.nav-pills.nav-stacked
+							li(ng-if="perms.admin || perms.accounts")
+								a(href="/budgets/accounts") Accounts
+							li(ng-if="perms.admin || perms.connect")
+								a(href="/budgets/templates") Connect
+							li(ng-if="perms.admin || perms.import")
+								a(href="/banking/import") Import
 			div.col-xs-12.col-sm-6.col-md-4.col-lg-3
 				div.panel.panel-primary
 					div.panel-heading
@@ -16,8 +28,6 @@ div.container
 								a(href="/budgets") Budgets
 							li(ng-if="perms.admin || perms.budgetTemplates")
 								a(href="/budgets/templates") Budget Templates
-							li(ng-if="perms.admin || perms.import")
-								a(href="/import") Import
 
 			div.col-xs-12.col-sm-6.col-md-4.col-lg-3
 				div.panel.panel-primary

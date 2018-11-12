@@ -529,31 +529,4 @@ angular.module('BudgetControllers', [])
 		};
 	}
 ])
-.controller('ImportController', ['$scope', '$http', 'TitleService', 'Upload', '$location',
-	function($scope, $http, TitleService, Upload, $location) {
-		TitleService.setTitle('Import Income and Expenses');
-		$scope.Import = {};
-		$scope.submitDisabled = false;
-		$http.get('/api/v1/import/accounts')
-			.success(function(importAccounts) {
-				$scope.ImportTypes = importAccounts || [];
-			})
-			.finally(function() {
-				$scope.ImportTypes.push({"id": "other", "name": "Other"});
-			});
-
-		$scope.submit = function() {
-			$scope.submitDisabled = true;
-			Upload.upload({
-				url: '/api/v1/import',
-				data: $scope.Import,
-				ignoreLoadingBar: true
-			}).then(function(response) {
-				$location.path(response.headers('Location') || '/budgets');
-			}, function() {
-				$scope.submitDisabled = false;
-			});
-		};
-	}
-])
 ;

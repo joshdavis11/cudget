@@ -38,7 +38,14 @@ $router->group(['middleware' => 'guest'], function(Router $router) {
 $router->group(['middleware' => 'auth'], function(Router $router) {
 	$router->get('logout', PreLoginController::class . '@logout')->name('logout');
 	$router->get('home', ViewController::class . '@angular')->name('home');
-	$router->get('import', ViewController::class . '@angular')->name('import');
+	$router->get('import', function() {
+		return redirect()->route('import');
+	});
+
+	//Banking
+	$router->group(['prefix' => 'banking'], function(Router $router) {
+		$router->get('import', ViewController::class . '@angular')->name('import');
+	});
 
 	//Budgets
 	$router->group(['prefix' => 'budgets'], function(Router $router) {

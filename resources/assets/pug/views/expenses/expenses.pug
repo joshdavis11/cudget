@@ -25,7 +25,7 @@
 					.pull-left.width-33.text-center Expenses:&nbsp;
 						strong {{ Expenses.length }}
 					.pull-left.width-33.text-right
-						a(href="/import") + Import Income/Expenses
+						a(href="/banking/import") + Import Income/Expenses
 
 				table.table.table-bordered.table-striped.table-hover.table-cog
 					thead
@@ -55,4 +55,4 @@
 			div.center(ng-if="!Expenses") No expenses created yet.&nbsp;
 				a(href="/expenses/create") + Create One
 				span &nbsp;or&nbsp;
-				a(href="/import") + Import Some
+				a(href="/banking/import") + Import Some

@@ -3,7 +3,7 @@ div#footer.footer.panel-footer
 	div.container
 		p.text-center &copy; {{ $year }} Cudget. All rights reserved.
 
-script(type="text/javascript") window.bootswatch = '{{ $bootswatch }}'; window.csrf = '{{ $csrf }}'; window.AuthUser = {!! $AuthUser !!}; window.perms = {!! $perms !!};
+script(type="text/javascript") window.bootswatch = '{{ $bootswatch }}'; window.csrf = '{{ $csrf }}'; window.AuthUser = {!! $AuthUser !!}; window.perms = {!! $perms !!}; window.PlaidData = { publicKey: '{!! env("PLAID_PUBLIC_KEY") !!}', env: '{!! env("PLAID_ENVIRONMENT") !!}'};
 	| window.errors = @if(Session::has('error'))
 	|    {!! json_encode(session('error')) !!}
 	| @else
@@ -16,6 +16,7 @@ script(type="text/javascript") window.bootswatch = '{{ $bootswatch }}'; window.c
 	|    {{ '{}' }}
 	| @endif
 	| ;
+script(id="cudget-plaid-js" src="https://cdn.plaid.com/link/v2/stable/link-initialize.js" type="text/javascript")
 script(id="cudget-manifest-js", src="{{ mix('/js/manifest.js') }}" type="text/javascript")
 script(id="cudget-vendor-js", src="{{ mix('/js/vendor.js') }}" type="text/javascript")
 script(id="cudget-app-js", src="{{ mix('/js/app.js') }}" type="text/javascript")

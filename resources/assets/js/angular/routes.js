@@ -185,8 +185,19 @@ angular.module('CudgetRoutes', [])
 				]
 			}
 		})
-		.when('/import', {
-			template: require('../../pug/views/import.pug'),
+		.when('/banking/update', {
+			template: require('../../pug/views/banking/update.pug'),
+			controller: 'UpdateController',
+			resolve: {
+				checkPermission: ['PermissionService',
+					function(PermissionService) {
+						return PermissionService.checkPermission('update', false)
+					}
+				]
+			}
+		})
+		.when('/banking/import', {
+			template: require('../../pug/views/banking/import.pug'),
 			controller: 'ImportController',
 			resolve: {
 				checkPermission: ['PermissionService',

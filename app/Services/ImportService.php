@@ -10,11 +10,11 @@ use App\Model\BudgetCategoryRowExpense;
 use App\Model\BudgetIncome;
 use App\Model\Expense;
 use App\Model\Income;
+use App\Model\PlaidData;
+use App\Utilities\Plaid;
 use DateTimeImmutable;
 use Dotenv\Exception\InvalidFileException;
 use Exception;
-use Illuminate\Auth\AuthManager;
-use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\Connection;
 use Illuminate\Http\Request;
@@ -28,23 +28,29 @@ class ImportService {
 	/**
 	 * @var int
 	 */
-	protected $authUserId;
+	private $authUserId;
 	/**
 	 * @var Connection
 	 */
-	protected $Database;
+	private $Database;
 	/**
-	 * @var Budget
+	 * @var Budget|null
 	 */
-	protected $LatestBudget;
+	private $LatestBudget;
+	/**
+	 * @var Plaid
+	 */
+	private $Plaid;
 
 	/**
 	 * ImportService constructor.
 	 *
-	 * @param Connection  $Database
+	 * @param Connection $Database
+	 * @param Plaid      $Plaid
 	 */
-	public function __construct(Connection $Database) {
+	public function __construct(Connection $Database, Plaid $Plaid) {
 		$this->Database = $Database;
+		$this->Plaid = $Plaid;
 	}
 
 	/**
@@ -52,7 +58,8 @@ class ImportService {
 	 *
 	 * @param Request $Request
 	 *
-	 * @return Budget
+	 * @return Budget|null
+	 * @throws \Throwable
 	 */
 	public function import(Request $Request) {
 		$this->authUserId = $Request->user()->id;
@@ -80,6 +87,41 @@ class ImportService {
 	}
 
 	/**
+	 * updateFromPlaid
+	 *
+	 * @param int $authUserId
+	 *
+	 * @return Budget|null
+	 * @throws \Unirest\Exception
+	 */
+	public function updateFromPlaid(int $authUserId) {
+		$this->authUserId = $authUserId;
+
+		$PlaidAccessTokens = PlaidData::where('user_id', '=', $authUserId)->get();
+		foreach($PlaidAccessTokens as $PlaidAccessToken) {
+			/** @var PlaidData $PlaidAccessToken */
+			$lastRun = new DateTimeImmutable('now');
+			$startDate = $PlaidAccessToken->lastRun ? date('Y-m-d', strtotime($PlaidAccessToken->lastRun . ' -1 day')) : date('Y-m-d', strtotime('1 month ago'));
+			$Transactions = $this->Plaid->getTransactions($PlaidAccessToken->accessToken, $startDate, $lastRun->format('Y-m-d'));
+			foreach($Transactions as $Transaction) {
+				$this->saveExpense(
+					$Transaction->getDate(),
+					$Transaction->getAmount(),
+					$Transaction->getName(),
+					$Transaction->getCurrencyCode(),
+					$Transaction->getTransactionId(),
+					$Transaction->getAccountId()
+				);
+			}
+
+			$PlaidAccessToken->lastRun = $lastRun;
+			$PlaidAccessToken->save();
+		}
+
+		return $this->LatestBudget;
+	}
+
+	/**
 	 * Parse a CSV file and insert new income and expenses
 	 *
 	 * @param string            $filePath                The path to the CSV
@@ -88,7 +130,7 @@ class ImportService {
 	 * @return void
 	 * @throws FileNotFoundException
 	 */
-	protected function doTheImport($filePath, AutoImportAccount $AutoImportAccount) {
+	private function doTheImport($filePath, AutoImportAccount $AutoImportAccount) {
 		$amountColumnNumber = $AutoImportAccount->amount;
 		$datetimeColumnNumber = $AutoImportAccount->date;
 		$descriptionColumnNumber = $AutoImportAccount->description;
@@ -117,7 +159,7 @@ class ImportService {
 	 *
 	 * @return Income
 	 */
-	protected function saveIncome(DateTimeImmutable $Date, $amount, $description) {
+	private function saveIncome(DateTimeImmutable $Date, $amount, $description) {
 		$Income = new Income();
 		$Income->userId = $this->authUserId;
 		$Income->datetime = $Date->format('Y-m-d H:i:s');
@@ -160,7 +202,7 @@ class ImportService {
 	 *
 	 * @return void
 	 */
-	protected function addIncomeToBudget(Income $Income, DateTimeImmutable $Date) {
+	private function addIncomeToBudget(Income $Income, DateTimeImmutable $Date) {
 		$Budget = $this->getBudget($Date);
 
 		if (empty($Budget->id)) {
@@ -178,15 +220,27 @@ class ImportService {
 	 * @param DateTimeImmutable $Date
 	 * @param float             $amount
 	 * @param string            $description
+	 * @param string            $isoCurrencyCode
+	 * @param string|null       $transactionId
+	 * @param string|null       $accountId
 	 *
 	 * @return Expense
 	 */
-	protected function saveExpense(DateTimeImmutable $Date, $amount, $description) {
-		$Expense = new Expense();
+	private function saveExpense(DateTimeImmutable $Date, float $amount, string $description, string $isoCurrencyCode = 'USD', string $transactionId = null, string $accountId = null) {
+		/** @var Expense $Expense */
+		if (null !== $transactionId) {
+			$Expense = Expense::where('transaction_id', '=', $transactionId)->first();
+		}
+		if (empty($Expense)) {
+			$Expense = new Expense();
+		}
 		$Expense->userId = $this->authUserId;
 		$Expense->datetime = $Date->format('Y-m-d H:i:s');
 		$Expense->amount = abs($amount);
 		$Expense->description = $this->cleanExpenseDescription($description);
+		$Expense->isoCurrencyCode = $isoCurrencyCode;
+		$Expense->transactionId = $transactionId;
+		$Expense->accountId = $accountId;
 
 		$CommonExpense = Expense::where('user_id', '=', $this->authUserId)
 			->where('description', 'LIKE', '%' . preg_replace('/\s/', '%', $Expense->description) . '%')
@@ -227,7 +281,7 @@ class ImportService {
 	 *
 	 * @return void
 	 */
-	protected function addExpenseToBudget(Expense $Expense, Expense $CommonExpense, DateTimeImmutable $Date) {
+	private function addExpenseToBudget(Expense $Expense, Expense $CommonExpense, DateTimeImmutable $Date) {
 		$Budget = $this->getBudget($Date);
 
 		if (empty($Budget->id)) {
@@ -251,7 +305,7 @@ class ImportService {
 	 *
 	 * @return bool
 	 */
-	protected function addExpenseToCommonBudgetCategory(Expense $Expense, Expense $CommonExpense, Budget $Budget) {
+	private function addExpenseToCommonBudgetCategory(Expense $Expense, Expense $CommonExpense, Budget $Budget) {
 		$BudgetCategoryRowExpense = BudgetCategoryRowExpense::where('expense_id', '=', $CommonExpense->id)->first();
 		if (!empty($BudgetCategoryRowExpense->id)) {
 			$BudgetCategoryRow = BudgetCategoryRow::find($BudgetCategoryRowExpense->budgetCategoryRowId);
@@ -292,7 +346,7 @@ class ImportService {
 	 *
 	 * @return bool
 	 */
-	protected function addExpenseToUncategorizedBudgetCategory(Expense $Expense, Budget $Budget) {
+	private function addExpenseToUncategorizedBudgetCategory(Expense $Expense, Budget $Budget) {
 		$BudgetCategory = BudgetCategory::where("budget_id", "=", $Budget->id)
 			->where('name', '=', 'Uncategorized')
 			->first();
@@ -324,13 +378,13 @@ class ImportService {
 	 *
 	 * @return Budget
 	 */
-	protected function getBudget(DateTimeImmutable $Date) {
+	private function getBudget(DateTimeImmutable $Date) {
 		$Budget = Budget::whereRaw('"' . $Date->format('Y-m-d H:i:s') . '" BETWEEN start AND end')
 						->where('user_id', '=', $this->authUserId)
 						->orderBy('start', 'DESC')
 						->first();
 		if (!empty($Budget->id)) {
-			if (empty($this->LatestBudget) || $this->LatestBudget->start > $Budget->start) {
+			if (empty($this->LatestBudget) || $Budget->start > $this->LatestBudget->start) {
 				$this->LatestBudget = $Budget;
 			}
 		}

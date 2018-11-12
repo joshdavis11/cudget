@@ -120,11 +120,16 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 		});
 		$router->resource('income', V1\IncomeController::class);
 
-		//Import routes
-		$router->group(['prefix' => 'import'], function(Router $router) {
-			$router->resource('accounts', V1\AutoImportAccountController::class);
+		//banking routes
+		$router->group(['prefix' => 'banking'], function(Router $router) {
+			$router->post('connect', V1\PlaidController::class . '@requestAccessToken')->name('banking.accessToken');
+			$router->get('accounts', V1\PlaidController::class . '@getAccounts')->name('banking.accounts');
+			$router->group(['prefix' => 'import'], function(Router $router) {
+				$router->resource('accounts', V1\AutoImportAccountController::class);
+			});
+			$router->post('import', V1\ImportController::class . '@import');
+			$router->post('update', V1\BankingController::class . '@update');
 		});
-		$router->post('import', V1\ImportController::class . '@import');
 
 		//Settings routes
 		$router->group(['prefix' => 'settings'], function(Router $router) {

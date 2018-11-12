@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * Class Expense
  *
+ * @property int id
+ * @property int userId
+ * @property string datetime
+ * @property string description
+ * @property int expenseCategoryId
+ * @property float amount
+ * @property string isoCurrencyCode
+ * @property string transactionId
+ * @property string accountId
  * @package App\Model
  */
 class Expense extends BaseModel {
