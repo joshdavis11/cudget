@@ -8,6 +8,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * Class Income
  *
+ * @property int id
+ * @property int userId
+ * @property string datetime
+ * @property string description
+ * @property int incomeCategoryId
+ * @property float amount
+ * @property string isoCurrencyCode
+ * @property string transactionId
+ * @property string accountId
  * @package App\Model
  */
 class Income extends BaseModel {

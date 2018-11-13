@@ -175,7 +175,7 @@ class Plaid {
 				}
 				$transactions[$transaction['transaction_id']] = new Transaction(
 					$transaction['account_id'],
-					$transaction['amount'],
+					-$transaction['amount'], //Plaid does it backwards. Negative means income, positive means expense
 					new DateTimeImmutable($transaction['date']),
 					$transaction['iso_currency_code'],
 					$transaction['name'],

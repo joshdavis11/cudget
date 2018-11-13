@@ -104,14 +104,28 @@ class ImportService {
 			$startDate = $PlaidAccessToken->lastRun ? date('Y-m-d', strtotime($PlaidAccessToken->lastRun . ' -1 day')) : date('Y-m-d', strtotime('1 month ago'));
 			$Transactions = $this->Plaid->getTransactions($PlaidAccessToken->accessToken, $startDate, $lastRun->format('Y-m-d'));
 			foreach($Transactions as $Transaction) {
-				$this->saveExpense(
-					$Transaction->getDate(),
-					$Transaction->getAmount(),
-					$Transaction->getName(),
-					$Transaction->getCurrencyCode(),
-					$Transaction->getTransactionId(),
-					$Transaction->getAccountId()
-				);
+				$amount = $Transaction->getAmount();
+				if ($amount > 0.00) {
+					$this->saveIncome(
+						$Transaction->getDate(),
+						$amount,
+						$Transaction->getName(),
+						$Transaction->getCurrencyCode(),
+						$Transaction->getTransactionId(),
+						$Transaction->getAccountId()
+					);
+				} else {
+					$this->saveExpense(
+						$Transaction->getDate(),
+						$amount,
+						$Transaction->getName(),
+						$Transaction->getCurrencyCode(),
+						$Transaction->getTransactionId(),
+						$Transaction->getAccountId()
+					);
+
+				}
+
 			}
 
 			$PlaidAccessToken->lastRun = $lastRun;
@@ -159,12 +173,21 @@ class ImportService {
 	 *
 	 * @return Income
 	 */
-	private function saveIncome(DateTimeImmutable $Date, $amount, $description) {
-		$Income = new Income();
+	private function saveIncome(DateTimeImmutable $Date, float $amount, string $description, string $isoCurrencyCode = 'USD', string $transactionId = null, string $accountId = null) {
+		/** @var Income $Income */
+		if (null !== $transactionId) {
+			$Income = Income::where('transaction_id', '=', $transactionId)->first();
+		}
+		if (empty($Expense)) {
+			$Income = new Income();
+		}
 		$Income->userId = $this->authUserId;
 		$Income->datetime = $Date->format('Y-m-d H:i:s');
 		$Income->amount = abs($amount);
 		$Income->description = $this->cleanIncomeDescription($description);
+		$Income->isoCurrencyCode = $isoCurrencyCode;
+		$Income->transactionId = $transactionId;
+		$Income->accountId = $accountId;
 
 		$CommonIncome = Income::where('user_id', '=', $this->authUserId)
 			->where('description', 'LIKE', '%' . preg_replace('/\s/', '%', $Income->description) . '%')
