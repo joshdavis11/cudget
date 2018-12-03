@@ -4,9 +4,10 @@ namespace App\Utilities;
 
 use App\Data\Transaction;
 use app\Exceptions\PlaidAccessTokenException;
+use App\Exceptions\PlaidRequestException;
 use App\Http\Responses\PlaidAccessResponse;
 use DateTimeImmutable;
-use Illuminate\Support\Debug\Dumper;
+use Unirest\Exception;
 use Unirest\Method;
 use Unirest\Request;
 use Unirest\Response;
@@ -55,10 +56,23 @@ class Plaid {
 	 * @param array  $headers
 	 *
 	 * @return Response
-	 * @throws \Unirest\Exception
+	 * @throws Exception
+	 * @throws PlaidRequestException
 	 */
 	private function makeRequest(string $method, string $endpoint, array $data = [], array $headers = []): Response {
-		return Request::send($method, $this->url . $endpoint, json_encode($data), $this->mergeHeaders($headers));
+		$Response = Request::send($method, $this->url . $endpoint, json_encode($data), $this->mergeHeaders($headers));
+		if ($Response->code >= 300 || $Response->code < 200) {
+			throw new PlaidRequestException(
+				$Response->body['display_message'],
+				$Response->body['error_code'],
+				$Response->body['error_message'],
+				$Response->body['error_type'],
+				$Response->body['request_id'],
+				$Response->code
+			);
+		}
+
+		return $Response;
 	}
 
 	/**
@@ -94,8 +108,9 @@ class Plaid {
 	 * @param string $publicToken
 	 *
 	 * @return PlaidAccessResponse
-	 * @throws \Unirest\Exception
 	 * @throws PlaidAccessTokenException
+	 * @throws PlaidRequestException
+	 * @throws Exception
 	 */
 	public function getAccessToken(string $publicToken): PlaidAccessResponse {
 		$Response = $this->makeRequest(Method::POST, '/item/public_token/exchange', $this->mergeAuthData([
@@ -110,10 +125,28 @@ class Plaid {
 	}
 
 	/**
+	 * Get a public_token from an access_token
+	 *
+	 * @param string $accessToken
+	 *
+	 * @return string
+	 * @throws PlaidRequestException
+	 * @throws Exception
+	 */
+	public function getPublicToken(string $accessToken): string {
+		$Response = $this->makeRequest(Method::POST, '/item/public_token/create', $this->mergeAuthData([
+			'access_token' => $accessToken,
+		]));
+
+		return $Response->body['public_token'];
+	}
+
+	/**
 	 * getInstitutions
 	 *
 	 * @return Response
-	 * @throws \Unirest\Exception
+	 * @throws Exception
+	 * @throws PlaidRequestException
 	 */
 	public function getInstitutions(): Response {
 		return $this->makeRequest(Method::POST,
@@ -128,7 +161,8 @@ class Plaid {
 	 * @param string $accessToken
 	 *
 	 * @return Response
-	 * @throws \Unirest\Exception
+	 * @throws Exception
+	 * @throws PlaidRequestException
 	 */
 	public function getAuth(string $accessToken): Response {
 		return $this->makeRequest(Method::POST,
@@ -147,7 +181,8 @@ class Plaid {
 	 * @param string $endDate
 	 *
 	 * @return Transaction[]
-	 * @throws \Unirest\Exception
+	 * @throws Exception
+	 * @throws PlaidRequestException
 	 */
 	public function getTransactions(string $accessToken, string $startDate, string $endDate): array {
 		$offset = 0;

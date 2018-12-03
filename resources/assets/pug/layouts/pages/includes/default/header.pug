@@ -22,6 +22,8 @@ div.navbar.navbar-default.navbar-fixed-top(role="navigation" ng-controller="Head
 							a(href="/banking/accounts", ng-click="isNavCollapsed = true") Accounts
 						li(ng-if="perms.admin || perms.connect")
 							a(ng-click="isNavCollapsed = true; linkAccount();") Connect
+						li(ng-if="perms.admin || perms.fix")
+							a(ng-click="isNavCollapsed = true; fixAccount(1);") Fix Account
 						li(ng-class="{ active: isActiveBaseUri('/banking/import') }", ng-if="perms.admin || perms.import")
 							a(href="/banking/import", ng-click="isNavCollapsed = true") Import
 						li(ng-class="{ active: isActiveBaseUri('/banking/update') }", ng-if="perms.admin || perms.update")

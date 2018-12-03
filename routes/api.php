@@ -123,6 +123,7 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 		//banking routes
 		$router->group(['prefix' => 'banking'], function(Router $router) {
 			$router->post('connect', V1\PlaidController::class . '@requestAccessToken')->name('banking.accessToken');
+			$router->get('publicToken/{plaidDataId}', V1\PlaidController::class . '@requestPublicToken')->name('banking.publicToken');
 			$router->get('accounts', V1\PlaidController::class . '@getAccounts')->name('banking.accounts');
 			$router->group(['prefix' => 'import'], function(Router $router) {
 				$router->resource('accounts', V1\AutoImportAccountController::class);

@@ -95,7 +95,6 @@ angular.module('BaseControllers', [])
 		let handler = window.Plaid.create({
 			clientName: 'Cudget',
 			env: window.PlaidData.env,
-			// Replace with your public_key from the Dashboard
 			key: window.PlaidData.publicKey,
 			product: ['transactions'],
 			onSuccess: function(publicToken, metadata) {
@@ -103,19 +102,26 @@ angular.module('BaseControllers', [])
 					publicToken: publicToken,
 					// metadata: metadata,
 				});
-				// Send the public_token to your app server.
-				// The metadata object contains info about the institution the
-				// user selected and the account ID or IDs, if the Select Account
-				// view is enabled.
-				// $.post('/get_access_token', {
-				// 	public_token: public_token,
-				// });
 			},
 		});
 
 		$scope.linkAccount = function() {
 			handler.open();
 		};
+
+		$scope.fixAccount = function(plaidDataId) {
+			$http.get('/api/v1/banking/publicToken/' + plaidDataId).then(function(response) {
+				window.Plaid.create({
+					clientName: 'Cudget',
+					env: window.PlaidData.env,
+					key: window.PlaidData.publicKey,
+					product: ['transactions'],
+					token: response.data,
+					onSuccess: function(publicToken, metadata) {
+					},
+				}).open();
+			});
+		}
 	}
 ])
 .controller('PreLoginHeaderController', ['$scope', '$location', 'HeaderService',
