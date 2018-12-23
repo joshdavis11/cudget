@@ -10,6 +10,7 @@ use App\Model\BudgetCategoryRowExpense;
 use App\Model\BudgetIncome;
 use App\Model\Expense;
 use App\Model\Income;
+use App\Model\PlaidAccount;
 use App\Model\PlaidData;
 use App\Utilities\Plaid;
 use DateTimeImmutable;
@@ -97,12 +98,24 @@ class ImportService {
 	public function updateFromPlaid(int $authUserId) {
 		$this->authUserId = $authUserId;
 
-		$PlaidAccessTokens = PlaidData::where('user_id', '=', $authUserId)->get();
+		$PlaidAccessTokens = PlaidData::where('user_id', '=', $authUserId)->with('plaidAccount')->get();
 		foreach($PlaidAccessTokens as $PlaidAccessToken) {
+			$accountIds = [];
+			foreach($PlaidAccessToken->getRelations()['plaidAccount'] ?? [] as $PlaidAccount) {
+				/** @var PlaidAccount $PlaidAccount */
+				if ($PlaidAccount->includeInUpdates) {
+					$accountIds[] = $PlaidAccount->accountId;
+				}
+			}
+
+			if (empty($accountIds)) {
+				continue;
+			}
+
 			/** @var PlaidData $PlaidAccessToken */
 			$lastRun = new DateTimeImmutable('now');
 			$startDate = $PlaidAccessToken->lastRun ? date('Y-m-d', strtotime($PlaidAccessToken->lastRun . ' -1 day')) : date('Y-m-d', strtotime('1 month ago'));
-			$Transactions = $this->Plaid->getTransactions($PlaidAccessToken->accessToken, $startDate, $lastRun->format('Y-m-d'));
+			$Transactions = $this->Plaid->getTransactions($PlaidAccessToken->accessToken, $startDate, $lastRun->format('Y-m-d'), $accountIds);
 			foreach($Transactions as $Transaction) {
 				$amount = $Transaction->getAmount();
 				if ($amount > 0.00) {

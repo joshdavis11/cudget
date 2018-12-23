@@ -2,6 +2,8 @@
 
 namespace App\Utilities;
 
+use App\Data\Account;
+use App\Data\Institution;
 use App\Data\Transaction;
 use app\Exceptions\PlaidAccessTokenException;
 use App\Exceptions\PlaidRequestException;
@@ -156,21 +158,55 @@ class Plaid {
 	}
 
 	/**
+	 * Get an institution by ID
+	 *
+	 * @param string $institutionId
+	 *
+	 * @return Institution
+	 * @throws Exception
+	 * @throws PlaidRequestException
+	 */
+	public function getInstitutionById(string $institutionId): Institution {
+		$Response = $this->makeRequest(Method::POST,
+			'/institutions/get_by_id',
+			[
+				'public_key' => $this->publicKey,
+				'institution_id' => $institutionId,
+			]
+		);
+
+		return new Institution($Response->body);
+	}
+
+	/**
 	 * getAuth
 	 *
 	 * @param string $accessToken
 	 *
-	 * @return Response
+	 * @return Account[]
 	 * @throws Exception
 	 * @throws PlaidRequestException
 	 */
-	public function getAuth(string $accessToken): Response {
-		return $this->makeRequest(Method::POST,
+	public function getAuth(string $accessToken): array {
+		$Response = $this->makeRequest(Method::POST,
 			'/auth/get',
 			$this->mergeAuthData([
 				'access_token' => $accessToken,
 			])
 		);
+
+		$Accounts = [];
+		foreach ($Response->body['accounts'] ?? [] as $accountData) {
+			$Accounts[] = new Account(
+				$accountData['account_id'],
+				$accountData['mask'],
+				$accountData['name'] ?: $accountData['official_name'],
+				$accountData['type'],
+				$accountData['subtype']
+			);
+		}
+
+		return $Accounts;
 	}
 
 	/**
@@ -179,12 +215,13 @@ class Plaid {
 	 * @param string $accessToken
 	 * @param string $startDate
 	 * @param string $endDate
+	 * @param array  $accountIds
 	 *
 	 * @return Transaction[]
 	 * @throws Exception
 	 * @throws PlaidRequestException
 	 */
-	public function getTransactions(string $accessToken, string $startDate, string $endDate): array {
+	public function getTransactions(string $accessToken, string $startDate, string $endDate, array $accountIds = []): array {
 		$offset = 0;
 		$count = 500;
 		$transactions = [];
@@ -197,7 +234,7 @@ class Plaid {
 					'start_date' => $startDate,
 					'end_date' => $endDate,
 					'options' => [
-						//account_ids => '1,2,3'
+						'account_ids' => $accountIds,
 						'count' => $count,
 						'offset' => $offset,
 					],

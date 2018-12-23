@@ -98,9 +98,10 @@ angular.module('BaseControllers', [])
 			key: window.PlaidData.publicKey,
 			product: ['transactions'],
 			onSuccess: function(publicToken, metadata) {
+				console.log(metadata);
 				$http.post('/api/v1/banking/connect', {
 					publicToken: publicToken,
-					// metadata: metadata,
+					metadata: metadata,
 				});
 			},
 		});
@@ -108,20 +109,6 @@ angular.module('BaseControllers', [])
 		$scope.linkAccount = function() {
 			handler.open();
 		};
-
-		$scope.fixAccount = function(plaidDataId) {
-			$http.get('/api/v1/banking/publicToken/' + plaidDataId).then(function(response) {
-				window.Plaid.create({
-					clientName: 'Cudget',
-					env: window.PlaidData.env,
-					key: window.PlaidData.publicKey,
-					product: ['transactions'],
-					token: response.data,
-					onSuccess: function(publicToken, metadata) {
-					},
-				}).open();
-			});
-		}
 	}
 ])
 .controller('PreLoginHeaderController', ['$scope', '$location', 'HeaderService',

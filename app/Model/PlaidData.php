@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Model;
+
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 /**
  * Class PlaidData
  *
@@ -8,6 +11,7 @@ namespace App\Model;
  * @property int userId
  * @property string accessToken
  * @property string itemId
+ * @property string institutionId
  * @property string lastRun
  * @package App\Model
  */
@@ -39,5 +43,14 @@ class PlaidData extends BaseModel {
 	 *
 	 * @var array
 	 */
-	protected $hidden = ['created_at', 'updated_at',];
+	protected $hidden = ['access_token', 'item_id', 'last_run', 'created_at', 'updated_at',];
+
+	/**
+	 * The Plaid Accounts
+	 *
+	 * @return HasMany
+	 */
+	public function plaidAccount(): HasMany {
+    	return $this->hasMany(PlaidAccount::class);
+	}
 }

@@ -1,12 +1,32 @@
 angular.module('BankingControllers', [])
-.controller('UpdateController', ['$http', 'TitleService', '$location',
-	function($http, TitleService, $location) {
-		TitleService.setTitle('Update Income and Expenses');
-		$http.post('/api/v1/banking/update')
+.controller('AccountsController', ['$scope', '$http', 'TitleService',
+	function($scope, $http, TitleService) {
+		TitleService.setTitle('Accounts');
+		$scope.Institutions = [];
+		$http.get('/api/v1/banking/accounts')
 			.then(function(response) {
-				console.log(response.headers('Location'));
-				$location.url(response.headers('Location') || '/expenses?filter=without');
+				$scope.Institutions = response.data;
 			});
+
+		$scope.updateIncludeInUpdates = function(Account) {
+			$http.post('/api/v1/banking/accounts/' + Account.id, {
+				"includeInUpdates": Account.includeInUpdates
+			});
+		};
+
+		$scope.fixAccount = function(plaidDataId) {
+			$http.get('/api/v1/banking/publicToken/' + plaidDataId, { ignoreLoadingBar: true }).then(function(response) {
+				window.Plaid.create({
+					clientName: 'Cudget',
+					env: window.PlaidData.env,
+					key: window.PlaidData.publicKey,
+					product: ['transactions'],
+					token: response.data,
+					onSuccess: function(publicToken, metadata) {
+					},
+				}).open();
+			});
+		};
 	}
 ])
 .controller('ImportController', ['$scope', '$http', 'TitleService', 'Upload', '$location',
@@ -34,6 +54,15 @@ angular.module('BankingControllers', [])
 				$scope.submitDisabled = false;
 			});
 		};
+	}
+])
+.controller('UpdateController', ['$http', 'TitleService', '$location',
+	function($http, TitleService, $location) {
+		TitleService.setTitle('Update Income and Expenses');
+		$http.post('/api/v1/banking/update')
+			.then(function(response) {
+				$location.url(response ? (response.headers('Location') || '/expenses?filter=without') : '/expenses?filter=without');
+			});
 	}
 ])
 ;

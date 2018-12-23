@@ -12,6 +12,7 @@ use Illuminate\Validation\Validator;
  * Class BaseModel
  *
  * @package App\Model
+ * @method static findOrFail($id)
  */
 class BaseModel extends Model {
 	use CamelCasing;

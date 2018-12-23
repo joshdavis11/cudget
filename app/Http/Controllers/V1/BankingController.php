@@ -4,7 +4,6 @@ namespace app\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
 use App\Services\ImportService;
-use App\Utilities\Plaid;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -18,13 +17,12 @@ class BankingController extends Controller {
 	 * update
 	 *
 	 * @param Request       $Request
-	 * @param Plaid         $Plaid
 	 * @param ImportService $ImportService
 	 *
 	 * @return Response
 	 * @throws \Unirest\Exception
 	 */
-	public function update(Request $Request, Plaid $Plaid, ImportService $ImportService) {
+	public function update(Request $Request, ImportService $ImportService) {
 		$userId = $Request->user()->id;
 		$Budget = $ImportService->updateFromPlaid($userId);
 		$headers = [];

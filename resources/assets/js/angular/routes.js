@@ -185,6 +185,10 @@ angular.module('CudgetRoutes', [])
 				]
 			}
 		})
+		.when('/banking/accounts', {
+			template: require('../../pug/views/banking/accounts.pug'),
+			controller: 'AccountsController'
+		})
 		.when('/banking/update', {
 			template: require('../../pug/views/banking/update.pug'),
 			controller: 'UpdateController',
