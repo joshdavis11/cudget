@@ -219,6 +219,10 @@ class UserService {
 	 * @return bool
 	 */
 	public function hasPermission(int $userId, int $permissionId): bool {
+		if ($this->Auth->user()->admin) {
+			return true;
+		}
+
 		try {
 			$UserPermission = $this->getUserPermission($userId, $permissionId);
 		} catch(ModelNotFoundException $modelNotFoundException) {
