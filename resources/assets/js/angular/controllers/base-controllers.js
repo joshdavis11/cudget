@@ -107,7 +107,7 @@ angular.module('BaseControllers', [])
 		});
 
 		$rootScope.linkAccount = function() {
-			if (!$rootScope.perms.admin || !$rootScope.perms.accounts) {
+			if (!$rootScope.perms.admin && !$rootScope.perms.accounts) {
 				return;
 			}
 			handler.open();
