@@ -5,10 +5,12 @@ namespace App\Http\Controllers\V1;
 use app\Exceptions\PlaidAccessTokenException;
 use App\Exceptions\PlaidRequestException;
 use App\Http\Controllers\Controller;
+use App\Model\Permission;
 use App\Model\PlaidAccount;
 use App\Model\PlaidData;
+use App\Services\PermissionsService;
+use App\Services\UserService;
 use App\Utilities\Plaid;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Unirest\Exception;
@@ -22,12 +24,21 @@ class PlaidController extends Controller {
 	/**
 	 * requestAccessToken
 	 *
-	 * @param Request $Request
-	 * @param Plaid   $Plaid
+	 * @param Request            $Request
+	 * @param Plaid              $Plaid
+	 * @param PermissionsService $PermissionsService
+	 * @param UserService        $UserService
 	 *
 	 * @return Response
 	 */
-	public function requestAccessToken(Request $Request, Plaid $Plaid) {
+	public function requestAccessToken(Request $Request, Plaid $Plaid, PermissionsService $PermissionsService, UserService $UserService) {
+		$userId = $Request->user()->id;
+
+		$Permission = $PermissionsService->getByDefinition(Permission::DEFINITION_ACCOUNTS);
+		if (!$UserService->hasPermission($userId, $Permission->id)) {
+			return $this->getInvalidPermissionsResponse();
+		}
+
 		$publicToken = $Request->get('publicToken');
 		$metadata = $Request->get('metadata');
 		try {
@@ -39,8 +50,6 @@ class PlaidController extends Controller {
 		} catch(PlaidRequestException $exception) {
 			return new Response($exception->getErrorMessage(), $exception->getCode());
 		}
-
-		$userId = $Request->user()->id;
 
 		$PlaidData = new PlaidData();
 		$PlaidData->userId = $userId;
@@ -68,15 +77,24 @@ class PlaidController extends Controller {
 	/**
 	 * requestPublicToken
 	 *
-	 * @param Request $Request
-	 * @param int     $plaidDataId
-	 * @param Plaid   $Plaid
+	 * @param Request            $Request
+	 * @param int                $plaidDataId
+	 * @param Plaid              $Plaid
+	 * @param PermissionsService $PermissionsService
+	 * @param UserService        $UserService
 	 *
 	 * @return Response
 	 */
-	public function requestPublicToken(Request $Request, int $plaidDataId, Plaid $Plaid) {
+	public function requestPublicToken(Request $Request, int $plaidDataId, Plaid $Plaid, PermissionsService $PermissionsService, UserService $UserService) {
+		$userId = $Request->user()->id;
+
+		$Permission = $PermissionsService->getByDefinition(Permission::DEFINITION_ACCOUNTS);
+		if (!$UserService->hasPermission($userId, $Permission->id)) {
+			return $this->getInvalidPermissionsResponse();
+		}
+
 		$PlaidData = PlaidData::findOrFail($plaidDataId);
-		if($Request->user()->id !== $PlaidData->userId) {
+		if($userId !== $PlaidData->userId) {
 			return new Response('Forbidden', Response::HTTP_FORBIDDEN);
 		}
 
@@ -89,72 +107,5 @@ class PlaidController extends Controller {
 		}
 
 		return new Response($publicToken);
-	}
-
-	/**
-	 * getAccounts
-	 *
-	 * @param Plaid $Plaid
-	 *
-	 * @return Response
-	 */
-	public function getAccounts(Request $Request, Plaid $Plaid): Response {
-		$userId = $Request->user()->id;
-		$PlaidDataRecords = PlaidData::where('user_id', '=', $userId)->get();
-
-		$AllPlaidAccounts = [];
-		foreach($PlaidDataRecords as $PlaidData) {
-			/** @var PlaidData $PlaidData */
-			$PlaidAccounts = PlaidAccount::where('plaid_data_id', '=', $PlaidData->id)->get();
-			/** @var Collection $PlaidAccounts */
-			if($PlaidAccounts->isEmpty()) {
-				try {
-					$Accounts = $Plaid->getAuth($PlaidData->accessToken);
-				} catch(Exception $exception) {
-					return new Response('Error making the request', Response::HTTP_INTERNAL_SERVER_ERROR);
-				} catch(PlaidRequestException $exception) {
-					return new Response($exception->getErrorMessage(), $exception->getCode());
-				}
-				foreach($Accounts as $Account) {
-					$PlaidAccount = new PlaidAccount();
-					$PlaidAccount->plaidDataId = $PlaidData->id;
-					$PlaidAccount->userId = $userId;
-					$PlaidAccount->accountId = $Account->getAccountId();
-					$PlaidAccount->name = $Account->getName();
-					$PlaidAccount->mask = $Account->getMask();
-					$PlaidAccount->type = $Account->getType();
-					$PlaidAccount->subtype = $Account->getSubtype();
-					$PlaidAccount->includeInUpdates = true;
-					$PlaidAccount->save();
-					$PlaidAccounts->push($PlaidAccount);
-				}
-			}
-
-			$Institution = $Plaid->getInstitutionById($PlaidData->institutionId);
-
-			$AllPlaidAccounts[] = [
-				'plaidDataId' => $PlaidData->id,
-				'institution' => $Institution,
-				'accounts' => $PlaidAccounts,
-			];
-		}
-
-		return new Response($AllPlaidAccounts);
-	}
-
-	/**
-	 * updateAccount
-	 *
-	 * @param int     $id
-	 * @param Request $Request
-	 *
-	 * @return Response
-	 */
-	public function updateAccount(int $id, Request $Request): Response {
-		$PlaidAccount = PlaidAccount::findOrFail($id);
-		$PlaidAccount->includeInUpdates = $Request->get('includeInUpdates');
-		$PlaidAccount->save();
-
-		return new Response('Updated');
 	}
 }

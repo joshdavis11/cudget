@@ -24,7 +24,7 @@ angular.module('SettingsServices', [])
 
 		this.updateColor = function(color, options) {
 			return $http.put('/api/v1/settings/configuration', {bootswatch: color}, options).then(function(response) {
-				return response.data;
+				return response ? response.data : {};
 			});
 		};
 	}
@@ -33,13 +33,13 @@ angular.module('SettingsServices', [])
 	function($http) {
 		this.getUsers = function() {
 			return $http.get('/api/v1/users').then(function(response) {
-				return response.data;
+				return response ? response.data : {};
 			});
 		};
 
 		this.getUser = function(id) {
 			return $http.get('/api/v1/users/' + id).then(function(response) {
-				return response.data;
+				return response ? response.data : {};
 			});
 		};
 

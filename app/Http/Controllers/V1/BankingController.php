@@ -1,11 +1,20 @@
 <?php
 
-namespace app\Http\Controllers\V1;
+namespace App\Http\Controllers\V1;
 
+use App\Exceptions\PlaidRequestException;
 use App\Http\Controllers\Controller;
+use App\Model\Permission;
+use App\Model\PlaidAccount;
+use App\Model\PlaidData;
 use App\Services\ImportService;
+use App\Services\PermissionsService;
+use App\Services\UserService;
+use App\Utilities\Plaid;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Unirest\Exception;
 
 /**
  * Class BankingController
@@ -22,8 +31,14 @@ class BankingController extends Controller {
 	 * @return Response
 	 * @throws \Unirest\Exception
 	 */
-	public function update(Request $Request, ImportService $ImportService) {
+	public function update(Request $Request, ImportService $ImportService, UserService $UserService, PermissionsService $PermissionsService) {
 		$userId = $Request->user()->id;
+
+		$Permission = $PermissionsService->getByDefinition(Permission::DEFINITION_ACCOUNTS);
+		if (!$UserService->hasPermission($userId, $Permission->id)) {
+			return $this->getInvalidPermissionsResponse();
+		}
+
 		$Budget = $ImportService->updateFromPlaid($userId);
 		$headers = [];
 		if (!empty($Budget->id)) {
@@ -31,5 +46,92 @@ class BankingController extends Controller {
 		}
 
 		return new Response('Updated!', Response::HTTP_OK, $headers);
+	}
+
+	/**
+	 * getAccounts
+	 *
+	 * @param Request            $Request
+	 * @param Plaid              $Plaid
+	 * @param PermissionsService $PermissionsService
+	 * @param UserService        $UserService
+	 *
+	 * @return Response
+	 * @throws Exception
+	 * @throws PlaidRequestException
+	 */
+	public function getAccounts(Request $Request, Plaid $Plaid, PermissionsService $PermissionsService, UserService $UserService): Response {
+		$userId = $Request->user()->id;
+
+		$Permission = $PermissionsService->getByDefinition(Permission::DEFINITION_ACCOUNTS);
+		if (!$UserService->hasPermission($userId, $Permission->id)) {
+			return $this->getInvalidPermissionsResponse();
+		}
+
+		$PlaidDataRecords = PlaidData::where('user_id', '=', $userId)->get();
+
+		$AllPlaidAccounts = [];
+		foreach($PlaidDataRecords as $PlaidData) {
+			/** @var PlaidData $PlaidData */
+			$PlaidAccounts = PlaidAccount::where('plaid_data_id', '=', $PlaidData->id)->get();
+			/** @var Collection $PlaidAccounts */
+			if($PlaidAccounts->isEmpty()) {
+				try {
+					$Accounts = $Plaid->getAuth($PlaidData->accessToken);
+				} catch(Exception $exception) {
+					return new Response('Error making the request', Response::HTTP_INTERNAL_SERVER_ERROR);
+				} catch(PlaidRequestException $exception) {
+					return new Response($exception->getErrorMessage(), $exception->getCode());
+				}
+				foreach($Accounts as $Account) {
+					$PlaidAccount = new PlaidAccount();
+					$PlaidAccount->plaidDataId = $PlaidData->id;
+					$PlaidAccount->userId = $userId;
+					$PlaidAccount->accountId = $Account->getAccountId();
+					$PlaidAccount->name = $Account->getName();
+					$PlaidAccount->mask = $Account->getMask();
+					$PlaidAccount->type = $Account->getType();
+					$PlaidAccount->subtype = $Account->getSubtype();
+					$PlaidAccount->includeInUpdates = true;
+					$PlaidAccount->save();
+					$PlaidAccounts->push($PlaidAccount);
+				}
+			}
+
+			$Institution = $Plaid->getInstitutionById($PlaidData->institutionId);
+
+			$AllPlaidAccounts[] = [
+				'plaidDataId' => $PlaidData->id,
+				'institution' => $Institution,
+				'accounts' => $PlaidAccounts,
+			];
+		}
+
+		return new Response($AllPlaidAccounts);
+	}
+
+	/**
+	 * updateAccount
+	 *
+	 * @param int                $id
+	 * @param Request            $Request
+	 * @param PermissionsService $PermissionsService
+	 * @param UserService        $UserService
+	 *
+	 * @return Response
+	 */
+	public function updateAccount(int $id, Request $Request, PermissionsService $PermissionsService, UserService $UserService): Response {
+		$userId = $Request->user()->id;
+
+		$Permission = $PermissionsService->getByDefinition(Permission::DEFINITION_ACCOUNTS);
+		if (!$UserService->hasPermission($userId, $Permission->id)) {
+			return $this->getInvalidPermissionsResponse();
+		}
+
+		$PlaidAccount = PlaidAccount::findOrFail($id);
+		$PlaidAccount->includeInUpdates = $Request->get('includeInUpdates');
+		$PlaidAccount->save();
+
+		return new Response('Updated');
 	}
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -31,5 +32,14 @@ class Controller extends BaseController {
 	 */
 	protected function authorizationMessage() {
 		return 'Permission Denied';
+	}
+
+	/**
+	 * getInvalidPermissionsResponse
+	 *
+	 * @return Response
+	 */
+	protected function getInvalidPermissionsResponse(): Response {
+		return new Response(['error' => 'Invalid Permissions'], Response::HTTP_FORBIDDEN);
 	}
 }

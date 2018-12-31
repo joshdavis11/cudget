@@ -35,7 +35,7 @@ angular.module('HelperServices', [])
 	function($http) {
 		this.isAuthenticatedNow = function() {
 			return $http.get('/web/authenticated').then(function(response) {
-				return response.data.authenticated;
+				return response && response.data ? response.data.authenticated : {};
 			});
 		};
 	}
@@ -67,7 +67,7 @@ angular.module('HelperServices', [])
 
 		this.getMyUserPerms = function() {
 			return $http.get('/api/v1/myperms').then(function(response) {
-				return response.data;
+				return response ? response.data : {};
 			});
 		};
 
@@ -80,7 +80,7 @@ angular.module('HelperServices', [])
 
 		this.getUserPerms = function(userId) {
 			return $http.get('/api/v1/users/' + userId + '/permissions').then(function(response) {
-				return response.data;
+				return response ? response.data : {};
 			});
 		};
 
@@ -119,7 +119,7 @@ angular.module('HelperServices', [])
 
 		this.getPermissions = function() {
 			return $http.get('/api/v1/permissions').then(function(response) {
-				return response.data;
+				return response ? response.data : {};
 			});
 		};
 
@@ -129,7 +129,7 @@ angular.module('HelperServices', [])
 				if (that.getAuthUser().id === UserPermission.userId) {
 					that.resetMyPerms();
 				}
-				return response.data;
+				return response ? response.data : {};
 			});
 		};
 
@@ -139,7 +139,7 @@ angular.module('HelperServices', [])
 				if (that.getAuthUser().id === UserPermission.userId) {
 					that.resetMyPerms();
 				}
-				return response.data;
+				return response ? response.data : {};
 			});
 		};
 	}

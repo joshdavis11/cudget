@@ -6,7 +6,7 @@ use App\Exceptions\InvalidDataException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Permissions\CreateUserPermissionRequest;
 use App\Services\UserService;
-use Illuminate\Auth\AuthManager;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -29,33 +29,37 @@ class UserPermissionsController extends Controller {
 	 * Get perms for the authenticated user
 	 *
 	 * @param UserService $UserService
-	 * @param AuthManager $Auth
 	 *
 	 * @return Response
 	 */
-	public function perms(UserService $UserService, AuthManager $Auth) {
-		return new Response($UserService->getUserPermissions($Auth->user()->id));
+	public function perms(UserService $UserService, Request $Request) {
+		return new Response($UserService->getUserPermissions($Request->user()->id));
 	}
 
 	/**
 	 * Get the authenticated user
 	 *
-	 * @param AuthManager $Auth
+	 * @param Request $Request
 	 *
 	 * @return Response
 	 */
-	public function authUser(AuthManager $Auth) {
-		return new Response($Auth->user());
+	public function authUser(Request $Request) {
+		return new Response($Request->user());
 	}
 
 	/**
 	 * Display a listing of the resource.
 	 *
-	 * @param int $userId
+	 * @param int     $userId
+	 * @param Request $Request
 	 *
 	 * @return Response
 	 */
-	public function index(int $userId) {
+	public function index(int $userId, Request $Request) {
+		if(!$Request->user()->admin) {
+			return $this->getInvalidPermissionsResponse();
+		}
+
 		return new Response($this->UserService->getUserPermissions($userId));
 	}
 
@@ -74,8 +78,12 @@ class UserPermissionsController extends Controller {
 	 * @param CreateUserPermissionRequest $Request
 	 *
 	 * @return Response
+	 * @throws InvalidDataException
 	 */
 	public function store(CreateUserPermissionRequest $Request) {
+		if(!$Request->user()->admin) {
+			return $this->getInvalidPermissionsResponse();
+		}
 		$UserPermission = $this->UserService->createUserPermission($Request);
 		return new Response($UserPermission, Response::HTTP_CREATED, ['Location' => '/api/users/' . $UserPermission->userId . '/permissions/' . $UserPermission->id]);
 	}
@@ -88,8 +96,13 @@ class UserPermissionsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function show($userId, $id) {
-		return new Response($this->UserService->getUserPermission((int)$userId, (int)$id));
+	public function show(int $userId, int $id) {
+		$UserPermission = $this->UserService->getUserPermissionById($id);
+		if ($UserPermission->userId !== $userId) {
+			throw new ModelNotFoundException();
+		}
+
+		return new Response($UserPermission);
 	}
 
 	/**
@@ -125,12 +138,17 @@ class UserPermissionsController extends Controller {
 	/**
 	 * Remove the specified resource from storage.
 	 *
-	 * @param int $userId
-	 * @param int $id
+	 * @param int     $userId
+	 * @param int     $id
+	 * @param Request $Request
 	 *
 	 * @return \Illuminate\Http\Response
 	 */
-	public function destroy(int $userId, int $id) {
+	public function destroy(int $userId, int $id, Request $Request) {
+		if(!$Request->user()->admin) {
+			return $this->getInvalidPermissionsResponse();
+		}
+
 		if (!$this->UserService->deleteUserPermission($userId, $id)) {
 			return new Response($this->errorProcessingMessage(), Response::HTTP_BAD_REQUEST);
 		}

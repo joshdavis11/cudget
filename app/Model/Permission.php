@@ -6,8 +6,17 @@ namespace App\Model;
  * Class Permission
  *
  * @package App\Model
+ * @property int $id
+ * @property string $name
+ * @property string $definition
  */
 class Permission extends BaseModel {
+	const DEFINITION_IMPORT = 'import';
+	const DEFINITION_BUDGET_TEMPLATES = 'budgetTemplates';
+	const DEFINITION_COLOR_SCHEME = 'colorScheme';
+	const DEFINITION_BUDGET_SHARING = 'budgetSharing';
+	const DEFINITION_ACCOUNTS = 'accounts';
+
 	/**
      * The attributes that should be cast to native types.
      *

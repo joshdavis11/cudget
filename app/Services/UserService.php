@@ -186,17 +186,6 @@ class UserService {
 	}
 
 	/**
-	 * Get view permissions for a given user
-	 *
-	 * @param int $userId
-	 *
-	 * @return Collection
-	 */
-	public function getViewUserPermissions($userId) {
-		return UserPermission::where('user_id', '=', $userId)->where('permission', '=', 'view')->get();
-	}
-
-	/**
 	 * Get a user permission by ID
 	 *
 	 * @param $id
@@ -204,26 +193,39 @@ class UserService {
 	 * @return UserPermission
 	 * @throws ModelNotFoundException
 	 */
-	public function getUserPermissionById($id) {
+	public function getUserPermissionById($id): UserPermission {
 		return UserPermission::findOrFail($id);
 	}
 
 	/**
 	 * Get a permission by id for a user
 	 *
-	 * @param $userId
-	 * @param $id
+	 * @param int $userId
+	 * @param int $permissionId
 	 *
 	 * @return UserPermission
 	 * @throws ModelNotFoundException
 	 */
-	public function getUserPermission($userId, $id) {
-		$UserPermission = $this->getUserPermissionById($id);
-		if ($UserPermission->userId !== $userId) {
-			throw new ModelNotFoundException();
+	public function getUserPermission(int $userId, int $permissionId): UserPermission {
+		return UserPermission::where('user_id', '=', $userId)->where('permission_id', '=', $permissionId)->firstOrFail();
+	}
+
+	/**
+	 * hasPermission
+	 *
+	 * @param int $userId
+	 * @param int $permissionId
+	 *
+	 * @return bool
+	 */
+	public function hasPermission(int $userId, int $permissionId): bool {
+		try {
+			$UserPermission = $this->getUserPermission($userId, $permissionId);
+		} catch(ModelNotFoundException $modelNotFoundException) {
+			return false;
 		}
 
-		return $UserPermission;
+		return $UserPermission->id > 0;
 	}
 
 	/**
@@ -258,7 +260,7 @@ class UserService {
 			throw new InvalidDataException(implode(', ', $errors->getMessages()));
 		}
 
-		return $this->getUserPermission($userId, $id)->update($data);
+		return $this->getUserPermissionById($id)->update($data);
 	}
 
 	/**

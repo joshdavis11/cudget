@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
+use App\Model\Permission;
 use App\Services\ImportService;
+use App\Services\PermissionsService;
+use App\Services\UserService;
 use Dotenv\Exception\InvalidFileException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,30 +18,26 @@ use Illuminate\Http\Response;
  */
 class ImportController extends Controller {
 	/**
-	 * @var ImportService
-	 */
-	protected $ImportService;
-
-	/**
-	 * ImportController constructor.
-	 *
-	 * @param ImportService $ImportService
-	 */
-	public function __construct(ImportService $ImportService) {
-		$this->ImportService = $ImportService;
-	}
-
-	/**
 	 * import
 	 *
-	 * @param ImportService $ImportService
-	 * @param Request       $request
+	 * @param ImportService      $ImportService
+	 * @param Request            $Request
+	 * @param PermissionsService $PermissionsService
+	 * @param UserService        $UserService
 	 *
 	 * @return Response
+	 * @throws \Throwable
 	 */
-	public function import(ImportService $ImportService, Request $request) {
+	public function import(ImportService $ImportService, Request $Request, PermissionsService $PermissionsService, UserService $UserService) {
+		$userId = $Request->user()->id;
+
+		$Permission = $PermissionsService->getByDefinition(Permission::DEFINITION_IMPORT);
+		if (!$UserService->hasPermission($userId, $Permission->id)) {
+			return $this->getInvalidPermissionsResponse();
+		}
+
 		try {
-			$Budget = $ImportService->import($request);
+			$Budget = $ImportService->import($Request);
 		} catch (InvalidFileException $exception) {
 			return new Response('Invalid file', Response::HTTP_BAD_REQUEST);
 		}

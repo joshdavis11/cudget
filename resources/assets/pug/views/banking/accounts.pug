@@ -27,3 +27,5 @@
 									td(style="padding-left: 5px")
 										label
 											input(type="checkbox" ng-model="Account.includeInUpdates" ng-click="updateIncludeInUpdates(Account)")
+				div.center(ng-if="!Institutions || Institutions.length === 0") No accounts added yet.&nbsp;
+					a(ng-click="linkAccount()") + Connect One

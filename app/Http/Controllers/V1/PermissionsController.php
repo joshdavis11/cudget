@@ -4,6 +4,7 @@ namespace App\Http\Controllers\V1;
 
 use App\Http\Controllers\Controller;
 use App\Model\Permission;
+use App\Services\PermissionsService;
 use App\Services\UserService;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\Request;
@@ -18,10 +19,12 @@ class PermissionsController extends Controller {
 	/**
 	 * Display a listing of the resource.
 	 *
+	 * @param PermissionsService $PermissionsService
+	 *
 	 * @return Response
 	 */
-	public function index() {
-		return new Response(Permission::all());
+	public function index(PermissionsService $PermissionsService) {
+		return new Response($PermissionsService->getAll());
 	}
 
 	/**
@@ -51,8 +54,8 @@ class PermissionsController extends Controller {
 	 *
 	 * @return Response
 	 */
-	public function show(int $id) {
-		return new Response(Permission::findOrFail($id));
+	public function show(int $id, PermissionsService $PermissionsService) {
+		return new Response($PermissionsService->getById($id));
 	}
 
 	/**

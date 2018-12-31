@@ -20,6 +20,6 @@
 						th Enabled?
 				tbody
 					tr.js-user-permissions-tr(ng-repeat="Permission in Permissions")
-						td {{ Permission.name }} {{ Permissions.clicked ? 'yes' : 'no' }}
+						td {{ Permission.name }}
 						td(ng-click="clickColumn(Permission)")
 							input(type="checkbox", ng-model="Permission.clicked", ng-disabled="User.admin")

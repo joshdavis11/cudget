@@ -106,7 +106,10 @@ angular.module('BaseControllers', [])
 			},
 		});
 
-		$scope.linkAccount = function() {
+		$rootScope.linkAccount = function() {
+			if (!$rootScope.perms.admin || !$rootScope.perms.accounts) {
+				return;
+			}
 			handler.open();
 		};
 	}
