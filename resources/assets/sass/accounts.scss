@@ -4,3 +4,16 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
+
+.accounts-last-update {
+	text-align: left;
+	padding: 0;
+}
+
+@media(min-width: 992px) {
+	.accounts-last-update {
+		text-align: right;
+		padding: 40px 0 0 0;
+		height: 66.5px;
+	}
+}

@@ -104,6 +104,7 @@ class BankingController extends Controller {
 				'plaidDataId' => $PlaidData->id,
 				'institution' => $Institution,
 				'accounts' => $PlaidAccounts,
+				'lastUpdated' => $PlaidData->lastRun,
 			];
 		}
 

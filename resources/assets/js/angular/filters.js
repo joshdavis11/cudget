@@ -6,6 +6,13 @@ angular.module('CudgetFilters', [])
 		};
 	}
 ])
+.filter('localDatetime', ['DateService',
+	function(DateService) {
+		return function(input) {
+			return DateService.getLocalDatetime(input);
+		};
+	}
+])
 .filter('standardDate', ['$filter',
 	function($filter) {
 		return function(input) {

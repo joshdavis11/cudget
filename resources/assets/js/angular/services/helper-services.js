@@ -3,6 +3,8 @@ import {
 	forEach
 } from 'angular';
 
+import moment from 'moment';
+
 angular.module('HelperServices', [])
 .service('AuthenticationService', ['$location',
 	function($location) {
@@ -188,6 +190,10 @@ angular.module('HelperServices', [])
 				return date;
 			}
 			return new Date(date.replace(/-/g, '/'));
+		};
+
+		this.getLocalDatetime = function(date) {
+			return moment.utc(date).local().format('YYYY-MM-DD HH:mm:ss')
 		};
 	}
 ])
