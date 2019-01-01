@@ -76,3 +76,7 @@ tr.ui-sortable-helper {
 .sortable-expenses-placeholder {
 	height: 31px !important;
 }
+
+.budget-category-list:nth-child(2n+1) {
+	clear: left;
+}
