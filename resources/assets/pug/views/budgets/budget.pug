@@ -49,7 +49,7 @@
 					div(ng-if="Budget.budgetCategories")
 						ul#budgetCategories.list-unstyled.clearfix(ui-sortable="categorySorting", ng-model="Budget.budgetCategories")
 							li.col-xs-12.col-sm-12.col-md-12.col-lg-6.budget-category-list(ng-repeat="BudgetCategory in Budget.budgetCategories", budget-category)
-							li.col-xs-12.col-sm-12.col-md-12.col-lg-6
+							li.col-xs-12.col-sm-12.col-md-12.col-lg-6.budget-category-list
 								.well.text-center
 									a(ng-click="addCategory()") + Add New Category
 
