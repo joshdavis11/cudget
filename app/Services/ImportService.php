@@ -244,6 +244,12 @@ class ImportService {
 		if (empty($Budget->id)) {
 			return;
 		}
+
+		//Make sure it doesn't already exist in a budget
+		if (null !== BudgetIncome::where('income_id', '=', $Income->id)->first()) {
+			return;
+		}
+
 		$BudgetIncome = new BudgetIncome();
 		$BudgetIncome->budgetId = $Budget->id;
 		$BudgetIncome->incomeId = $Income->id;
@@ -321,6 +327,11 @@ class ImportService {
 		$Budget = $this->getBudget($Date);
 
 		if (empty($Budget->id)) {
+			return;
+		}
+
+		//Make sure it doesn't already exist in a budget
+		if (null !== BudgetCategoryRowExpense::where('expense_id', '=', $Expense->id)->first()) {
 			return;
 		}
 
