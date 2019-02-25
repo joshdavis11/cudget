@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\PlaidRequestException;
 use App\Model\AutoImportAccount;
 use App\Model\Budget;
 use App\Model\BudgetCategory;
@@ -94,6 +95,7 @@ class ImportService {
 	 *
 	 * @return Budget|null
 	 * @throws \Unirest\Exception
+	 * @throws PlaidRequestException
 	 */
 	public function updateFromPlaid(int $authUserId) {
 		$this->authUserId = $authUserId;
@@ -191,7 +193,7 @@ class ImportService {
 		if (null !== $transactionId) {
 			$Income = Income::where('transaction_id', '=', $transactionId)->first();
 		}
-		if (empty($Expense)) {
+		if (empty($Income)) {
 			$Income = new Income();
 		}
 		$Income->userId = $this->authUserId;

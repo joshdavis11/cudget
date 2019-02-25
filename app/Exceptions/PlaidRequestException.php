@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use JsonSerializable;
 use Throwable;
 
 /**
@@ -10,25 +11,25 @@ use Throwable;
  *
  * @package App\Exceptions
  */
-class PlaidRequestException extends Exception {
+class PlaidRequestException extends Exception implements JsonSerializable {
 	/**
-	 * @var string
+	 * @var string|null
 	 */
 	private $displayMessage;
 	/**
-	 * @var string
+	 * @var string|null
 	 */
 	private $errorCode;
 	/**
-	 * @var string
+	 * @var string|null
 	 */
 	private $errorMessage;
 	/**
-	 * @var string
+	 * @var string|null
 	 */
 	private $errorType;
 	/**
-	 * @var string
+	 * @var string|null
 	 */
 	private $requestId;
 
@@ -51,37 +52,57 @@ class PlaidRequestException extends Exception {
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getDisplayMessage(): string {
+	public function getDisplayMessage(): ?string {
 		return $this->displayMessage;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getErrorCode(): string {
+	public function getErrorCode(): ?string {
 		return $this->errorCode;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getErrorMessage(): string {
+	public function getErrorMessage(): ?string {
 		return $this->errorMessage;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getErrorType(): string {
+	public function getErrorType(): ?string {
 		return $this->errorType;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getRequestId(): string {
+	public function getRequestId(): ?string {
 		return $this->requestId;
+	}
+
+	/**
+	 * Specify data which should be serialized to JSON
+	 *
+	 * @link  https://php.net/manual/en/jsonserializable.jsonserialize.php
+	 * @return mixed data which can be serialized by <b>json_encode</b>,
+	 * which is a value of any type other than a resource.
+	 * @since 5.4.0
+	 */
+	public function jsonSerialize() {
+		return [
+			'displayMessage' => $this->displayMessage,
+			'errorCode' => $this->errorCode,
+			'errorMessage' => $this->errorMessage,
+			'errorType' => $this->errorType,
+			'requestId' => $this->requestId,
+			'code' => $this->code,
+			'message' => $this->message,
+		];
 	}
 }

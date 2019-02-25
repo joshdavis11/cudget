@@ -61,7 +61,7 @@ angular.module('BankingControllers', [])
 		TitleService.setTitle('Update Income and Expenses');
 		$http.post('/api/v1/banking/update')
 			.then(function(response) {
-				$location.url(response ? (response.headers('Location') || '/expenses?filter=without') : '/expenses?filter=without');
+				$location.url(response.data.budgetId ? '/budgets/' + response.data.budgetId : '/expenses?filter=without');
 			});
 	}
 ])
