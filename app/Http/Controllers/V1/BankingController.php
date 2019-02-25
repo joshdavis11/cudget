@@ -25,11 +25,12 @@ class BankingController extends Controller {
 	/**
 	 * update
 	 *
-	 * @param Request       $Request
-	 * @param ImportService $ImportService
+	 * @param Request            $Request
+	 * @param ImportService      $ImportService
+	 * @param UserService        $UserService
+	 * @param PermissionsService $PermissionsService
 	 *
 	 * @return Response
-	 * @throws \Unirest\Exception
 	 */
 	public function update(Request $Request, ImportService $ImportService, UserService $UserService, PermissionsService $PermissionsService) {
 		$userId = $Request->user()->id;
@@ -39,13 +40,20 @@ class BankingController extends Controller {
 			return $this->getInvalidPermissionsResponse();
 		}
 
-		$Budget = $ImportService->updateFromPlaid($userId);
+		try {
+			$Budget = $ImportService->updateFromPlaid($userId);
+		} catch(PlaidRequestException $plaidRequestException) {
+			return new Response($plaidRequestException, Response::HTTP_CONFLICT);
+		} catch(Exception $exception) {
+			return new Response($exception->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+		}
+
 		$headers = [];
 		if (!empty($Budget->id)) {
 			$headers['Location'] = '/budgets/' . $Budget->id;
 		}
 
-		return new Response('Updated!', Response::HTTP_OK, $headers);
+		return new Response(['budgetId' => $Budget->id ?? null], Response::HTTP_OK, $headers);
 	}
 
 	/**
