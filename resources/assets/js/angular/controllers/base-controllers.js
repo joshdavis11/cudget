@@ -97,8 +97,8 @@ angular.module('BaseControllers', [])
 			env: window.PlaidData.env,
 			key: window.PlaidData.publicKey,
 			product: ['transactions'],
+			webhook: window.location.hostname.indexOf("cudget.com") > -1 ? (window.location.hostname + '/api/v1/plaid/webhook') : null,
 			onSuccess: function(publicToken, metadata) {
-				console.log(metadata);
 				$http.post('/api/v1/banking/connect', {
 					publicToken: publicToken,
 					metadata: metadata,

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\PreLoginController;
 use App\Http\Controllers\V1;
+use App\Http\Controllers\V1\PlaidController;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Router;
 
@@ -155,6 +156,9 @@ $router->group(['prefix' => 'v1'], function(Router $router) {
 	$router->post('signup', PreLoginController::class . '@signup');
 	$router->get('users/emailExists/{email}', V1\UsersController::class . '@emailExists');
 	$router->get('users/usernameExists/{username}', V1\UsersController::class . '@usernameExists');
+
+	//Plaid Webhooks
+	$router->post('/plaid/webhook', PlaidController::class . '@webhook')->name('plaid.webhook');
 });
 
 //404
