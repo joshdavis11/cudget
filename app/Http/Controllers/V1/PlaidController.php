@@ -8,11 +8,13 @@ use App\Http\Controllers\Controller;
 use App\Model\Permission;
 use App\Model\PlaidAccount;
 use App\Model\PlaidData;
+use App\Model\PlaidWebhook;
 use App\Services\PermissionsService;
 use App\Services\UserService;
 use App\Utilities\Plaid;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\App;
 use Unirest\Exception;
 
 /**
@@ -21,6 +23,8 @@ use Unirest\Exception;
  * @package App\Http\Controllers\V1
  */
 class PlaidController extends Controller {
+	const PLAID_IPS = ['52.21.26.131', '52.21.47.157', '52.41.247.19', '52.88.82.239'];
+
 	/**
 	 * requestAccessToken
 	 *
@@ -107,5 +111,22 @@ class PlaidController extends Controller {
 		}
 
 		return new Response($publicToken);
+	}
+
+	/**
+	 * Plaid webhooks
+	 *
+	 * @param Request $request
+	 *
+	 * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
+	 */
+	public function webhook(Request $request) {
+		if (App::environment('production') && !in_array($request->ip(), self::PLAID_IPS)) {
+			return new Response(null, Response::HTTP_NOT_FOUND);
+		}
+
+		PlaidWebhook::create(['data' => json_encode($request->all())]);
+
+		return new Response();
 	}
 }
