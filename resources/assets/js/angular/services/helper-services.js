@@ -193,7 +193,10 @@ angular.module('HelperServices', [])
 		};
 
 		this.getLocalDatetime = function(date) {
-			return moment.utc(date).local().format('YYYY-MM-DD HH:mm:ss')
+			if (date) {
+				return moment.utc(date).local().format('YYYY-MM-DD HH:mm:ss');
+			}
+			return date;
 		};
 	}
 ])
