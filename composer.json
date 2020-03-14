@@ -1,6 +1,6 @@
 {
-    "name": "Cudget",
-    "description": "Cudget - The custom budgetting app.",
+    "name": "cudget/cudget",
+    "description": "Cudget - The custom budgeting app.",
     "keywords": ["cudget", "budget"],
     "license": "MIT",
     "type": "project",
@@ -8,9 +8,9 @@
         "php": ">=5.6.0",
         "doctrine/dbal": "^2.5",
         "guzzlehttp/guzzle": "^6.3",
-        "kirkbushell/eloquence": "~2.0",
-        "laravel/framework": "5.4.*",
-        "laravel/passport": "^2.0",
+        "kirkbushell/eloquence": "^2.0",
+        "laravel/framework": "~5.5.42",
+        "laravel/passport": "^4.0",
         "laravel/tinker": "~1.0",
         "mashape/unirest-php": "^3.0"
     },
