@@ -12,6 +12,7 @@ use DateTimeImmutable;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -90,7 +91,7 @@ class PreLoginController extends Controller {
 	 */
 	protected function credentials(Request $request) {
 		$data = $this->credentialsTrait($request);
-		return array_add($data, 'email_verified', true);
+		return Arr::add($data, 'email_verified', true);
 	}
 
 	/**
