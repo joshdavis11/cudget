@@ -6,6 +6,7 @@ require('./directives');
 require('./filters');
 require('./routes');
 require('./services');
+require('angular-nvd3');
 
 angular.module('Cudget', [
 	'ngRoute',

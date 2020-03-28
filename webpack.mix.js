@@ -1,11 +1,11 @@
-const { mix } = require('laravel-mix');
+const mix = require('laravel-mix');
 const webpack = require('webpack');
 const { forEach } = require('lodash');
 const { getColorNames } = require('./resources/assets/js/bootswatch');
 const pug = require('pug');
 const fs = require('fs');
 const pugOptions = {
-	pretty: !mix.config.inProduction
+	pretty: !mix.inProduction()
 };
 
 /**
@@ -24,7 +24,7 @@ function renderPugFilesInDir(readPath, writePath) {
 				checkForAndCreateDirectory(writePath + filename);
 				renderPugFilesInDir(readPath + filename + '/', writePath + filename + '/');
 			} else if (fileStat.isFile(filename)) {
-				fs.writeFile(writePath + filename.replace('.pug', '.blade.php'), pug.renderFile(readPath + filename, pugOptions));
+				fs.writeFile(writePath + filename.replace('.pug', '.blade.php'), pug.renderFile(readPath + filename, pugOptions), () => {});
 			}
 		});
 	});
@@ -111,7 +111,7 @@ forEach(getColorNames(), bootswatch => {
 	;
 });
 
-if (mix.config.inProduction) {
+if (mix.inProduction()) {
 	mix.version();
 }
 else {

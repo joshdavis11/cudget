@@ -8,6 +8,7 @@ use App\Services\ImportService;
 use App\Services\PermissionsService;
 use App\Services\UserService;
 use Dotenv\Exception\InvalidFileException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -46,5 +47,14 @@ class ImportController extends Controller {
 			$headers['Location'] = '/budgets/' . $Budget->id;
 		}
 		return new Response('Imported!', Response::HTTP_OK, $headers);
+	}
+
+	/**
+	 * redirectToImport
+	 *
+	 * @return RedirectResponse
+	 */
+	public function redirectToImport(): RedirectResponse {
+		return redirect()->route('import');
 	}
 }

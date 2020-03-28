@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\PreLoginController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\V1\ImportController;
 use App\Http\Controllers\ViewController;
 use Illuminate\Routing\Router;
 
@@ -38,9 +39,7 @@ $router->group(['middleware' => 'guest'], function(Router $router) {
 $router->group(['middleware' => 'auth'], function(Router $router) {
 	$router->get('logout', PreLoginController::class . '@logout')->name('logout');
 	$router->get('home', ViewController::class . '@angular')->name('home');
-	$router->get('import', function() {
-		return redirect()->route('import');
-	});
+	$router->get('import', ImportController::class . '@redirectToImport');
 
 	//Banking
 	$router->group(['prefix' => 'banking'], function(Router $router) {

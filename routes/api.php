@@ -162,6 +162,4 @@ $router->group(['prefix' => 'v1'], function(Router $router) {
 });
 
 //404
-$router->any('{catchall}', function() {
-	return new Response('', Response::HTTP_NOT_FOUND);
-})->where('catchall', '(.*)');
+$router->any('{catchall}', V1\CatchAllController::class . '@catchAll')->where('catchall', '(.*)');
