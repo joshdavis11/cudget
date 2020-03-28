@@ -15,3 +15,6 @@ Homestead.json
 !/resources/views
 /resources/views/*
 !/resources/views/vendor
+.vagrant
+after.sh
+aliases

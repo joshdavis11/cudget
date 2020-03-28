@@ -5,17 +5,18 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=5.6.0",
+        "php": ">=7.1.0",
         "doctrine/dbal": "^2.5",
         "guzzlehttp/guzzle": "^6.3",
-        "kirkbushell/eloquence": "^2.0",
-        "laravel/framework": "~5.5.42",
-        "laravel/passport": "^4.0",
-        "laravel/tinker": "~1.0",
+        "kirkbushell/eloquence": "^3.0",
+        "laravel/framework": "^6.0",
+        "laravel/passport": "^7.0",
+        "laravel/tinker": "^2.0",
         "mashape/unirest-php": "^3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
+        "laravel/homestead": "^10.5",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~5.7"
     },
