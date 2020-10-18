@@ -31,14 +31,12 @@
 									tr
 										th.income-column.income-date Date
 										th.income-column.income-description Description
-										th.income-column.income-category Category
 										th.income-column.income-amount Amount
 										th.income-column.income-icons
 								tbody
 									tr(ng-repeat="BudgetIncome in Budget.budgetIncome", ng-mouseenter="BudgetIncome.editOptions = true", ng-mouseleave="BudgetIncome.editOptions = false")
 										td.income-column(uib-popover="{{ BudgetIncome.income.datetime|standardDate }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") {{ BudgetIncome.income.datetime|standardDate }}
 										td.income-column(uib-popover="{{ BudgetIncome.income.description }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") {{ BudgetIncome.income.description }}
-										td.income-column(uib-popover="{{ BudgetIncome.income.incomeCategory.name }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") {{ BudgetIncome.income.incomeCategory.name }}
 										td.income-column(uib-popover="${{ BudgetIncome.income.amount|number:2 }}", popover-placement="bottom", popover-trigger="mouseenter click", popover-append-to-body="true", popover-popup-delay="1000", popover-popup-close-delay="100") ${{ BudgetIncome.income.amount|number:2 }}
 										td
 											div(ng-show="BudgetIncome.editOptions")

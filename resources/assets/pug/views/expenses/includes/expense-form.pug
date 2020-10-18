@@ -14,8 +14,6 @@
 .form-group.required(ng-class="{ 'has-error': (expenseForm.description.$touched && expenseForm.description.$invalid) || (expenseForm.$submitted && expenseForm.description.$invalid) }")
 	label.control-label(for="expenseDescription") Description
 	input#expenseDescription.form-control(placeholder="Limit of 255 Characters", type="text", name="description", maxlength="255", ng-model="Expense.description", required)
-.form-group(ng-class="{ 'has-error': (expenseForm.expenseCategory.$touched && expenseForm.expenseCategory.$invalid) || (expenseForm.$submitted && expenseForm.expenseCategory.$invalid) }")
-	expense-category-chooser(ng-model="Expense.expenseCategoryId", icc-name="expenseCategory", icc-required="false")
 .form-group.btn-toolbar(ng-if="showFooterButtons")
 	button.btn.btn-primary(type="submit") Submit
 	a.btn.btn-default(href="/expenses") Cancel

@@ -32,14 +32,12 @@
 						tr
 							th Date
 							th Description
-							th Category
 							th Amount
 							th.cog
 					tbody
 						tr(ng-repeat="Expense in Expenses.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)")
 							td {{ Expense.datetime|standardDate }}
 							td {{ Expense.description }}
-							td {{ Expense.expenseCategory.name }}
 							td ${{ Expense.amount|number:2 }}
 							td(uib-dropdown)
 								span.glyphicon.glyphicon-cog(uib-dropdown-toggle)

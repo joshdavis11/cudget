@@ -32,14 +32,12 @@
 						tr
 							th Date
 							th Description
-							th Category
 							th Amount
 							th(data-sorter="false", style="width:16px;")
 					tbody
 						tr(ng-repeat="Income in Incomes.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)")
 							td {{ Income.datetime|standardDate }}
 							td {{ Income.description }}
-							td {{ Income.incomeCategory.name }}
 							td ${{ Income.amount|number:2 }}
 							td(uib-dropdown)
 								span.glyphicon.glyphicon-cog(uib-dropdown-toggle)
