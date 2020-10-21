@@ -17,5 +17,5 @@
 		tbody.js-sortable-expenses(ui-sortable="categoryRowExpenseSorting", ng-model="BudgetCategoryRow.budgetCategoryRowExpenses")
 			tr.js-category-item-expense(ng-repeat="BudgetCategoryRowExpense in BudgetCategoryRow.budgetCategoryRowExpenses", ng-mouseenter="BudgetCategoryRowExpense.editOptions = true", ng-mouseleave="BudgetCategoryRowExpense.editOptions = false", budget-category-item-expense)
 			tr.border-dashed(ng-show="showEmptyPlaceholder")
-				td(colspan="5") Drag Here and Drop Here
+				td(colspan="4") Drag Here and Drop Here
 	a(ng-click="addCategoryItemExpense()") + Add An Expense
