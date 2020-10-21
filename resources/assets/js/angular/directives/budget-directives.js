@@ -144,13 +144,6 @@ angular.module('BudgetDirectives', [])
 					});
 
 					modalInstance.result.then(function(BudgetCategoryRowExpense) {
-						//setMessage()
-						angular.forEach($scope.ExpenseCategories, function(ExpenseCategory) {
-							if (ExpenseCategory.id === BudgetCategoryRowExpense.expense.expenseCategoryId) {
-								BudgetCategoryRowExpense.expense.expenseCategory = ExpenseCategory;
-								return false;
-							}
-						});
 						$scope.BudgetCategoryRow.budgetCategoryRowExpenses.push(BudgetCategoryRowExpense);
 						BudgetService.setData($scope.Budget);
 					});
@@ -206,17 +199,6 @@ angular.module('BudgetDirectives', [])
 					});
 
 					modalInstance.result.then(function() {
-						if (!$scope.BudgetCategoryRowExpense.expense || !$scope.BudgetCategoryRowExpense.expense.expenseCategoryId) {
-							$scope.BudgetCategoryRowExpense.expense.expenseCategory = null;
-						}
-						else {
-							angular.forEach($scope.ExpenseCategories, function(ExpenseCategory) {
-								if (ExpenseCategory.id === $scope.BudgetCategoryRowExpense.expense.expenseCategoryId) {
-									$scope.BudgetCategoryRowExpense.expense.expenseCategory = ExpenseCategory;
-									return false;
-								}
-							});
-						}
 						BudgetService.setData($scope.Budget);
 					}, function() {
 						angular.copy(OriginalBudgetCategoryRowExpense, $scope.BudgetCategoryRowExpense);

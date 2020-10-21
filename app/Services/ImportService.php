@@ -204,14 +204,6 @@ class ImportService {
 		$Income->transactionId = $transactionId;
 		$Income->accountId = $accountId;
 
-		$CommonIncome = Income::where('user_id', '=', $this->authUserId)
-			->where('description', 'LIKE', '%' . preg_replace('/\s/', '%', $Income->description) . '%')
-			->orderBy('datetime', 'DESC')
-			->first();
-		if (!empty($CommonIncome->incomeCategoryId)) {
-			$Income->incomeCategoryId = $CommonIncome->incomeCategoryId;
-		}
-
 		$Income->save();
 
 		$this->addIncomeToBudget($Income, $Date);
@@ -290,9 +282,7 @@ class ImportService {
 			->where('description', 'LIKE', '%' . preg_replace('/\s/', '%', $Expense->description) . '%')
 			->orderBy('datetime', 'DESC')
 			->first();
-		if (!empty($CommonExpense->expenseCategoryId)) {
-			$Expense->expenseCategoryId = $CommonExpense->expenseCategoryId;
-		} elseif (empty($CommonExpense)) {
+		if (empty($CommonExpense)) {
 			$CommonExpense = new Expense();
 		}
 

@@ -110,15 +110,9 @@ $router->group(['middleware' => 'auth:api'], function(Router $router) {
 		$router->resource('budgets', V1\BudgetsController::class);
 
 		//Expense routes
-		$router->group(['prefix' => 'expenses'], function(Router $router) {
-			$router->resource('categories', V1\ExpenseCategoriesController::class);
-		});
 		$router->resource('expenses', V1\ExpenseController::class);
 
 		//Income routes
-		$router->group(['prefix' => 'income'], function(Router $router) {
-			$router->resource('categories', V1\IncomeCategoriesController::class);
-		});
 		$router->resource('income', V1\IncomeController::class);
 
 		//banking routes

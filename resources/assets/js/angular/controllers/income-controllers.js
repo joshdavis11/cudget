@@ -1,13 +1,12 @@
 angular.module('IncomeControllers', [])
-.controller('IncomeController', ['Incomes', 'IncomeCategories', '$scope', 'TitleService', 'IncomeService', 'IncomeCategoryService', 'filterFilter', '$uibModal', '$location', '$routeParams',
-	function(Incomes, IncomeCategories, $scope, TitleService, IncomeService, IncomeCategoryService, filterFilter, $uibModal, $location, $routeParams) {
+.controller('IncomeController', ['Incomes', '$scope', 'TitleService', 'IncomeService', 'filterFilter', '$uibModal', '$location', '$routeParams',
+	function(Incomes, $scope, TitleService, IncomeService, filterFilter, $uibModal, $location, $routeParams) {
 		TitleService.setTitle('Income');
 		$scope.filterVal = $routeParams.filter || '';
 
 		var OriginalIncomes = Incomes;
 		$scope.Incomes = angular.copy(OriginalIncomes);
 		$scope.currentPage = parseInt($routeParams.page) || 1;
-		$scope.IncomeCategories = IncomeCategories;
 
 		$scope.filter = function() {
 			switch ($scope.filterVal) {
@@ -43,17 +42,6 @@ angular.module('IncomeControllers', [])
 			});
 
 			modalInstance.result.then(function() {
-				if (!Income.incomeCategoryId) {
-					Income.incomeCategory = null;
-				}
-				else {
-					angular.forEach($scope.IncomeCategories, function(IncomeCategory) {
-						if (IncomeCategory.id === Income.incomeCategoryId) {
-							Income.incomeCategory = IncomeCategory;
-							return false;
-						}
-					});
-				}
 			}, function() {
 				angular.copy(OriginalIncome, Income);
 			});

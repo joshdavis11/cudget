@@ -26,24 +26,4 @@ angular.module('ExpenseServices', [])
 		};
 	}
 ])
-.service('ExpenseCategoryService', ['$http',
-	function($http) {
-		this.getExpenseCategories = function() {
-			var ExpenseCategories = [];
-			return $http.get('/api/v1/expenses/categories')
-				.then(function(RetrievedExpenseCategories) {
-					ExpenseCategories = RetrievedExpenseCategories.data;
-					addNewCategoryOption();
-					return ExpenseCategories;
-				}, addNewCategoryOption);
-
-			/**
-			 * Add the new category option
-			 */
-			function addNewCategoryOption() {
-				ExpenseCategories.unshift({'id': 'new', 'name': '+ Add New Expense Category'});
-			}
-		};
-	}
-])
 ;
