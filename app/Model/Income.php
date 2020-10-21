@@ -2,7 +2,6 @@
 
 namespace App\Model;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -12,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int userId
  * @property string datetime
  * @property string description
- * @property int incomeCategoryId
  * @property float amount
  * @property string isoCurrencyCode
  * @property string transactionId
@@ -49,15 +47,6 @@ class Income extends BaseModel {
 	 * @var array
 	 */
 	protected $hidden = ['created_at', 'updated_at'];
-
-    /**
-	 * Get the income category
-	 *
-	 * @return BelongsTo
-	 */
-    public function incomeCategory() {
-		return $this->belongsTo(IncomeCategory::class);
-	}
 
 	/**
 	 * The budget income

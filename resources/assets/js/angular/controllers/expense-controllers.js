@@ -1,13 +1,12 @@
 angular.module('ExpenseControllers', [])
-.controller('ExpenseController', ['Expenses', 'ExpenseCategories', '$scope', 'TitleService', 'ExpenseService', 'ExpenseCategoryService', 'filterFilter', '$uibModal', '$location', '$routeParams',
-	function(Expenses, ExpenseCategories, $scope, TitleService, ExpenseService, ExpenseCategoryService, filterFilter, $uibModal, $location, $routeParams) {
+.controller('ExpenseController', ['Expenses', '$scope', 'TitleService', 'ExpenseService', 'filterFilter', '$uibModal', '$location', '$routeParams',
+	function(Expenses, $scope, TitleService, ExpenseService, filterFilter, $uibModal, $location, $routeParams) {
 		TitleService.setTitle('Expenses');
 		$scope.filterVal = $routeParams.filter || '';
 
 		var OriginalExpenses = Expenses;
 		$scope.Expenses = angular.copy(OriginalExpenses);
 		$scope.currentPage = parseInt($routeParams.page) || 1;
-		$scope.ExpenseCategories = ExpenseCategories;
 
 		$scope.filter = function() {
 			switch ($scope.filterVal) {
@@ -43,17 +42,6 @@ angular.module('ExpenseControllers', [])
 			});
 
 			modalInstance.result.then(function() {
-				if (!Expense.expenseCategoryId) {
-					Expense.expenseCategory = null;
-				}
-				else {
-					angular.forEach($scope.ExpenseCategories, function(ExpenseCategory) {
-						if (ExpenseCategory.id === Expense.expenseCategoryId) {
-							Expense.expenseCategory = ExpenseCategory;
-							return false;
-						}
-					});
-				}
 			}, function() {
 				angular.copy(OriginalExpense, Expense);
 			});

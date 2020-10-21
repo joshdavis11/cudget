@@ -28,7 +28,7 @@ class ExpenseService {
 	 */
 	public function createExpense(Request $request) {
 		$request->merge(['datetime' => date('Y-m-d 00:00:00', strtotime($request->input('datetime')))]);
-		return Expense::create($request->only(['userId', 'datetime', 'description', 'expenseCategoryId', 'amount']));
+		return Expense::create($request->only(['userId', 'datetime', 'description', 'amount']));
 	}
 
 	/**
@@ -41,6 +41,6 @@ class ExpenseService {
 	 */
 	public function updateExpense($id, Request $request) {
 		$request->merge(['datetime' => date('Y-m-d 00:00:00', strtotime($request->input('datetime')))]);
-		return $this->getExpense($id)->update($request->only(['userId', 'datetime', 'description', 'expenseCategoryId', 'amount']));
+		return $this->getExpense($id)->update($request->only(['userId', 'datetime', 'description', 'amount']));
 	}
 }

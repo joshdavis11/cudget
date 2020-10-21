@@ -68,8 +68,8 @@ class BudgetService {
 		$this->checkBudgetPermission($id);
 
 		return Budget
-			::with('budgetIncome.income.incomeCategory')
-			->with('budgetCategories.budgetCategoryRows.budgetCategoryRowExpenses.expense.expenseCategory')
+			::with('budgetIncome.income')
+			->with('budgetCategories.budgetCategoryRows.budgetCategoryRowExpenses.expense')
 			->findOrFail($id);
 	}
 

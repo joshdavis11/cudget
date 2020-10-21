@@ -162,16 +162,6 @@ angular.module('CudgetRoutes', [])
 						});
 					}
 				],
-				IncomeCategories: ['IncomeCategoryService',
-					function(IncomeCategoryService) {
-						return IncomeCategoryService.getIncomeCategories();
-					}
-				],
-				ExpenseCategories: ['ExpenseCategoryService',
-					function(ExpenseCategoryService) {
-						return ExpenseCategoryService.getExpenseCategories();
-					}
-				]
 			}
 		})
 		.when('/budgets', {
@@ -225,11 +215,6 @@ angular.module('CudgetRoutes', [])
 						return ExpenseService.getExpenses();
 					}
 				],
-				ExpenseCategories: ['ExpenseCategoryService',
-					function(ExpenseCategoryService) {
-						return ExpenseCategoryService.getExpenseCategories();
-					}
-				]
 			}
 		})
 		.when('/income/create', {
@@ -246,11 +231,6 @@ angular.module('CudgetRoutes', [])
 						return IncomeService.getIncome();
 					}
 				],
-				IncomeCategories: ['IncomeCategoryService',
-					function(IncomeCategoryService) {
-						return IncomeCategoryService.getIncomeCategories();
-					}
-				]
 			}
 		})
 		.when('/reports/budget-daily-expenses', {

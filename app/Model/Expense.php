@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property int userId
  * @property string datetime
  * @property string description
- * @property int expenseCategoryId
  * @property float amount
  * @property string isoCurrencyCode
  * @property string transactionId
@@ -43,15 +42,6 @@ class Expense extends BaseModel {
 	 * @var array
 	 */
 	protected $hidden = ['created_at', 'updated_at', 'user_id'];
-
-    /**
-	 * Get the expense category
-	 *
-	 * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-	 */
-    public function expenseCategory() {
-		return $this->belongsTo(ExpenseCategory::class);
-	}
 
 	/**
 	 * The budget category row expense

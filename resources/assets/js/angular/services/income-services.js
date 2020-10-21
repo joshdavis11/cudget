@@ -63,24 +63,4 @@ angular.module('IncomeServices', [])
 		};
 	}
 ])
-.service('IncomeCategoryService', ['$http',
-	function($http) {
-		this.getIncomeCategories = function() {
-			var IncomeCategories = [];
-			return $http.get('/api/v1/income/categories')
-				.then(function(RetrievedIncomeCategories) {
-					IncomeCategories = RetrievedIncomeCategories.data;
-					addNewCategoryOption();
-					return IncomeCategories;
-				}, addNewCategoryOption);
-
-			/**
-			 * Add the new category option
-			 */
-			function addNewCategoryOption() {
-				IncomeCategories.unshift({'id': 'new', 'name': '+ Add New Income Category'});
-			}
-		};
-	}
-])
 ;

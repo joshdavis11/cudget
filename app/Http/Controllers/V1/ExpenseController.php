@@ -41,8 +41,7 @@ class ExpenseController extends Controller {
 	 * @return Response
 	 */
 	public function index() {
-		$Expenses = Expense::with('expenseCategory')
-			->with('budgetCategoryRowExpense')
+		$Expenses = Expense::with('budgetCategoryRowExpense')
 			->where('user_id', '=', $this->Auth->user()->id)
 			->orderBy('datetime', 'DESC')
 			->get();

@@ -52,7 +52,7 @@ class IncomeService {
 	 */
 	public function updateIncome($id, Request $request) {
 		$request->merge(['datetime' => date('Y-m-d 00:00:00', strtotime($request->input('datetime')))]);
-		return $this->getIncome($id)->update($request->only(['userId', 'datetime', 'description', 'incomeCategoryId', 'amount']));
+		return $this->getIncome($id)->update($request->only(['userId', 'datetime', 'description', 'amount']));
 	}
 
 	/**
@@ -64,7 +64,7 @@ class IncomeService {
 	 */
 	public function createIncome(Request $request) {
 		$request->merge(['datetime' => date('Y-m-d 00:00:00', strtotime($request->input('datetime')))]);
-		return Income::create($request->only(['userId', 'datetime', 'description', 'incomeCategoryId', 'amount']));
+		return Income::create($request->only(['userId', 'datetime', 'description', 'amount']));
 	}
 
 	/**
@@ -75,8 +75,7 @@ class IncomeService {
 	 * @return Collection
 	 */
 	public function getAllIncomeForUser($userId) {
-		return Income::with('incomeCategory')
-			->with('budgetIncome')
+		return Income::with('budgetIncome')
 			->where('user_id', '=', $userId)
 			->orderBy('datetime', 'DESC')
 			->get();

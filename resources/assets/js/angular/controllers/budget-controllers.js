@@ -179,16 +179,13 @@ angular.module('BudgetControllers', [])
 		};
 	}
 ])
-.controller('BudgetController', ['Budget', 'ExpenseCategories', 'IncomeCategories', 'TitleService', 'BudgetService', 'CategoryService', '$scope', '$uibModal', 'orderByFilter',
-	function(Budget, ExpenseCategories, IncomeCategories, TitleService, BudgetService, CategoryService, $scope, $uibModal, orderBy) {
+.controller('BudgetController', ['Budget', 'TitleService', 'BudgetService', 'CategoryService', '$scope', '$uibModal', 'orderByFilter',
+	function(Budget, TitleService, BudgetService, CategoryService, $scope, $uibModal, orderBy) {
 		$scope.Budget = Budget;
 		BudgetService.setData(Budget);
 		Budget.budgetCategories = orderBy(Budget.budgetCategories, 'sortOrder', false);
 
 		TitleService.setTitle('View "' + $scope.Budget.name + '"');
-
-		$scope.IncomeCategories = IncomeCategories;
-		$scope.ExpenseCategories = ExpenseCategories;
 
 		$scope.editIncome = function(BudgetIncome) {
 			var OriginalBudgetIncome = angular.copy(BudgetIncome);
@@ -202,17 +199,6 @@ angular.module('BudgetControllers', [])
 			});
 
 			modalInstance.result.then(function() {
-				if (!BudgetIncome.income || !BudgetIncome.income.incomeCategoryId) {
-					BudgetIncome.income.incomeCategory = null;
-				}
-				else {
-					angular.forEach($scope.IncomeCategories, function(IncomeCategory) {
-						if (IncomeCategory.id === BudgetIncome.income.incomeCategoryId) {
-							BudgetIncome.income.incomeCategory = IncomeCategory;
-							return false;
-						}
-					});
-				}
 				BudgetService.setData($scope.Budget);
 			}, function() {
 				angular.copy(OriginalBudgetIncome, BudgetIncome);
@@ -230,12 +216,6 @@ angular.module('BudgetControllers', [])
 			});
 
 			modalInstance.result.then(function(BudgetIncome) {
-				angular.forEach($scope.IncomeCategories, function(IncomeCategory) {
-					if (IncomeCategory.id === BudgetIncome.income.incomeCategoryId) {
-						BudgetIncome.income.incomeCategory = IncomeCategory;
-						return false;
-					}
-				});
 				$scope.Budget.budgetIncome.push(BudgetIncome);
 				BudgetService.setData($scope.Budget);
 			});
